@@ -1,0 +1,7 @@
+# Ignore all files by default
+*
+
+# Except for the specific file(s) you want to keep
+!*.txt
+!*.md
+!.myfuncs*
