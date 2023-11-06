@@ -1,7 +1,10 @@
-# Ignore all files by default
+# Ignore all
 *
 
-# Except for the specific file(s) you want to keep
-!*.txt
+# Unignore directories
+!*/
+
+# Unignore source code files
+!*.c
+!*.h
 !*.md
-!.myfuncs*
