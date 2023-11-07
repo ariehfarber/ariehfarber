@@ -1,58 +1,26 @@
 /*Functions*/
 
-#include<stdio.h> /*included for printf() function*/
-#include<stdlib.h> /*included for malloc() function*/
-#include<assert.h> /*included for assert() function*/
-#include<stddef.h> /*included for size_t variable type*/
+#include <stdio.h> /*included for printf() function*/
+#include <assert.h> /*included for assert() function*/
+#include <stdlib.h> /*included for malloc() function*/
+#include <stddef.h> /*included for size_t variable type*/
 #include "wc2.h"
 
-void IntSwap(int *var1, int *var2)
+void TestIntSwap();
+void TestCopyArray();
+void TestTSizeSwap();
+void TestPtrSwap();
+void TestPtrSwapCombo();
+
+int main()
 {
-	int temp;
+	TestIntSwap();
+	TestCopyArray();
+	TestTSizeSwap();
+	TestPtrSwap();
+	TestPtrSwapCombo();
 	
-	assert(var1 != NULL && var2 != NULL);
-	
-	temp = *var1;
-	*var1 = *var2;
-	*var2 = temp;
-}
-
-void CopyArray(int *arry, int *arry_copy, int arry_size)
-{
-	int i;
-
-	for (i = 0; i < arry_size; i++)
-	{
-		arry_copy[i] = arry[i];
-	}
-}
-
-void TSizeSwap(size_t *var1, size_t *var2)
-{
-	size_t temp;
-	
-	assert(var1 != NULL && var2 != NULL);
-	
-	temp = *var1;
-	*var1 = *var2;
-	*var2 = temp;
-}
-
-void PtrSwap(size_t **ptr1, size_t **ptr2)
-{
-	size_t *temp;
-	
-	assert(ptr1 != NULL && ptr2 != NULL);
-	
-	temp = *ptr1;
-	*ptr1 = *ptr2;
-	*ptr2 = temp;
-}
-
-
-void PtrSwapCombo(size_t **ptr1, size_t **ptr2)
-{
-	TSizeSwap(*ptr1, *ptr2);
+	return (0);
 }
 
 /*test functions*/
@@ -76,7 +44,7 @@ void TestCopyArray()
 	int *new_array = (int *)malloc(sizeof(original_array));
 	int i;
 	
-	assert(new_array != NULL);
+	assert(new_array);
 	
 	printf("Test CopyArray\n");
 	printf("Original array: ");
