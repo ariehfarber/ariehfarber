@@ -1,120 +1,133 @@
-/* wc1.c */
+/***********************************************************************************
+*Auther: Arieh Farber
+*Reviewr: Igal Maikis
+*Date: 5/11/2023
+***********************************************************************************/
 
-#include <stdio.h> /* added for the printf() function */
-#include <string.h> /* added for the strlen() function */
-#include <math.h> /* added for the pow() and fabs() function */
-#include <assert.h> /* added for the assert() function */
+#include <stdio.h>  /*printf()     */
+#include <string.h> /*strlen()     */
+#include <math.h>   /*pow(), fabs()*/
+#include <assert.h> /*assert()     */
 
-/* Exercise 3: "Hello World!" */
+void HelloWorld();
+void TestPowerBaseTen();
+void TestFlipDigits();
+void TestSwap();
+
+int main()
+{
+	HelloWorld();
+	TestPowerBaseTen();
+	TestFlipDigits();
+	TestSwap();
+	
+	return (0);
+}
+
+/*Print "Hello World!" using hex values*/
 void HelloWorld()
 {
-	char str[] ={0x22, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x77, 
-	0x6f, 0x72, 0x6c, 0x64, 0x21, 0x22, 0x00};
-	int size = strlen(str);
+	char *str = "\x22\x48\x65\x6c\x6c\x6f\x20\x77\x6f\x72\x6c\x64\x21\x22\n";
+
+	printf("%s", str);
+}
+
+/*10 to the Power of n*/
+double PowerBaseTen(signed int exponent)
+{
+	double sum = 1;
+	double base = 10;
 	int i;
+	
+	
+	if (exponent < 0)
+	{
+		for (i = 0; i < -exponent; i++)
+		{
+			sum /= base;	
+		}	
+	}
+
+	for (i = 0; i < exponent; i++)
+	{
+		sum *= base;
+	}
+	
+	
+	return (sum);
+}
+
+/*Test PowerBaseTen*/
+void TestPowerBaseTen()
+{
+	int test_cases[] = {-1, 0, 3};
+	int size = sizeof(test_cases) / sizeof(test_cases[0]);
+	int i;
+	double result;
 	
 	for (i = 0; i < size; i++)
 	{
-		printf("%c", str[i]);
-	}
-	printf("\n");
-}
-
-/* Exercise 4: 10 to the Power of n */
-double PowerOfTen(int n)
-{
-	double sum=1.0;
-	int i;
-	
-	if (n < 0)
-	{
-		for (i = 0; i < -n; i++)
+		result = PowerBaseTen(test_cases[i]);
+		printf("ten to the power of %d is %f\n", test_cases[i], result);
+		
+		if (fabs(pow(10, test_cases[i]) - result) > 0.05)
 		{
-			sum /= 10.0;	
-		}	
-	}
-	else
-	{
-		for (i = 0; i < n; i++)
-		{
-			sum *= 10.0;
+			printf("error in PowerBaseTen function result\n");
 		}
 	}
-	
-	return sum;
 }
 
-/* Exercise 5: flipping digits */
-int FlipDigits(int n)
+/*Flip a numbers digits*/
+int FlipDigits(signed int number)
 {
 	int fliped = 0;
 	int marker = 1;
+	int base = 10;
 	
-	if (n < 0)
+	if (number < 0) 
 	{
-		n = -n;
+		number = -number;
 		marker = -1;
 	}
 
-	while (n != 0)
+	while (0 != number)
 	{
-	fliped = (fliped * 10) + (n % 10);
-	n = n / 10;
+	fliped = (fliped * base) + (number % base);
+	number = number / base;
 	}
 	
-	return fliped * marker;
+	return (fliped * marker);
 }
 
-/* Exercise 6: swap variables */
-void Swap(int *var1, int *var2)
+/*Test FlipDigits*/
+void TestFlipDigits()
 {
-	int temp;
+	int test_cases[] = {568, 1324, 0 , -45682, -300, 3};
+	int size = sizeof(test_cases) / sizeof(test_cases[0]);
+	int i;
+	int result;
 	
-	assert(var1 != NULL && var2 != NULL);
+	for (i = 0; i < size; i++)
+	{
+		result = FlipDigits(test_cases[i]);
+		printf("original: %d, flippd: %d\n", test_cases[i], result);
+	}
+}
+
+/*Swap two integer variables*/
+void Swap(signed int *var1, signed int *var2)
+{
+	int temp = 0;
+	
+	assert(NULL != var1);
+	assert(NULL != var2);
 	
 	temp = *var1;
 	*var1 = *var2;
 	*var2 = temp;
 }
 
-/* Test exercises */
-
-/* Test exercise 4 */
-void TestPowerOfTen()
-{
-	int test_case[] = {-1, 0, 3};
-	int size = sizeof(test_case) / sizeof(test_case[0]);
-	int i;
-	double result;
-	
-	for (i = 0; i < size; i++)
-	{
-		result = PowerOfTen(test_case[i]);
-		printf("ten to the power of %d is %f\n", test_case[i], result);
-		
-		if (fabs(pow(10, test_case[i]) - result) > 0.05)
-		{
-			printf("error in PowerOfTen function result\n");
-		}
-	}
-}
-
-/* Test exercise 5 */
-void TestFlipDigits()
-{
-	int test_case[] = {568, 1324, 0 , -45682, -300, 3};
-	int size = sizeof(test_case) / sizeof(test_case[0]);
-	int i;
-	int result;
-	
-	for (i = 0; i < size; i++)
-	{
-		result = FlipDigits(test_case[i]);
-		printf("original: %d, flippd: %d\n", test_case[i], result);
-	}
-}
-
-/* Test exercise 6 */
+/*Test Swap*/
 void TestSwap()
 {
 	int x = 7;
@@ -125,15 +138,6 @@ void TestSwap()
 	printf("swapped: x=%d, y=%d\n", x, y);
 }
 
-/* main */
-int main()
-{
-	HelloWorld();
-	TestPowerOfTen();
-	TestFlipDigits();
-	TestSwap();
-	return 0;
-}
 
 
 
