@@ -1,0 +1,12 @@
+# Ignore all files
+*
+
+# Don't ignore directories:
+!*/
+
+# Don't ignore files:
+!*.c
+!*.h
+!*.md
+
+
