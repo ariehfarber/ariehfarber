@@ -1,9 +1,13 @@
-/*Functions*/
+/***********************************************************************************
+*Auther: Arieh Farber
+*Reviewr: Omer Bruker
+*Date: 7/11/2023
+***********************************************************************************/
 
-#include <stdio.h> /*included for printf() function*/
-#include <assert.h> /*included for assert() function*/
-#include <stdlib.h> /*included for malloc() function*/
-#include <stddef.h> /*included for size_t variable type*/
+#include <stdio.h>  /*printf*/
+#include <assert.h> /*assert*/
+#include <stdlib.h> /*malloc*/
+#include <stddef.h> /*size_t*/
 #include "wc2.h"
 
 void TestIntSwap();
@@ -23,8 +27,6 @@ int main()
 	return (0);
 }
 
-/*test functions*/
-
 void TestIntSwap()
 {
 	int x = 11;
@@ -42,9 +44,9 @@ void TestCopyArray()
 	int original_array[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 	int size = sizeof(original_array) / sizeof(original_array[0]);
 	int *new_array = (int *)malloc(sizeof(original_array));
-	int i;
+	int i = 0;
 	
-	assert(new_array);
+	assert(NULL != new_array);
 	
 	printf("Test CopyArray\n");
 	printf("Original array: ");
@@ -101,28 +103,4 @@ void TestPtrSwapCombo()
 	printf("Swapped: x=%lu, y=%lu\n", *p1, *p2);
 	printf("\n");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

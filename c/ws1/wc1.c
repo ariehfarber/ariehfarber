@@ -37,10 +37,10 @@ double PowerBaseTen(signed int exponent)
 {
 	double sum = 1;
 	double base = 10;
-	int i;
+	int i = 0;
 	
 	
-	if (exponent < 0)
+	if (0 > exponent)
 	{
 		for (i = 0; i < -exponent; i++)
 		{
@@ -62,15 +62,16 @@ void TestPowerBaseTen()
 {
 	int test_cases[] = {-1, 0, 3};
 	int size = sizeof(test_cases) / sizeof(test_cases[0]);
-	int i;
-	double result;
+	int i = 0;
+	double result = 0;
+	double epsilon = 0.05;
 	
 	for (i = 0; i < size; i++)
 	{
 		result = PowerBaseTen(test_cases[i]);
 		printf("ten to the power of %d is %f\n", test_cases[i], result);
 		
-		if (fabs(pow(10, test_cases[i]) - result) > 0.05)
+		if (fabs(pow(10, test_cases[i]) - result) > epsilon)
 		{
 			printf("error in PowerBaseTen function result\n");
 		}
@@ -92,8 +93,8 @@ int FlipDigits(signed int number)
 
 	while (0 != number)
 	{
-	fliped = (fliped * base) + (number % base);
-	number = number / base;
+		fliped = (fliped * base) + (number % base);
+		number = number / base;
 	}
 	
 	return (fliped * marker);
@@ -104,8 +105,8 @@ void TestFlipDigits()
 {
 	int test_cases[] = {568, 1324, 0 , -45682, -300, 3};
 	int size = sizeof(test_cases) / sizeof(test_cases[0]);
-	int i;
-	int result;
+	int i = 0;
+	int result = 0;
 	
 	for (i = 0; i < size; i++)
 	{

@@ -1,14 +1,19 @@
-/*Main*/
+/***********************************************************************************
+*Auther: Arieh Farber
+*Reviewr: Omer Bruker
+*Date: 7/11/2023
+***********************************************************************************/
 
-#include <assert.h> /*included for assert() function*/
-#include <stddef.h> /*included for size_t variable type*/
+#include <assert.h> /*assert*/
+#include <stddef.h> /*size_t*/
 #include "wc2.h"
 
 void IntSwap(int *var1, int *var2)
 {
 	int temp = 0;
 	
-	assert(var1 && var2);
+	assert(NULL != var1);
+	assert(NULL != var2);
 	
 	temp = *var1;
 	*var1 = *var2;

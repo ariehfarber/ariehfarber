@@ -1,11 +1,11 @@
-/*header file*/
-
+/***********************************************************************************
+*Auther: Arieh Farber
+*Reviewr: Omer Bruker
+*Date: 7/11/2023
+***********************************************************************************/
 #ifndef  __WC2_H__
 #define __WC2_H__
 
-#include <stddef.h> /*included for size_t variable type*/
-
-/*functions declarations*/
 void IntSwap(int *var1, int *var2);
 
 void CopyArray(int* arry, int* arry_copy, int arry_size);
