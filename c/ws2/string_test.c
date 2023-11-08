@@ -4,8 +4,8 @@
 *Date: 7/11/2023
 ***********************************************************************************/
 
-#include <stddef.h> /*size_t  */
 #include <stdio.h>  /*printf()*/
+#include <stddef.h> /*size_t  */
 #include <stdlib.h> /*malloc  */
 #include "string.h"
 
@@ -214,6 +214,7 @@ void TestStrDup()
 	printf("Original string: \"%s\", ", str1);
 	printf("Duplicated string: \"%s\"\n\n", duplicated_str1);
 	
+	/*when using StrDup the user is responsible for freeing the memory*/
 	free(duplicated_str1);
 }
 

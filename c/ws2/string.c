@@ -71,16 +71,15 @@ int StrCaseCmp(const char *str1, const char *str2)
 	temp_str1 = (char *)malloc(StrLen(str1) + 1);
 	temp_str2 = (char *)malloc(StrLen(str2) + 1);
 	
-	assert(NULL != temp_str1);
-	assert(NULL != temp_str2);
-	
+	/*Saving the address of the strings beginning:*/
 	origin1 = temp_str1; 
 	origin2 = temp_str2; 
 	
-	while ('\0' != *str1++)
+	while ('\0' != *str1)
 	{
 		if(*str1 >= 'A' && *str1 <= 'Z')
 		{
+		/*Converting the strings upper case letters to lower case*/
 			*temp_str1 = *str1 + 32;
 		}
 		else 
@@ -88,6 +87,7 @@ int StrCaseCmp(const char *str1, const char *str2)
 			*temp_str1 = *str1;
 		}
 		temp_str1++;
+		str1++;
 	}
 	*temp_str1 = '\0';
 	temp_str1 = origin1;
@@ -147,6 +147,7 @@ char *StrNCpy(char *destination, const char *source, size_t iterations)
 	}
 	*destination = '\0';
 	
+	/*Paddeing The rest of the memmory in destination with null characters*/
 	while('\0' != *source)
 	{
 		*destination = '\0';
@@ -174,6 +175,7 @@ char *StrChar(const char *str, int sign)
 	return (NULL);
 }
 
+/*Importent! when using StrDup the user is responsible for freeing the memory!*/
 char *StrDup(const char *str)
 {
 	char *duplicated = NULL;
@@ -204,6 +206,7 @@ char *StrCat(char *destination, const char *source)
 	
 	origin = destination;
 	
+	/*Moving the pointer to the end of destination*/
 	destination += StrLen(destination);
 	
 	while('\0' != *source)
@@ -251,6 +254,7 @@ char *StrStr(const char *haystack, const char *needle)
 	{
 		if(*needle == *haystack)
 		{
+			/*Saving a pointer to the beginning of needle*/
 			pointer = (char *)haystack - 1;
 			while(*needle == *haystack)
 			{
@@ -282,16 +286,19 @@ size_t StrSpn(const char *str1, const char *str2)
 		if(NULL != temp)
 		{
 			counter++;
-			str1 = temp + StrLen(str2);
-
+			/*Use pointer atrithmetics to get past the found substirng 
+			str2*/
+			str1 = temp + StrLen(str2); 
 			if ('\0' == *str1)
 			{
-				break;
-			}
+				/* If we reached the end of str1 there is nothing 
+				left to search */
+				break; 
+			}	
 		}
 		else
 		{
-			break;
+			break; /*StrStr found no more substirngs str2 in str1*/
 		}
 	}
 	

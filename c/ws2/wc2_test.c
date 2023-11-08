@@ -1,7 +1,7 @@
 /***********************************************************************************
 *Auther: Arieh Farber
-*Reviewr: Omer Bruker
-*Date: 7/11/2023
+*Reviewr: Yarden Shai
+*Date: 8/11/2023
 ***********************************************************************************/
 
 #include <stdio.h>  /*printf*/
@@ -15,6 +15,7 @@ void TestCopyArray();
 void TestTSizeSwap();
 void TestPtrSwap();
 void TestPtrSwapCombo();
+void TestIsPalindrome();
 
 int main()
 {
@@ -23,6 +24,7 @@ int main()
 	TestTSizeSwap();
 	TestPtrSwap();
 	TestPtrSwapCombo();
+	TestIsPalindrome();
 	
 	return (0);
 }
@@ -103,4 +105,35 @@ void TestPtrSwapCombo()
 	printf("Swapped: x=%lu, y=%lu\n", *p1, *p2);
 	printf("\n");
 }
+
+void TestIsPalindrome()
+{
+	char pali[] = "abcba";
+	char not_pali[] = "abcabc";
+	int value1 = 0;
+	int value2 = 0;
+	
+	value1 = IsPalindrome(pali);
+	value2 = IsPalindrome(not_pali);
+	
+	if(0 == value1)
+	{
+		printf(" \"%s\" is a palindrome\n", pali);
+	}
+	
+	if(0 != value2)
+	{
+		printf(" \"%s\" is not a palindrome\n", not_pali);
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
