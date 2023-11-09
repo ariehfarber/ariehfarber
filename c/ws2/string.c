@@ -55,7 +55,7 @@ int StrNCmp(const char *str1, const char *str2, size_t n)
 		n--;
 	}
 	
-	return (0);
+	return (*str1 - *str2);
 }
 
 int StrCaseCmp(const char *str1, const char *str2)
@@ -77,6 +77,7 @@ char *StrCpy(char *destination, const char *source)
 	char *origin = NULL;
 	
 	assert(NULL != source);
+	assert(NULL != destination);
 	
 	origin = destination;
 	
@@ -190,29 +191,33 @@ char *StrNCat(char *destination, const char *source, size_t n)
 
 char *StrStr(const char *haystack, const char *needle)
 {
-	size_t needle_length = 0;
+	char *pointer = NULL; 
 	
 	assert(NULL != haystack);
 	assert(NULL != needle);
 	
-	needle_length = StrLen(needle);
-	
-	if ('\0' == *needle) 
-	{
-		return ((char *)haystack);
-	}
-	
 	while('\0' != *haystack)
 	{
-		if (StrNCmp(haystack, needle, needle_length) == 0)
+		if(*needle == *haystack)
 		{
-		    return ((char *)haystack);
+			/*Saving a pointer to the beginning of needle*/
+			pointer = (char *)haystack - 1;
+			while(*needle == *haystack)
+			{
+				needle++;
+				haystack++;	
+			}
+			if('\0' == *needle)
+			{
+				return (pointer);
+			}
 		}
-		haystack++;
+		haystack++;		 
 	}
 	
-	return (NULL);	
+	return (NULL);		
 }
+
 
 size_t StrSpn(const char *s, const char *accept)
 {
@@ -229,36 +234,6 @@ size_t StrSpn(const char *s, const char *accept)
 	
 	return (count);
 }
-
-/*size_t StrSpn(const char *s, const char *accept)*/
-/*{*/
-/*	size_t count = 0;*/
-/*	const char *temp_ptr = NULL;*/
-/*	*/
-/*	assert(NULL != s);*/
-/*	assert(NULL != accept);*/
-/*	*/
-/*	while('\0' != *s)*/
-/*	{*/
-/*		temp_ptr = accept;*/
-/*		while('\0' != *temp_ptr)*/
-/*		{*/
-/*			if(*s == *temp_ptr)*/
-/*			{*/
-/*				count++;*/
-/*				break;*/
-/*			}*/
-/*			temp_ptr++;*/
-/*		}*/
-/*		if (*temp_ptr == '\0') */
-/*		{*/
-/*			break; */
-/*		}*/
-/*		s++;*/
-/*	}*/
-/*	*/
-/*	return (count);*/
-/*}*/
 
 
 

@@ -224,13 +224,14 @@ void TestStrDup()
 void TestStrCat()
 {
 	char str1[30] = "Every beginning, ";
+	char str1_copy[30] = "Every beginning, ";
 	char str2[] = "Has an end";
 	char *str3 = NULL;
 	
 	str3 = StrCat(str1, str2);
 	
 	printf("TestStrCat-\n");
-	printf("String 1: \"%s\", String 2: \"%s\"\n", str1, str2);
+	printf("String 1: \"%s\", String 2: \"%s\"\n", str1_copy, str2);
 	printf("concatenated string: \"%s\"\n\n", str3);
 }
 
@@ -257,8 +258,15 @@ void TestStrStr()
 	ptr = StrStr(str1, str2);
 	
 	printf("TestStrStr-\n");
+	if(NULL != ptr)
+	{
 	printf("returned string from the function: \"%s\".\n", ptr);
-	printf("\"%s\" exists in the string \"%s\"\n\n", str2, str1);	
+	printf("\"%s\" exists in the string \"%s\"\n\n", str2, str1);
+	}
+	else
+	{
+	printf("function not working\n\n");
+	}
 }
 
 void TestStrSpn()
