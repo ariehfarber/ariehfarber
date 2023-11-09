@@ -1,12 +1,13 @@
 /***********************************************************************************
-*Auther: Arieh Farber
-*Reviewr: Omer Bruker
-*Date: 7/11/2023
+*Author: Arieh Farber
+*Reviewer: Yarden Shai
+*Date: 9/11/2023
 ***********************************************************************************/
 
 #include <stdio.h>  /*printf()*/
 #include <stddef.h> /*size_t  */
 #include <stdlib.h> /*malloc  */
+#include <assert.h> /*assert */
 #include "string.h"
 
 void TestStrLen();
@@ -15,7 +16,7 @@ void TestStrNCmp();
 void TestStrCaseCmp();
 void TestStrCpy();
 void TestStrNCpy();
-void TestStrChar();
+void TestStrChr();
 void TestStrDup();
 void TestStrCat();
 void TestStrNCat();
@@ -30,7 +31,7 @@ int main()
 	TestStrCaseCmp();
 	TestStrCpy();
 	TestStrNCpy();
-	TestStrChar();
+	TestStrChr();
 	TestStrDup();
 	TestStrCat();
 	TestStrNCat();
@@ -64,13 +65,13 @@ void TestStrCmp()
 		{
 			printf("str1: \"%s\" ,str2: \"%s\"\n", 
 			str1[i], str2[i]);
-			printf("str1 \"%s\"  is longer\n\n", str1[i]);
+			printf("str1 is lexicographicaly greater\n\n");
 		}
 		else if(value < 0)
 		{
 			printf("str1: \"%s\" ,str2: \"%s\"\n", 
 			str1[i], str2[i]);
-			printf("str2 \"%s\" is longer\n\n", str2[i]);
+			printf("str2 is lexicographicaly greater\n\n");
 		}
 		else if(value == 0)
 		{
@@ -83,44 +84,42 @@ void TestStrCmp()
 
 void TestStrNCmp()
 {
-	char *str1[] ={"new check", "abcddefggrr", "abcdefghijklmnop"};
-	char *str2[] ={"new check", "abcc", "abcdeFGhijklmnop"};
+	char *str1[] ={"new check", "abcddefggrr", "AB"};
+	char *str2[] ={"new check", "abcc", "BC"};
 	int i = 0, size = 3;
-	size_t limit = 3; 
+	size_t n = 4; 
 	int value = 0;
 	
 	printf("TestStrNCmp-\n");
 	for(i = 0; i < size; i++)
 	{
-		value = StrNCmp(str1[i], str2[i], limit);
+		value = StrNCmp(str1[i], str2[i], n);
 		if(value > 0)
 		{
 			printf("str1: \"%s\" ,str2: \"%s\"\n", 
 			str1[i], str2[i]);
-			printf("up to %lu charecters at least, str1 is longer\n\n", 
-			limit);		
+			printf("str1 > (lexico) for %lu characters\n\n", n);		
 		}
 		else if(value < 0)
 		{
 			printf("str1: \"%s\" ,str2: \"%s\"\n", 
 			str1[i], str2[i]);
-			printf("up to %lu charecters at least, str2 is longer\n\n", 
-			limit);
+			printf("str2 > (lexico) for %lu characters\n\n", n);
 		}
 		else if(value == 0)
 		{
 			printf("str1: \"%s\" ,str2: \"%s\"\n", 
 			str1[i], str2[i]);
 			printf("up to %lu charecters at least, they are equal\n\n", 			
-			limit);
+			n);
 		}
 	}
 }
 
 void TestStrCaseCmp()
 {
-	char *str1[] ={"NEW check", "abc", "ab"};
-	char *str2[] ={"check", "ABC", "Ab"};
+	char *str1[] ={"NEW", "abc", "abcd"};
+	char *str2[] ={"check", "ABC", "AbCd"};
 	int i = 0, size = 3;
 	int value = 0;
 	
@@ -132,13 +131,13 @@ void TestStrCaseCmp()
 		{
 			printf("str1: \"%s\" ,str2: \"%s\"\n", 
 			str1[i], str2[i]);
-			printf("str1 \"%s\"  is longer\n\n", str1[i]);
+			printf("str1 is lexicographicaly greater\n\n");
 		}
 		else if(value < 0)
 		{
 			printf("str1: \"%s\" ,str2: \"%s\"\n", 
 			str1[i], str2[i]);
-			printf("str2 \"%s\" is longer\n\n", str2[i]);
+			printf("str2 is lexicographicaly greater\n\n");
 		}
 		else if(value == 0)
 		{
@@ -155,6 +154,7 @@ void TestStrCpy()
 	char *copied_str1 = NULL; 
 	
 	copied_str1 = (char *)malloc(StrLen(str1) + 1); 
+	assert(NULL != copied_str1);
 
 	StrCpy(copied_str1, str1);
 	
@@ -163,35 +163,38 @@ void TestStrCpy()
 	printf("Copied string: \"%s\"\n\n", copied_str1);
 	
 	free(copied_str1);
+	copied_str1 = NULL;
 }
 
 void TestStrNCpy()
 {
 	char str1[] = "Here comes the sun";
 	char *copied_str1 = NULL;
-	size_t limit = 4; 
+	size_t n = 4; 
 	
-	copied_str1 = (char *)malloc(limit + 1); 
-
-	StrNCpy(copied_str1, str1, limit);
+	copied_str1 = (char *)malloc(n + 1); 
+	assert(NULL != copied_str1);
+	
+	StrNCpy(copied_str1, str1, n);
 	
 	printf("TestStrNCpy-\n");
 	printf("Original string: \"%s\", ", str1);
-	printf("Copied %lu charecters of the string: \"%s\"\n\n", limit, 	
+	printf("Copied %lu charecters of the string: \"%s\"\n\n", n, 	
 	copied_str1);
 	
 	free(copied_str1);
+	copied_str1 = NULL;
 }
 
-void TestStrChar()
+void TestStrChr()
 {
 	char str1[] = "Here we go again";
 	int symbol = 'g';
 	char *check = NULL;
 	
-	check = StrChar(str1, symbol);
+	check = StrChr(str1, symbol);
 	
-	printf("TestStrChar-\n");
+	printf("TestStrChr-\n");
 	if (check != NULL)
 	{
 		printf("String: \"%s\"\n", str1);
@@ -214,43 +217,35 @@ void TestStrDup()
 	printf("Original string: \"%s\", ", str1);
 	printf("Duplicated string: \"%s\"\n\n", duplicated_str1);
 	
-	/*when using StrDup the user is responsible for freeing the memory*/
 	free(duplicated_str1);
+	duplicated_str1 = NULL;
 }
 
 void TestStrCat()
 {
-	char str1[] = "Every beginning, ";
-	char str1_copy[] = "Every beginning, ";
+	char str1[30] = "Every beginning, ";
 	char str2[] = "Has an end";
 	char *str3 = NULL;
-	size_t total_length = StrLen(str1) + StrLen(str2) + 1;
-	
-	str3 = (char *)malloc(total_length);
 	
 	str3 = StrCat(str1, str2);
 	
 	printf("TestStrCat-\n");
-	printf("string1: \"%s\", string2: \"%s\"\n", str1_copy, str2);
+	printf("String 1: \"%s\", String 2: \"%s\"\n", str1, str2);
 	printf("concatenated string: \"%s\"\n\n", str3);
 }
 
 void TestStrNCat()
 {
-	char str1[] = "Every beginning, ";
-	char str1_copy[] = "Every beginning, ";
+	char str1[30] = "Every beginning, ";
+	char str1_copy[30] = "Every beginning, ";
 	char str2[] = "Has an end";
-	char *str3 = NULL;
-	size_t limit = 4;
-	size_t total_length = StrLen(str1) + limit + 1;
+	size_t n = 4;
 	
-	str3 = (char *)malloc(total_length);
-	
-	str3 = StrNCat(str1, str2, limit);
+	StrNCat(str1, str2, n);
 	
 	printf("TestStrNCat-\n");
 	printf("string1: \"%s\", string2: \"%s\"\n", str1_copy, str2);
-	printf("concatenated string up to limit %lu: \"%s\"\n\n", limit, str3);
+	printf("concatenated string up to n = %lu: \"%s\"\n\n", n, str1);
 }
 
 void TestStrStr()
@@ -268,14 +263,15 @@ void TestStrStr()
 
 void TestStrSpn()
 {
-	char str1[] = "Like looking needle for a needle in a needle haystack";
-	char str2[] = "needle";
-	size_t appears = 0;
+	char str1[] = "ababbcd123456abc";
+	char str2[] = "abcd";
+	size_t n = 0;
 	
-	appears = StrSpn(str1, str2);
+	n = StrSpn(str1, str2);
 	
 	printf("TestStrSpn-\n");
-	printf("\"%s\" is in the string \"%s\" %lu times\n\n", str2, str1, appears);	
+	printf("string1: \"%s\", string2: \"%s\"\n", str1, str2);
+	printf("After %lu charecters, we reach a non string2 charecter\n\n", n);
 }
 
 

@@ -1,7 +1,7 @@
 /***********************************************************************************
-*Auther: Arieh Farber
-*Reviewr: Yarden Shai
-*Date: 8/11/2023
+*Author: Arieh Farber
+*Reviewer: Yarden Shai
+*Date: 9/11/2023
 ***********************************************************************************/
 
 #include <assert.h> /*assert*/
@@ -60,27 +60,48 @@ void PtrSwapCombo(size_t **ptr1, size_t **ptr2)
 	TSizeSwap(*ptr1, *ptr2);
 }
 
+/*int IsPalindrome(const char *str)*/
+/*{*/
+/*	char *reverse_str = NULL;*/
+/*	int length = 0;*/
+/*	int value = 0;*/
+/*	int i = 0;*/
+/*		*/
+/*	length = strlen(str);*/
+/*	*/
+/*	reverse_str = (char *)malloc(length +1);*/
+/*	*/
+/*	for (i = 0; i < length; ++i) */
+/*	{*/
+/*		reverse_str[length - i - 1] = str[i];*/
+/*	}*/
+/*	reverse_str[length] = '\0';*/
+/*	*/
+/*	value = strcmp(str, reverse_str);*/
+/*	*/
+/*	free(reverse_str);*/
+/*	*/
+/*	return(value);*/
+/*}*/
+
 int IsPalindrome(const char *str)
 {
-	char *reverse_str = NULL;
 	int length = 0;
 	int value = 0;
-	int i = 0;
+	size_t i = 0 ,j = 0;
 		
 	length = strlen(str);
-	
-	reverse_str = (char *)malloc(length +1);
-	
-	for (i = 0; i < length; ++i) 
+		
+	for (i = 0, j = length - 1; i < length; ++i, --j) 
 	{
-		reverse_str[length - i - 1] = str[i];
+		if(str[i] != str[j])
+		{
+			return(value);	
+		}
 	}
-	reverse_str[length] = '\0';
 	
-	value = strcmp(str, reverse_str);
-	
-	free(reverse_str);
-	
+	value = 1;
+		
 	return(value);
 }
 

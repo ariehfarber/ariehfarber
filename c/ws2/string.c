@@ -1,12 +1,13 @@
 /***********************************************************************************
-*Auther: Arieh Farber
-*Reviewr: Omer Bruker
-*Date: 7/11/2023
+*Author: Arieh Farber
+*Reviewer: Yarden Shai
+*Date: 9/11/2023
 ***********************************************************************************/
 
-#include <assert.h> /*assert*/
-#include <stddef.h> /*size_t*/
-#include <stdlib.h> /*malloc*/
+#include <assert.h> /*assert */
+#include <stddef.h> /*size_t */
+#include <stdlib.h> /*malloc */
+#include <ctype.h>  /*tolower*/
 #include "string.h"
 
 size_t StrLen(const char *str)
@@ -37,89 +38,47 @@ int StrCmp(const char *str1, const char *str2)
 	return (*str1 - *str2);
 }
 
-int StrNCmp(const char *str1, const char *str2, size_t iterations)
+int StrNCmp(const char *str1, const char *str2, size_t n)
 {
 	assert(NULL != str1);
 	assert(NULL != str2);
 	
-	if (iterations == 0) 
+	if(n == 0) 
 	{
         	return (0); 	
 	}
 
-	while(*str1 == *str2 && '\0' != *str1 && iterations > 0)
+	while('\0' != *str1 && '\0' != *str2 && n > 0 && *str1 == *str2)
 	{
 		str1++;
 		str2++;	
-		iterations--;
+		n--;
 	}
-			
-	return (*(unsigned char *)str1 - *(unsigned char *)str2);
+	
+	return (0);
 }
 
 int StrCaseCmp(const char *str1, const char *str2)
 {
-	char *temp_str1 = NULL;
-	char *temp_str2 = NULL;
-	char *origin1 = NULL; 
-	char *origin2 = NULL; 
-	int value = 0;
-	
-	assert(NULL != str1);
-	assert(NULL != str2);
-	
-	temp_str1 = (char *)malloc(StrLen(str1) + 1);
-	temp_str2 = (char *)malloc(StrLen(str2) + 1);
-	
-	/*Saving the address of the strings beginning:*/
-	origin1 = temp_str1; 
-	origin2 = temp_str2; 
-	
-	while ('\0' != *str1)
+
+	assert(str1 != NULL);
+	assert(str2 != NULL);
+
+	while (*str1 != '\0' && *str2 != '\0' && tolower(*str1) == tolower(*str2)) 
 	{
-		if(*str1 >= 'A' && *str1 <= 'Z')
-		{
-		/*Converting the strings upper case letters to lower case*/
-			*temp_str1 = *str1 + 32;
-		}
-		else 
-		{
-			*temp_str1 = *str1;
-		}
-		temp_str1++;
 		str1++;
+		str2++;
 	}
-	*temp_str1 = '\0';
-	temp_str1 = origin1;
-	
-	while ('\0' != *str2++)
-	{
-		if(*str2 >= 'A' && *str2 <= 'Z')
-		{
-			*temp_str2 = *str2 + 32;
-		}
-		else 
-		{
-			*temp_str2 = *str2;
-		}
-		temp_str2++;
-	}
-	*temp_str2 = '\0';
-	temp_str2 = origin2;
-	
-	value = StrCmp(temp_str1, temp_str2);
-	
-	free(temp_str1); 
-	free(temp_str2); 
-			
-	return (value);
+	return (tolower(*str1) - tolower(*str2));
 }
 
 char *StrCpy(char *destination, const char *source)
 {
-	char *origin = destination;
+	char *origin = NULL;
 	
 	assert(NULL != source);
+	
+	origin = destination;
 	
 	while('\0' != *source)
 	{
@@ -132,33 +91,33 @@ char *StrCpy(char *destination, const char *source)
 	return (origin);
 }
 
-char *StrNCpy(char *destination, const char *source, size_t iterations)
+char *StrNCpy(char *destination, const char *source, size_t n)
 {
 	char *origin = destination;
 	
 	assert(NULL != source);
+	assert(NULL != destination);
 	
-	while('\0' != *source && iterations > 0)
+	while('\0' != *source && n > 0)
 	{
 		*destination = *source;
 		source++;
 		destination++;
-		iterations--;
+		n--;
 	}
-	*destination = '\0';
-	
+
 	/*Paddeing The rest of the memmory in destination with null characters*/
-	while('\0' != *source)
+	while(n > 0)
 	{
 		*destination = '\0';
 		destination++;
-		source++;
+		n--;
 	}
 	
 	return (origin);
 }
 
-char *StrChar(const char *str, int sign)
+char *StrChr(const char *str, int sign)
 {
 	assert(NULL != str);
 	
@@ -175,26 +134,18 @@ char *StrChar(const char *str, int sign)
 	return (NULL);
 }
 
-/*Importent! when using StrDup the user is responsible for freeing the memory!*/
 char *StrDup(const char *str)
 {
 	char *duplicated = NULL;
-	char *origin = NULL;
 	
 	assert(NULL != str);
 	
 	duplicated = (char *)malloc(StrLen(str) + 1);
-	origin =  duplicated;
+	assert(NULL != duplicated);
 	
-	while('\0' != *str)
-	{
-		*duplicated = *str;
-		str++;
-		duplicated++;
-	}
-	*duplicated = '\0';
+	duplicated = StrCpy(duplicated ,str);
 	
-	return (origin);
+	return (duplicated);
 }
 
 char *StrCat(char *destination, const char *source)
@@ -203,24 +154,18 @@ char *StrCat(char *destination, const char *source)
 	
 	assert(NULL != destination);
 	assert(NULL != source);
-	
-	origin = destination;
+
+	origin = destination;	
 	
 	/*Moving the pointer to the end of destination*/
 	destination += StrLen(destination);
 	
-	while('\0' != *source)
-	{
-		*destination = *source;
-		destination++;
-		source++;
-	}
-	*destination = '\0';
+	destination = StrCpy(destination ,source);
 	
 	return (origin);
 }
 
-char *StrNCat(char *destination, const char *source, size_t iterations)
+char *StrNCat(char *destination, const char *source, size_t n)
 {
 	char *origin = NULL;
 	
@@ -231,12 +176,12 @@ char *StrNCat(char *destination, const char *source, size_t iterations)
 	
 	destination += StrLen(destination);
 	
-	while('\0' != *source && iterations > 0)
+	while('\0' != *source && n > 0)
 	{
 		*destination = *source;
 		destination++;
 		source++;
-		iterations--;
+		n--;
 	}
 	*destination = '\0';
 	
@@ -245,67 +190,75 @@ char *StrNCat(char *destination, const char *source, size_t iterations)
 
 char *StrStr(const char *haystack, const char *needle)
 {
-	char *pointer = NULL; 
+	size_t needle_length = 0;
 	
 	assert(NULL != haystack);
 	assert(NULL != needle);
 	
+	needle_length = StrLen(needle);
+	
+	if ('\0' == *needle) 
+	{
+		return ((char *)haystack);
+	}
+	
 	while('\0' != *haystack)
 	{
-		if(*needle == *haystack)
+		if (StrNCmp(haystack, needle, needle_length) == 0)
 		{
-			/*Saving a pointer to the beginning of needle*/
-			pointer = (char *)haystack - 1;
-			while(*needle == *haystack)
-			{
-				needle++;
-				haystack++;	
-			}
-			if('\0' == *needle)
-			{
-				return (pointer);
-			}
+		    return ((char *)haystack);
 		}
-		haystack++;		 
+		haystack++;
 	}
 	
-	return (NULL);		
+	return (NULL);	
 }
 
-size_t StrSpn(const char *str1, const char *str2)
+size_t StrSpn(const char *s, const char *accept)
 {
-	size_t counter = 0;
-	const char *temp = NULL;
+	size_t count = 0;
 	
-	assert(NULL != str1);
-	assert(NULL != str2);
+	assert(NULL != s);
+	assert(NULL != accept);
 	
-	while('\0' != *str1)
+	while('\0' != *s && NULL != StrChr(accept, *s))
 	{
-		temp = StrStr(str1, str2);
-		if(NULL != temp)
-		{
-			counter++;
-			/*Use pointer atrithmetics to get past the found substirng 
-			str2*/
-			str1 = temp + StrLen(str2); 
-			if ('\0' == *str1)
-			{
-				/* If we reached the end of str1 there is nothing 
-				left to search */
-				break; 
-			}	
-		}
-		else
-		{
-			break; /*StrStr found no more substirngs str2 in str1*/
-		}
+			s++;
+			count++;	
 	}
 	
-	return (counter);
+	return (count);
 }
 
-
+/*size_t StrSpn(const char *s, const char *accept)*/
+/*{*/
+/*	size_t count = 0;*/
+/*	const char *temp_ptr = NULL;*/
+/*	*/
+/*	assert(NULL != s);*/
+/*	assert(NULL != accept);*/
+/*	*/
+/*	while('\0' != *s)*/
+/*	{*/
+/*		temp_ptr = accept;*/
+/*		while('\0' != *temp_ptr)*/
+/*		{*/
+/*			if(*s == *temp_ptr)*/
+/*			{*/
+/*				count++;*/
+/*				break;*/
+/*			}*/
+/*			temp_ptr++;*/
+/*		}*/
+/*		if (*temp_ptr == '\0') */
+/*		{*/
+/*			break; */
+/*		}*/
+/*		s++;*/
+/*	}*/
+/*	*/
+/*	return (count);*/
+/*}*/
 
 
 

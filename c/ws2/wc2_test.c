@@ -1,7 +1,7 @@
 /***********************************************************************************
-*Auther: Arieh Farber
-*Reviewr: Yarden Shai
-*Date: 8/11/2023
+*Author: Arieh Farber
+*Reviewer: Yarden Shai
+*Date: 9/11/2023
 ***********************************************************************************/
 
 #include <stdio.h>  /*printf*/
@@ -116,12 +116,12 @@ void TestIsPalindrome()
 	value1 = IsPalindrome(pali);
 	value2 = IsPalindrome(not_pali);
 	
-	if(0 == value1)
+	if(1 == value1)
 	{
 		printf(" \"%s\" is a palindrome\n", pali);
 	}
 	
-	if(0 != value2)
+	if(0 == value2)
 	{
 		printf(" \"%s\" is not a palindrome\n", not_pali);
 	}
