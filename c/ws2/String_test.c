@@ -43,7 +43,7 @@ int main()
 
 void TestStrLen()
 {
-	char str1[] = "Hello there";
+	const char str1[] = "Hello there";
 	size_t length = StrLen(str1);
 	
 	printf("TestStrLen-\n");
@@ -52,8 +52,8 @@ void TestStrLen()
 
 void TestStrCmp()
 {
-	char *str1[] ={"check", "abc", "ab"};
-	char *str2[] ={"check", "abcc", "Ab"};
+	const char *str1[] ={"check", "abc", "ab"};
+	const char *str2[] ={"check", "abcc", "Ab"};
 	int i = 0, size = 3;
 	int value = 0;
 	
@@ -84,8 +84,8 @@ void TestStrCmp()
 
 void TestStrNCmp()
 {
-	char *str1[] ={"new check", "abcddefggrr", "AB"};
-	char *str2[] ={"new check", "abcc", "BC"};
+	const char *str1[] ={"new check", "abcddefggrr", "AB"};
+	const char *str2[] ={"new check", "abcc", "BC"};
 	int i = 0, size = 3;
 	size_t n = 4; 
 	int value = 0;
@@ -118,8 +118,8 @@ void TestStrNCmp()
 
 void TestStrCaseCmp()
 {
-	char *str1[] ={"NEW", "abc", "abcd"};
-	char *str2[] ={"check", "ABC", "AbCd"};
+	const char *str1[] ={"NEW", "abc", "abcd"};
+	const char *str2[] ={"check", "ABC", "AbCd"};
 	int i = 0, size = 3;
 	int value = 0;
 	
@@ -150,7 +150,7 @@ void TestStrCaseCmp()
 
 void TestStrCpy()
 {
-	char str1[] = "Here comes the sun";
+	const char str1[] = "Here comes the sun";
 	char *copied_str1 = NULL; 
 	
 	copied_str1 = (char *)malloc(StrLen(str1) + 1); 
@@ -168,7 +168,7 @@ void TestStrCpy()
 
 void TestStrNCpy()
 {
-	char str1[] = "Here comes the sun";
+	const char str1[] = "Here comes the sun";
 	char *copied_str1 = NULL;
 	size_t n = 4; 
 	
@@ -176,7 +176,8 @@ void TestStrNCpy()
 	assert(NULL != copied_str1);
 	
 	StrNCpy(copied_str1, str1, n);
-	
+	copied_str1[n] = '\0'; /*In case StrNCpy dose not NULL terminate'*/
+
 	printf("TestStrNCpy-\n");
 	printf("Original string: \"%s\", ", str1);
 	printf("Copied %lu charecters of the string: \"%s\"\n\n", n, 	
@@ -188,7 +189,7 @@ void TestStrNCpy()
 
 void TestStrChr()
 {
-	char str1[] = "Here we go again";
+	const char str1[] = "Here we go again";
 	int symbol = 'g';
 	char *check = NULL;
 	
@@ -208,7 +209,7 @@ void TestStrChr()
 
 void TestStrDup()
 {
-	char str1[] = "Wait, am I the clone?";
+	const char str1[] = "Wait, am I the clone?";
 	char *duplicated_str1 = NULL;
 	
 	duplicated_str1 = StrDup(str1);
@@ -224,8 +225,8 @@ void TestStrDup()
 void TestStrCat()
 {
 	char str1[30] = "Every beginning, ";
-	char str1_copy[30] = "Every beginning, ";
-	char str2[] = "Has an end";
+	const char str1_copy[30] = "Every beginning, ";
+	const char str2[] = "Has an end";
 	char *str3 = NULL;
 	
 	str3 = StrCat(str1, str2);
@@ -238,8 +239,8 @@ void TestStrCat()
 void TestStrNCat()
 {
 	char str1[30] = "Every beginning, ";
-	char str1_copy[30] = "Every beginning, ";
-	char str2[] = "Has an end";
+	const char str1_copy[30] = "Every beginning, ";
+	const char str2[] = "Has an end";
 	size_t n = 4;
 	
 	StrNCat(str1, str2, n);
@@ -251,8 +252,8 @@ void TestStrNCat()
 
 void TestStrStr()
 {
-	char str1[] = "Like looking for a needle in a haystack";
-	char str2[] = "needle";
+	const char str1[] = "Like looking for a needle in a haystack";
+	const char str2[] = "needle";
 	char *ptr = NULL;
 	
 	ptr = StrStr(str1, str2);
@@ -271,8 +272,8 @@ void TestStrStr()
 
 void TestStrSpn()
 {
-	char str1[] = "ababbcd123456abc";
-	char str2[] = "abcd";
+	const char str1[] = "ababbcd123456abc";
+	const char str2[] = "abcd";
 	size_t n = 0;
 	
 	n = StrSpn(str1, str2);
