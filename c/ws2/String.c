@@ -68,7 +68,7 @@ int StrCaseCmp(const char *str1, const char *str2)
 	{
 		if(tolower(*str1) != tolower(*str2))
 		{
-		break;
+			break;
 		}
 		str1++;
 		str2++;
@@ -77,62 +77,65 @@ int StrCaseCmp(const char *str1, const char *str2)
 	return (tolower(*str1) - tolower(*str2));
 }
 
-char *StrCpy(char *destination, const char *source)
+char *StrCpy(char *dest, const char *src)
 {
 	char *origin = NULL;
 	
-	assert(NULL != source);
-	assert(NULL != destination);
+	assert(NULL != src);
+	assert(NULL != dest);
 	
-	origin = destination;
+	origin = dest;
 	
-	while('\0' != *source)
+	while('\0' != *src)
 	{
-		*destination = *source;
-		source++;
-		destination++;
+		*dest = *src;
+		
+		src++;
+		dest++;
 	}
-	*destination = '\0';
+	*dest = '\0';
 	
 	return (origin);
 }
 
-char *StrNCpy(char *destination, const char *source, size_t n)
+char *StrNCpy(char *dest, const char *src, size_t n)
 {
-	char *origin = destination;
+	char *origin = dest;
 	
-	assert(NULL != source);
-	assert(NULL != destination);
+	assert(NULL != src);
+	assert(NULL != dest);
 	
-	while('\0' != *source && n > 0)
+	while('\0' != *src && n > 0)
 	{
-		*destination = *source;
-		source++;
-		destination++;
+		*dest = *src;
+		
+		src++;
+		dest++;
 		n--;
 	}
+	*dest = '\0';
 
-	/*Paddeing The rest of the memmory in destination with null characters*/
 	while(n > 0)
 	{
-		*destination = '\0';
-		destination++;
+		*dest = '\0';
+		
+		dest++;
 		n--;
 	}
 	
 	return (origin);
 }
 
-char *StrChr(const char *str, int sign)
+char *StrChr(const char *str, int c)
 {
 	assert(NULL != str);
 	
-	while('\0' != *str && *str != sign)
+	while('\0' != *str && *str != c)
 	{
 		str++;
 	}
 	
-	if(*str == sign)
+	if(*str == c)
 	{
 		return((char *)str);
 	}
@@ -154,42 +157,43 @@ char *StrDup(const char *str)
 	return (duplicated);
 }
 
-char *StrCat(char *destination, const char *source)
+char *StrCat(char *dest, const char *src)
 {
 	char *origin = NULL;
 	
-	assert(NULL != destination);
-	assert(NULL != source);
+	assert(NULL != dest);
+	assert(NULL != src);
 
-	origin = destination;	
+	origin = dest;	
 	
-	/*Moving the pointer to the end of destination*/
-	destination += StrLen(destination);
+	/*Moving the pointer to the end of dest*/
+	dest += StrLen(dest);
 	
-	destination = StrCpy(destination ,source);
+	dest = StrCpy(dest ,src);
 	
 	return (origin);
 }
 
-char *StrNCat(char *destination, const char *source, size_t n)
+char *StrNCat(char *dest, const char *src, size_t n)
 {
 	char *origin = NULL;
 	
-	assert(NULL != destination);
-	assert(NULL != source);
+	assert(NULL != dest);
+	assert(NULL != src);
 	
-	origin = destination;
+	origin = dest;
 	
-	destination += StrLen(destination);
+	dest += StrLen(dest);
 	
-	while('\0' != *source && n > 0)
+	while('\0' != *src && n > 0)
 	{
-		*destination = *source;
-		destination++;
-		source++;
+		*dest = *src;
+		
+		dest++;
+		src++;
 		n--;
 	}
-	*destination = '\0';
+	*dest = '\0';
 	
 	return (origin);
 }
@@ -224,16 +228,16 @@ char *StrStr(const char *haystack, const char *needle)
 }
 
 
-size_t StrSpn(const char *s, const char *accept)
+size_t StrSpn(const char *str, const char *accept)
 {
 	size_t count = 0;
 	
-	assert(NULL != s);
+	assert(NULL != str);
 	assert(NULL != accept);
 	
-	while('\0' != *s && NULL != StrChr(accept, *s))
+	while('\0' != *str && NULL != StrChr(accept, *str))
 	{
-			s++;
+			str++;
 			count++;	
 	}
 	

@@ -17,9 +17,9 @@ void TestAllThreeArray();
 void TestAllFourArray();
 void TestAllFiveArray();
 void TestMatrixRowSums();
+void TestJosephusProblem();
 void TestDataSize();
 void TestPrintEnvVariables();
-void TestJosephusProblem();
 
 int main()
 {
@@ -29,16 +29,16 @@ int main()
 	TestAllFourArray();
 	TestAllFiveArray();	
 	TestMatrixRowSums();
+	TestJosephusProblem();
 	TestDataSize();
 	TestPrintEnvVariables();
-	TestJosephusProblem();
 	
 	return (0);
 }
 
-/**********************************************************************************/
-/*Exercise 1a: Ways of writing a function signature for two-dimensional array.    */
-/**********************************************************************************/
+/**********************************************************************************
+Exercise 1a: Ways of writing a function signature for two-dimensional array.
+**********************************************************************************/
 void TestAllOneArray()
 {
 	int array[ROWS][COLS] = {0};
@@ -152,9 +152,9 @@ void TestAllFiveArray()
 	free(array);
 }
 
-/**********************************************************************************/
-/*Exercise 1*/
-/**********************************************************************************/
+/**********************************************************************************
+Exercise 1
+**********************************************************************************/
 void TestMatrixRowSums() 
 {
 	int **array = NULL;
@@ -216,9 +216,24 @@ void TestMatrixRowSums()
 	sum_of_rows = NULL;
 }
 
-/**********************************************************************************/
-/*Exercise 3*/
-/**********************************************************************************/
+/**********************************************************************************
+Exercise 2
+**********************************************************************************/
+void TestJosephusProblem()
+{
+	unsigned int size;
+	size_t index = 0;
+	
+	size = 16;
+	
+	index = JosephusProblem(size);
+
+	printf("The index of the last soldier is %lu\n\n", index);
+}
+
+/**********************************************************************************
+Exercise 3
+**********************************************************************************/
 void TestDataSize()
 {
 	size_t num_types = 0;
@@ -236,9 +251,9 @@ void TestDataSize()
 	DataSize(num_types, types, sizes);
 }
 
-/**********************************************************************************/
-/*Exercise 4*/
-/**********************************************************************************/
+/**********************************************************************************
+Exercise 4
+**********************************************************************************/
 void TestPrintEnvVariables()
 {
 	char **buffer = NULL;
@@ -247,7 +262,7 @@ void TestPrintEnvVariables()
 	
 	while(NULL != environ[size])
 	{
-	size++;
+		size++;
 	}
 	
 	buffer = (char **)malloc(size * sizeof(char *));
@@ -255,7 +270,7 @@ void TestPrintEnvVariables()
 	
 	for(i = 0; i < size; i++)
 	{
-		buffer[i] = StrDup(environ[i]);
+		buffer[i] = DtrDup(environ[i]);
 	}
 	
 	PrintEnvVariables(buffer, size);
@@ -263,20 +278,7 @@ void TestPrintEnvVariables()
 	free(buffer);
 	buffer = NULL;
 }
-/**********************************************************************************/
-/*Exercise 2*/
-/**********************************************************************************/
-void TestJosephusProblem()
-{
-	size_t index = 0;
-	unsigned int size;
-	
-	size = 14;
-	
-	index = JosephusProblem(size);
 
-	printf("The index of the last soldier is %lu\n\n", index);
-}
 
 
 

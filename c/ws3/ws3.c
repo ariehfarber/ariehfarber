@@ -11,10 +11,11 @@
 #include <string.h> /*strlen, strcpy*/
 #include "ws3.h"
 
-/**********************************************************************************/
-/*Exercise 1a: Ways of writing a function signature for two-dimensional array.    */
-/**********************************************************************************/
-/*Using fixed dimensions*/
+/**********************************************************************************
+*Exercise 1a: Ways of writing a function signature for two-dimensional array. 
+*	      Using fixed dimensions
+**********************************************************************************/
+
 void AllOneArray(int array[ROWS][COLS])
 {
 	int i = 0, j = 0;
@@ -83,9 +84,93 @@ void AllFiveArray(int **array, int rows, int cols)
 	} 
 }
 
-/**********************************************************************************/
-/*Help functions for Exercise 4*/
-/**********************************************************************************/
+/**********************************************************************************
+*Exercise 1
+**********************************************************************************/
+int *MatrixRowSums(int **matrix, int *row_sums)
+{
+	int i = 0, j = 0;
+	
+	assert(matrix);
+	assert(row_sums);
+	
+	
+	for(i = 0; i < ROWS; i++)
+	{
+		for(j = 0; j < COLS; j++)
+		{
+			*row_sums += matrix[i][j];
+		}
+		row_sums++;
+	}
+	
+	return(row_sums); 
+}
+
+/**********************************************************************************
+*Exercise 2
+**********************************************************************************/
+size_t JosephusProblem(unsigned int size)
+{
+	size_t index = 0;
+	size_t power_of_two = 4;
+	
+	if(size <= 2)
+	{
+		return (0);
+	}
+	
+	if(size == 3)
+	{
+		return (2);
+	}
+	
+	while(power_of_two < size)
+	{
+		power_of_two *= 2;
+	}
+	
+	index = (2 * size) % power_of_two;
+	
+	return (index);	
+}
+
+/**********************************************************************************
+*Exercise 3
+**********************************************************************************/
+void DataSize(size_t num_types, const char *types[], size_t sizes[])
+{
+	size_t i = 0;
+	
+	assert(types);
+	
+	for(i = 0; i < num_types; i++)
+	{
+		printf("The size of %s is %lu byts\n", types[i], sizes[i]);
+	}
+	printf("\n");
+}
+
+/**********************************************************************************
+*Exercise 4
+**********************************************************************************/
+void PrintEnvVariables(char **buffer,size_t size)
+{
+	size_t i = 0;
+	
+	assert(buffer);
+	
+	printf("Environment variables");
+	for(i = 0; i < size; i++)
+	{
+		printf("%s\n", ToLowerString(buffer[i]));
+	}
+	printf("\n");
+}
+
+/**********************************************************************************
+*Help functions for Exercise 4
+**********************************************************************************/
 char *StrDup(const char *str)
 {
 	char *duplicated = NULL;
@@ -118,87 +203,6 @@ char *ToLowerString(char *str)
 	}
 	
 	return(start);
-}
-
-/**********************************************************************************/
-/*Exercise 1*/
-/**********************************************************************************/
-int *MatrixRowSums(int **matrix, int *row_sums)
-{
-	int i = 0, j = 0;
-	
-	assert(matrix);
-	assert(row_sums);
-	
-	
-	for(i = 0; i < ROWS; i++)
-	{
-		for(j = 0; j < COLS; j++)
-		{
-			*row_sums += matrix[i][j];
-		}
-		row_sums++;
-	}
-	
-	return(row_sums); 
-}
-
-/**********************************************************************************/
-/*Exercise 3*/
-/**********************************************************************************/
-void DataSize(size_t num_types, const char *types[], size_t sizes[])
-{
-	size_t i = 0;
-	
-	assert(types);
-	
-	for(i = 0; i < num_types; i++)
-	{
-		printf("The size of %s is %lu byts\n", types[i], sizes[i]);
-	}
-	printf("\n");
-}
-
-/**********************************************************************************/
-/*Exercise 4*/
-/**********************************************************************************/
-void PrintEnvVariables(char **buffer,size_t size)
-{
-	size_t i = 0;
-	
-	assert(buffer);
-	
-	printf("Environment variables");
-	for(i = 0; i < size; i++)
-	{
-		printf("%s\n", ToLowerString(buffer[i]));
-	}
-	printf("\n");
-}
-
-/**********************************************************************************/
-/*Exercise 2*/
-/**********************************************************************************/
-size_t JosephusProblem(unsigned int size)
-{
-	size_t n = 0;
-	size_t index = 0;
-	size_t power_of_two = 2;
-	
-	if(size <= 2)
-	{
-	return (0);
-	}
-	
-	while(power_of_two < size)
-	{
-		power_of_two *= 2;
-		n++;
-	}
-	
-	index = (size % (power_of_two / 2)) * 2;
-	
-	return (index);	
 }
 
 
