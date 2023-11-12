@@ -8,7 +8,7 @@
 #include <stddef.h> /*size_t */
 #include <stdlib.h> /*malloc */
 #include <ctype.h>  /*tolower*/
-#include "string.h"
+#include "String.h"
 
 size_t StrLen(const char *str)
 {
@@ -64,11 +64,16 @@ int StrCaseCmp(const char *str1, const char *str2)
 	assert(str1 != NULL);
 	assert(str2 != NULL);
 
-	while (*str1 != '\0' && *str2 != '\0' && tolower(*str1) == tolower(*str2)) 
+	while (*str1 != '\0' && *str2 != '\0') 
 	{
+		if(tolower(*str1) != tolower(*str2))
+		{
+		break;
+		}
 		str1++;
 		str2++;
 	}
+	
 	return (tolower(*str1) - tolower(*str2));
 }
 
