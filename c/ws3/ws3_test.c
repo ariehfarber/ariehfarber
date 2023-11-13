@@ -1,7 +1,7 @@
 /***********************************************************************************
-*Author: Arieh Farber
-*Reviewer:
-*Date: 11/09/2023
+*Author: Arieh Farber 
+*Reviewer: Omer Bruker
+*Date: 12/09/2023
 ***********************************************************************************/
 
 #include <stdio.h>  /*printf*/
@@ -19,7 +19,7 @@ void TestAllFiveArray();
 void TestMatrixRowSums();
 void TestJosephusProblem();
 void TestDataSize();
-void TestPrintEnvVariables();
+void TestCpyEnvVariables();
 
 int main()
 {
@@ -31,7 +31,7 @@ int main()
 	TestMatrixRowSums();
 	TestJosephusProblem();
 	TestDataSize();
-	TestPrintEnvVariables();
+	TestCpyEnvVariables();
 	
 	return (0);
 }
@@ -126,10 +126,18 @@ void TestAllFiveArray()
 	int i = 0 , j = 0; 
 
 	array = (int **)malloc(rows * sizeof(int *));
+	if(!array)
+	{
+		printf("Memory allocation failed");
+	}
 
 	for (i = 0; i < rows; i++) 
 	{
 		array[i] = (int *)malloc(cols * sizeof(int));
+		if(!array[i])
+		{
+			printf("Memory allocation failed");
+		}
 	}
 	
 	AllFiveArray(array, rows, cols);
@@ -163,18 +171,33 @@ void TestMatrixRowSums()
 
 	/*Allocating memory for 2D array*/
 	array = (int **)malloc(ROWS * sizeof(int *));
-	assert(array);
+	if(!array)
+	{
+		printf("Memory allocation failed");
+	}
+	
 	for (i = 0; i < ROWS; i++) 
 	{
 		array[i] = (int *)malloc(COLS * sizeof(int));
-		assert(array[i]);
+		if(!array[i])
+		{
+			printf("Memory allocation failed");
+		}
 	}
 	
 	/*Allocating memory for 1D array*/
 	sum_of_rows = (int *)malloc(COLS * sizeof(int *));
-	assert(sum_of_rows);
+	if(!sum_of_rows)
+	{
+		printf("Memory allocation failed");
+	}
 	
 	/*Assigning matrix values*/
+	for(i = 0; i < ROWS; i++)
+	{
+		sum_of_rows[i] = 0;
+	}
+		
 	for(i = 0; i < ROWS; i++)
 	{
 		for(j = 0; j < COLS; j++)
@@ -221,12 +244,16 @@ Exercise 2
 **********************************************************************************/
 void TestJosephusProblem()
 {
-	unsigned int size;
+	size_t array[101] = {0};
 	size_t index = 0;
+	size_t i = 0;
 	
-	size = 16;
+	for (i = 0; i < 100; i++) 
+	{
+	    array[i] = 1;
+	}
 	
-	index = JosephusProblem(size);
+	index = JosephusProblem(array);
 
 	printf("The index of the last soldier is %lu\n\n", index);
 }
@@ -236,47 +263,15 @@ Exercise 3
 **********************************************************************************/
 void TestDataSize()
 {
-	size_t num_types = 0;
-	
-	size_t sizes[] = {sizeof(int), sizeof(unsigned int), sizeof(int*),
-        sizeof(int**), sizeof(float), sizeof(double), sizeof(double*),
-        sizeof(double**), sizeof(char), sizeof(unsigned char), sizeof(size_t)};
-        
-	const char *types[] = {"int", "unsigned int", "int*", "int**",
-        "float", "double", "double*", "double**",
-        "char", "unsigned char", "size_t"};
-	
-	num_types = sizeof(sizes) / sizeof(sizes[0]);
-
-	DataSize(num_types, types, sizes);
+	DataSize();
 }
 
 /**********************************************************************************
 Exercise 4
 **********************************************************************************/
-void TestPrintEnvVariables()
+void TestCpyEnvVariables()
 {
-	char **buffer = NULL;
-	size_t size = 0;
-	size_t i = 0;
-	
-	while(NULL != environ[size])
-	{
-		size++;
-	}
-	
-	buffer = (char **)malloc(size * sizeof(char *));
-	assert(buffer);
-	
-	for(i = 0; i < size; i++)
-	{
-		buffer[i] = DtrDup(environ[i]);
-	}
-	
-	PrintEnvVariables(buffer, size);
-	
-	free(buffer);
-	buffer = NULL;
+	CpyEnvVariables(environ);
 }
 
 

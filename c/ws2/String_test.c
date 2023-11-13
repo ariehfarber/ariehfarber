@@ -7,7 +7,7 @@
 #include <stdio.h>  /*printf()*/
 #include <stddef.h> /*size_t  */
 #include <stdlib.h> /*malloc  */
-#include <assert.h> /*assert */
+#include <assert.h> /*assert  */
 #include "String.h"
 
 void TestStrLen();
@@ -154,7 +154,11 @@ void TestStrCpy()
 	char *copied_str1 = NULL; 
 	
 	copied_str1 = (char *)malloc(StrLen(str1) + 1); 
-	assert(NULL != copied_str1);
+	if(!copied_str1)
+	{
+        	printf("Memory allocation failed\n");
+        	return; 
+	}
 
 	StrCpy(copied_str1, str1);
 	
@@ -173,7 +177,11 @@ void TestStrNCpy()
 	size_t n = 4; 
 	
 	copied_str1 = (char *)malloc(n + 1); 
-	assert(NULL != copied_str1);
+	if(!copied_str1)
+	{
+        	printf("Memory allocation failed\n");
+        	return; 
+	}
 	
 	StrNCpy(copied_str1, str1, n);
 	copied_str1[n] = '\0'; /*In case StrNCpy dose not NULL terminate'*/

@@ -55,6 +55,7 @@ char *StrCpy(char *dest, const char *src);
 *Notes: If dest is bigger than n, the rest of the memmory will be padded
 *	with null-terminaters.
 *	The user is responsible for allocating the memory.
+*	The strings must not overlap.
 *	Warning! If there is no null byte among the first n bytes of src, 
 *	the string placed in dest will not be null-terminated.
 ***********************************************************************************/
@@ -70,14 +71,14 @@ char *StrChr(const char *str, int c);
 /***********************************************************************************
 *Description: Duplicate a string.
 *Retuern values: A pointer to a new duplicated string.
-*Notes: Warning! The user is responsible for freeing the memory.
-***********************************************************************************/
+*Notes: If the function fails NULL will be returnd.
+	Warning! The user is responsible for freeing the memory.	***********************************************************************************/
 char *StrDup(const char *str); 
 
 /***********************************************************************************
 *Description: Concatenate two strings.
 *Retuern values: A pointer to the dest string.
-*Notes: The strings  may  not  overlap.
+*Notes: The strings must not overlap.
 	The dest string must be large enough to receive the result.
 ***********************************************************************************/
 char *StrCat(char *dest, const char *src);

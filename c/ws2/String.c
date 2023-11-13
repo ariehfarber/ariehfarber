@@ -113,7 +113,6 @@ char *StrNCpy(char *dest, const char *src, size_t n)
 		dest++;
 		n--;
 	}
-	*dest = '\0';
 
 	while(n > 0)
 	{
@@ -150,11 +149,12 @@ char *StrDup(const char *str)
 	assert(NULL != str);
 	
 	duplicated = (char *)malloc(StrLen(str) + 1);
-	assert(NULL != duplicated);
+	if(!duplicated)
+	{
+		return (NULL);
+	}
 	
-	duplicated = StrCpy(duplicated ,str);
-	
-	return (duplicated);
+	return (StrCpy(duplicated ,str));
 }
 
 char *StrCat(char *dest, const char *src)
@@ -200,26 +200,18 @@ char *StrNCat(char *dest, const char *src, size_t n)
 
 char *StrStr(const char *haystack, const char *needle)
 {
-	char *pointer = NULL; 
+	size_t size = 0; 
 	
 	assert(NULL != haystack);
 	assert(NULL != needle);
 	
-	while('\0' != *haystack)
+	size = StrLen(needle) - 1;
+	
+	while((haystack = StrChr(haystack, (int)*needle)))
 	{
-		if(*needle == *haystack)
+		if(0 == StrNCmp(haystack, needle, size))
 		{
-			/*Saving a pointer to the beginning of needle*/
-			pointer = (char *)haystack - 1;
-			while(*needle == *haystack)
-			{
-				needle++;
-				haystack++;	
-			}
-			if('\0' == *needle)
-			{
-				return (pointer);
-			}
+			return((char *)haystack);
 		}
 		haystack++;		 
 	}

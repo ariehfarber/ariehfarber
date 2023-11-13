@@ -1,7 +1,7 @@
 /***********************************************************************************
-*Author: Arieh Farber
-*Reviewer:
-*Date: 11/09/2023
+*Author: Arieh Farber 
+*Reviewer: Omer Bruker
+*Date: 12/09/2023
 ***********************************************************************************/
 
 #ifndef  __WS3_H__
@@ -33,19 +33,20 @@ char *StrDup(const char *str);
 int *MatrixRowSums(int **matrix, int *rows_sums);
 
 /***********************************************************************************
-*Description: prints the size of each data type
-***********************************************************************************/
-void DataSize(size_t num_types, const char *types[], size_t sizes[]);
-
-/***********************************************************************************
-*Description: prints the environment variables in lower case
-***********************************************************************************/
-void PrintEnvVariables(char **buffer,size_t size);
-
-/***********************************************************************************
 *Description: Calculates the index of the last soldier standing in Josephus Problem 
 ***********************************************************************************/
-size_t JosephusProblem(unsigned int size);
+size_t JosephusProblem(size_t *array);
+
+/***********************************************************************************
+*Description: Prints the size of each data type
+***********************************************************************************/
+void DataSize();
+
+/***********************************************************************************
+*Description: Copies the environment variables in lower case
+***********************************************************************************/
+void CpyEnvVariables(char **env_var);
+
 
 #endif /*__WS3_H__*/
 
