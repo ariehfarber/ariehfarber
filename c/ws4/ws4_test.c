@@ -6,13 +6,13 @@
 
 #include "ws4.h"
 
-void TestSwitchKeyInput();
+void TestSwitchKeyInputAT();
 void TestIfKeyInput();
 void TestLUTKeyInput();
 
 int main()
 {
-	TestSwitchKeyInput();
+	TestSwitchKeyInputAT();
 	TestIfKeyInput();
 	TestLUTKeyInput();
 	
@@ -22,9 +22,9 @@ int main()
 /**********************************************************************************
 Exercise Switch
 **********************************************************************************/
-void TestSwitchKeyInput()
+void TestSwitchKeyInputAT()
 {
-	SwitchKeyInput();
+	SwitchKeyInputAT();
 }
 
 /**********************************************************************************

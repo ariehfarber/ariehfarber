@@ -8,25 +8,26 @@
 #include <stdlib.h>  /*system*/
 #include "ws4.h"
 
-typedef void (*PFnPrintFunctions[256])(void);
+#define ESC 27
+#define SIZE_OF_ASCII 256
+
+typedef void (*PFnPrintFunctions[SIZE_OF_ASCII])(void);
 
 /**********************************************************************************
 Exercise Switch
 **********************************************************************************/
-void SwitchKeyInput()
+void SwitchKeyInputAT()
 {
 	int c = 0;
-	int check;
-	
-	check = system("stty -icanon -echo");
-	if(-1 == check)
+
+	if(system("stty -icanon -echo"))
 	{
 		printf("Issue with system command\n");
 		return;
 	}
 	
 	printf("Switch function:\n");
-	while(27 != c)
+	while(ESC != c)
 	{
 		printf( "Press A or T keys to activate:\n");
 		c = getchar( );
@@ -45,8 +46,7 @@ void SwitchKeyInput()
 		}
 	} 
 	
-	system("stty icanon echo");
-	if(-1 == check)
+	if(system("stty -icanon -echo"))
 	{
 		printf("Issue with system command\n");
 		return;
@@ -59,17 +59,15 @@ Exercise If
 void IfKeyInput()
 {
 	int c = 0;
-	int check;
 	
-	check = system("stty -icanon -echo");
-	if(-1 == check)
+	if(system("stty -icanon -echo"))
 	{
 		printf("Issue with system command\n");
 		return;
 	}
 	
 	printf("if function:\n");
-	while(27 != c)
+	while(ESC != c)
 	{
 		printf( "Press A or T keys to activate:\n");
 		c = getchar( );
@@ -86,8 +84,7 @@ void IfKeyInput()
 
 	} 
 	
-	system("stty icanon echo");
-	if(-1 == check)
+	if(system("stty -icanon -echo"))
 	{
 		printf("Issue with system command\n");
 		return;
@@ -117,14 +114,12 @@ Exercise LUT
 void LUTKeyInput()
 {
 	int c = 0;
-	int check;
 	int i = 0;
 	
 	/*Array of function pointers*/
 	PFnPrintFunctions PrintLetter;
 	
-	check = system("stty -icanon -echo");
-	if(-1 == check)
+	if(system("stty -icanon -echo"))
 	{
 		printf("Issue with system command\n");
 		return;
@@ -136,23 +131,22 @@ void LUTKeyInput()
 		PrintLetter[i] = EmptyFunction;
 	}
 	
-	/*Assigning the print functions*/
+	/*Assigning the print functions to the function pointers*/
 	PrintLetter[(unsigned char)'A'] = PrintA;
 	PrintLetter[(unsigned char)'a'] = PrintA;
 	PrintLetter[(unsigned char)'T'] = PrintT;
 	PrintLetter[(unsigned char)'t'] = PrintT;
 	
 	printf("LUT function:\n");
-	while(27 != c)
+	while(ESC != c)
 	{
 		printf( "Press A or T keys to activate:\n");
+
 		c = getchar( );
-		
 		PrintLetter[(unsigned char)c]();
 	} 
 	
-	system("stty icanon echo");
-	if(-1 == check)
+	if(system("stty -icanon -echo"))
 	{
 		printf("Issue with system command\n");
 		return;

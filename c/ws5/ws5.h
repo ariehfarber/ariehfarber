@@ -1,31 +1,32 @@
 /***********************************************************************************
-*Author: Arieh Farber
+*Author: Arieh Farber 
 *Reviewer: Artur Livshits
-*Date: 13/11/2023
+*Date:
 ***********************************************************************************/
 
-#ifndef  __WS4_H__
-#define __WS4_H__
+#ifndef  __WS5_H__
+#define __WS5_H__
 
 /**********************************************************************************
-Exercise Switch
+Exercise 1
 **********************************************************************************/
-void SwitchKeyInputAT();
+void Print(int n);
+
+void PrintInt();
 
 /**********************************************************************************
-Exercise If
+Exercise 2
 **********************************************************************************/
-void IfKeyInput();
+void FileEditorPhase1(const char *file);
 
-/**********************************************************************************
-Exercise LUT
-**********************************************************************************/
-void PrintA();
+int StrCmp(const char *str1, const char *str2);
 
-void PrintT();
+void RemoveCommand(const char *file_name);
 
-void EmptyFunction();
+void CountCommand(const char *file_name);
 
-void LUTKeyInput();
+void ExitCommand(const char *file_name);
 
-#endif /*__WS4_H__*/
+void FileEditor(const char *file);
+
+#endif /*__WS5_H__*/
