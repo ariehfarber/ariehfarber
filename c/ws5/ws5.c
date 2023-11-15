@@ -45,7 +45,10 @@ void PrintInt()
 enum output
 {
 	SUCCESS,
-	ERROR,
+	REMOVE_ERROR,
+	FILE_ERROR,
+	RENAME_ERROR,
+	INPUT_ERROR,
 	EXIT
 };
 
@@ -62,41 +65,16 @@ typedef struct special_input
 char string[100] = {0};
 
 /**********************************************************************************
-*Exercise 2 - Operation error message functions
-**********************************************************************************/
-enum output FileErrorMessage(FILE *test_file)
-{
-	if(!test_file)
-	{
-		printf("error with a file function\n");
-		return ERROR;
-	}
-	
-	return SUCCESS;
-}
-
-enum output RemoveFileError(int ret)
-{
-	if(ret != 0) 
-	{
-		printf("Error: unable to delete the file\n");
-		return ERROR;
-	}
-	
-	return SUCCESS;
-}
-
-/**********************************************************************************
 *Exercise 2 - Operation functions
 **********************************************************************************/
 enum output RemoveCommand(const char *title)
 {
-	int check;
+	if(remove(title)) 
+	{
+		return (REMOVE_ERROR);
+	}
 	
-	check = remove(title);
-	RemoveFileError(check);
-	
-	return SUCCESS;
+	return (SUCCESS);
 }
 
 enum output CountCommand(const char *title)
@@ -107,7 +85,10 @@ enum output CountCommand(const char *title)
 	FILE *test_file;
 	
 	test_file = fopen(title, "r");
-	FileErrorMessage(test_file);
+	if(!test_file)
+	{
+		return (FILE_ERROR);
+	}
 	
 	/*Counting the lines using a for() loop*/
 	for (c = getc(test_file); c != EOF; c = getc(test_file))
@@ -119,21 +100,24 @@ enum output CountCommand(const char *title)
 	}
 	
 	fclose(test_file);
-	FileErrorMessage(test_file);
+	if(!test_file)
+	{
+		return (FILE_ERROR);
+	}
 	
 	printf("The file %s has %d lines\n", title, count);
 	
-	return SUCCESS;
+	return (SUCCESS);	
 }
 
-enum output ExitCommand(const char *title)
+enum output ExitCommand()
 {
-	(void)title;
-	return EXIT;
+	return (EXIT);
 }
 
 enum output AddToStartCommand(const char *title)
 {
+	int ret;
 	char ch;
 	char *temp_title = "temp.txt";
     	FILE *temp_file;
@@ -141,13 +125,20 @@ enum output AddToStartCommand(const char *title)
     	
 	/*Creating a temporary file and opening the original file*/
     	temp_file = fopen(temp_title, "w+");
-	FileErrorMessage(temp_file);
+	if(!temp_file)
+	{
+		return (FILE_ERROR);
+	}
 	
 	test_file = fopen(title, "r+");
-	FileErrorMessage(test_file);
+	if(!test_file)
+	{
+		return (FILE_ERROR);
+	}
 	
-	/*Inserting the string as the first line of the temporary file*/
-	fputs(string + 2, temp_file);
+	/*Inserting the string as the first line of the temporary file,
+	 not icluding the '<' charecter*/
+	fputs(string + 1, temp_file);
 	
 	/*copying the original file into the temporary file*/
 	while ((ch = fgetc(test_file)) != EOF)
@@ -156,22 +147,28 @@ enum output AddToStartCommand(const char *title)
 	}
 	
 	fclose(temp_file);
-	FileErrorMessage(temp_file);
+	if(!temp_file)
+	{
+		return (FILE_ERROR);
+	}
 		
 	fclose(test_file);
-	FileErrorMessage(test_file);
+	if(!test_file)
+	{
+		return (FILE_ERROR);
+	}
 	
 	/*Deleting the original file*/
 	RemoveCommand(title);
 	
 	/*Renaming the temporary file with the name of the original file*/
-	if(rename(temp_title, title))
+	ret = rename(temp_title, title);
+	if(ret) 
 	{
-		printf("error with rename\n");
-		return ERROR;
+		return (RENAME_ERROR);
 	}
-	
-	return SUCCESS;	
+		
+	return (SUCCESS);	
 }
 
 enum output WriteCommand(const char *title)
@@ -179,20 +176,26 @@ enum output WriteCommand(const char *title)
 	FILE *test_file;
 	
 	test_file = fopen(title, "a");
-	FileErrorMessage(test_file);
+	if(!test_file)
+	{
+		return (FILE_ERROR);
+	}
 	
 	fputs(string, test_file);
 	
 	fclose(test_file);
-	FileErrorMessage(test_file);
+	if(!test_file)
+	{
+		return (FILE_ERROR);
+	}
 	
-	return SUCCESS;
+	return (SUCCESS);
 }
 
 /**********************************************************************************
 *Exercise 2 - chain of responsibility function
 **********************************************************************************/
-void FileEditor(const char *title)
+int FileEditor(const char *title)
 {
 	int i = 0;
 	int size = 4;
@@ -209,14 +212,14 @@ void FileEditor(const char *title)
 		{NULL, NULL, WriteCommand}
 	};
 	
-	while(state != EXIT)
+	while(1)
 	{	
 		printf("Enter string (up to 100 charecters):\n");
 		if(!fgets(string, 100, stdin))
 		{
-			printf("error with fgets");
-			return;
+			state = INPUT_ERROR;
 		}
+		
 		
 		/*We use n and strncmp to decide which command to use*/
 		n = strlen(string);
@@ -236,12 +239,35 @@ void FileEditor(const char *title)
 			{
 				state = cmnd_array[i+1].Operation(title);
 			}
+		}
+		
+		switch(state)
+		{
+			case SUCCESS:
+				break;
+			
+			case REMOVE_ERROR:
+				printf("Error with a remove command\n");
+				break;
+			
+			case FILE_ERROR:
+				printf("Error with a file command\n");
+				break;
+		
+			case RENAME_ERROR:
+				printf("Error with a rename command\n");
+				break;
+		
+			case INPUT_ERROR:
+				printf("Error with a input command\n");
+				break;
+			
+			case EXIT:
+				return (0);
+				break;
 		}			
 	}	
 }
-
-
-
 
 	
 

@@ -12,7 +12,7 @@ void TestFileEditor(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
-/*	TestPrintInt();*/
+	TestPrintInt();
 	TestFileEditor(argc, argv);
 	
 	return (0);

@@ -19,8 +19,9 @@ void PrintInt();
 *	      '-count' Counts the number of lines
 *	      '-exit' Exits the program
 *	      '<' adds the text to the beginning of the file
-*	      Defualt - the text will be added to the end of the file         
-******************************************************************************/
-void FileEditor(const char *file);
+*	      Defualt - the text will be added to the end of the file.
+*Notes: the text string is limitid to 100 charecters per input.         
+**********************************************************************************/
+int FileEditor(const char *file);
 
 #endif /*__WS5_H__*/
