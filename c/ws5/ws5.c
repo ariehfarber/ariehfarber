@@ -1,12 +1,11 @@
 /***********************************************************************************
 *Author: Arieh Farber 
 *Reviewer: Artur Livshits
-*Date: 
+*Date: 15/11/2023
 ***********************************************************************************/
 
-#include <stdio.h> /*printf, FILE, remove*/
-#include <stdlib.h>  /*exit*/
-#include <assert.h>  /*assert*/
+#include <stdio.h> /*printf, FILE, remove, size_t*/
+#include <string.h>  /*strncmp, strlen*/
 #include "ws5.h"
 
 /**********************************************************************************
@@ -43,7 +42,14 @@ void PrintInt()
 /**********************************************************************************
 *Exercise 2 
 **********************************************************************************/
-typedef int (*PFnComparison)(const char *, const char *);
+enum output
+{
+	SUCCESS,
+	ERROR,
+	EXIT
+};
+
+typedef int (*PFnComparison)(const char *, const char *, size_t);
 typedef enum output (*PFnOperation)(const char *);
 
 typedef struct special_input
@@ -53,16 +59,16 @@ typedef struct special_input
 	PFnOperation Operation;
 } special_input;
 
-char string[85] = {0};
+char string[100] = {0};
 
 /**********************************************************************************
-*Exercise 2 - Error message functions
+*Exercise 2 - Operation error message functions
 **********************************************************************************/
 enum output FileErrorMessage(FILE *test_file)
 {
 	if(!test_file)
 	{
-		printf("error with file function\n");
+		printf("error with a file function\n");
 		return ERROR;
 	}
 	
@@ -81,50 +87,29 @@ enum output RemoveFileError(int ret)
 }
 
 /**********************************************************************************
-*Exercise 2 - Comparison function
-**********************************************************************************/
-int StrFileEditorCmp(const char *str1, const char *str2)
-{
-	assert(NULL != str1);
-	assert(NULL != str2);
-		
-	if('<' == *str1 && '<' == *str2)
-	{
-		return (0);
-	}
-	
-	while(*str1 == *str2 && '\0' != *str1)
-	{
-		str1++;
-		str2++;	
-	}
-			
-	return (*str1 - *str2);
-}
-
-/**********************************************************************************
 *Exercise 2 - Operation functions
 **********************************************************************************/
-enum output RemoveCommand(const char *file_name)
+enum output RemoveCommand(const char *title)
 {
-	int ret;
+	int check;
 	
-	ret = remove(file_name);
-	RemoveFileError(ret);
+	check = remove(title);
+	RemoveFileError(check);
 	
 	return SUCCESS;
 }
 
-enum output CountCommand(const char *file_name)
+enum output CountCommand(const char *title)
 {
 
 	int count = 0;
 	char c;
 	FILE *test_file;
 	
-	test_file = fopen(file_name, "r");
+	test_file = fopen(title, "r");
 	FileErrorMessage(test_file);
 	
+	/*Counting the lines using a for() loop*/
 	for (c = getc(test_file); c != EOF; c = getc(test_file))
 	{
 		if (c == '\n')
@@ -136,32 +121,35 @@ enum output CountCommand(const char *file_name)
 	fclose(test_file);
 	FileErrorMessage(test_file);
 	
-	printf("The file %s has %d lines\n", file_name, count);
+	printf("The file %s has %d lines\n", title, count);
 	
 	return SUCCESS;
 }
 
-enum output ExitCommand(const char *file_name)
+enum output ExitCommand(const char *title)
 {
-	(void)file_name;
+	(void)title;
 	return EXIT;
 }
 
-enum output AddToStartCommand(const char *file_name)
+enum output AddToStartCommand(const char *title)
 {
 	char ch;
-	char *temp_name = "temp.txt";
+	char *temp_title = "temp.txt";
     	FILE *temp_file;
     	FILE *test_file; 
     	
-    	temp_file = fopen(temp_name, "w");
+	/*Creating a temporary file and opening the original file*/
+    	temp_file = fopen(temp_title, "w+");
 	FileErrorMessage(temp_file);
 	
-	test_file = fopen(file_name, "r");
+	test_file = fopen(title, "r+");
 	FileErrorMessage(test_file);
 	
+	/*Inserting the string as the first line of the temporary file*/
 	fputs(string + 2, temp_file);
 	
+	/*copying the original file into the temporary file*/
 	while ((ch = fgetc(test_file)) != EOF)
 	{
 		fputc(ch, temp_file);
@@ -173,9 +161,11 @@ enum output AddToStartCommand(const char *file_name)
 	fclose(test_file);
 	FileErrorMessage(test_file);
 	
-	RemoveCommand(file_name);
+	/*Deleting the original file*/
+	RemoveCommand(title);
 	
-	if(rename(temp_name, file_name))
+	/*Renaming the temporary file with the name of the original file*/
+	if(rename(temp_title, title))
 	{
 		printf("error with rename\n");
 		return ERROR;
@@ -184,11 +174,11 @@ enum output AddToStartCommand(const char *file_name)
 	return SUCCESS;	
 }
 
-enum output WriteCommand(const char *file_name)
+enum output WriteCommand(const char *title)
 {
 	FILE *test_file;
 	
-	test_file = fopen(file_name, "a");
+	test_file = fopen(title, "a");
 	FileErrorMessage(test_file);
 	
 	fputs(string, test_file);
@@ -202,51 +192,49 @@ enum output WriteCommand(const char *file_name)
 /**********************************************************************************
 *Exercise 2 - chain of responsibility function
 **********************************************************************************/
-void FileEditor(const char *file_name)
+void FileEditor(const char *title)
 {
 	int i = 0;
 	int size = 4;
-	char *cmnd[4] = {"-remove\n", "-count\n", "-exit\n", "<"};
+	size_t n = 0;
 	enum output state = SUCCESS;
-	special_input cmnd_array[5];
 
-	cmnd_array[0].str = cmnd[0];
-	cmnd_array[1].str = cmnd[1];
-	cmnd_array[2].str = cmnd[2];
-	cmnd_array[3].str = cmnd[3];
-	cmnd_array[4].str = NULL;
-	
-	cmnd_array[0].Comparison = StrFileEditorCmp;
-	cmnd_array[1].Comparison = StrFileEditorCmp;
-	cmnd_array[2].Comparison = StrFileEditorCmp;
-	cmnd_array[3].Comparison = StrFileEditorCmp;
-	cmnd_array[4].Comparison = NULL;
-	
-	cmnd_array[0].Operation = RemoveCommand;
-	cmnd_array[1].Operation = CountCommand;
-	cmnd_array[2].Operation = ExitCommand;
-	cmnd_array[3].Operation = AddToStartCommand;
-	cmnd_array[4].Operation = WriteCommand;
+	/*initializing the struct*/
+	special_input cmnd_array[5] = 
+	{
+		{"-remove\n", strncmp, RemoveCommand},
+		{"-count\n", strncmp, CountCommand},
+		{"-exit\n", strncmp, ExitCommand},
+		{"<", strncmp, AddToStartCommand},
+		{NULL, NULL, WriteCommand}
+	};
 	
 	while(state != EXIT)
-	{
-		printf("Enter string (up to 85 charecters):\n");
-		if(!fgets(string, 85, stdin))
+	{	
+		printf("Enter string (up to 100 charecters):\n");
+		if(!fgets(string, 100, stdin))
 		{
 			printf("error with fgets");
 			return;
 		}
 		
+		/*We use n and strncmp to decide which command to use*/
+		n = strlen(string);
+		if('<' == string[0])
+		{
+			n = 1;
+		}
+		
 		for(i = 0; i < size; i++)
 		{
-			if(!cmnd_array[i].Comparison(cmnd_array[i].str, string))
+			if(!cmnd_array[i].Comparison(cmnd_array[i].str, string, n))
 			{
-				state = cmnd_array[i].Operation(file_name);
+				state = cmnd_array[i].Operation(title);
 				break;
 			}
 			if(4 == (i+1))
 			{
-				state = cmnd_array[i+1].Operation(file_name);
+				state = cmnd_array[i+1].Operation(title);
 			}
 		}			
 	}	

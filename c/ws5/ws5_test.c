@@ -1,18 +1,19 @@
 /***********************************************************************************
 *Author: Arieh Farber 
 *Reviewer: Artur Livshits
-*Date: 
+*Date: 15/11/2023
 ***********************************************************************************/
 
+#include <stdio.h> /*printf*/
 #include "ws5.h"
 
 void TestPrintInt();
-void TestFileEditor();
+void TestFileEditor(int argc, char *argv[]);
 
-int main()
+int main(int argc, char *argv[])
 {
 /*	TestPrintInt();*/
-	TestFileEditor();
+	TestFileEditor(argc, argv);
 	
 	return (0);
 }
@@ -25,9 +26,16 @@ void TestPrintInt()
 	PrintInt();
 }
 
-void TestFileEditor()
+/**********************************************************************************
+Exercise 2
+**********************************************************************************/
+void TestFileEditor(int argc, char *argv[])
 {
-	const char *test1 = "ws5.txt";
+	if(2 != argc) 
+	{
+		printf("error with file name\n");
+		return;
+	}
 	
-	FileEditor(test1);
+	FileEditor(argv[1]);
 }
