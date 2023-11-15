@@ -10,7 +10,7 @@
 #include "ws5.h"
 
 /**********************************************************************************
-Exercise 1
+*Exercise 1
 **********************************************************************************/
 typedef void (*PFnPrint)(int);
 
@@ -41,42 +41,10 @@ void PrintInt()
 }
 
 /**********************************************************************************
-Exercise 2 - phase 1
-**********************************************************************************/
-void FileEditorPhase1(const char *file_name)
-{
-	char string[85] = {0};
-	FILE *test_file;
-	
-	test_file = fopen(file_name, "a");
-	if(!test_file)
-	{
-		printf("error with fopen");
-		return;
-	}
-	
-	printf("Enter string (up to 85 charecters):\n");
-	if(!fgets(string, 85, stdin))
-	{
-		printf("error with fgets");
-		return;
-	}
-
-	fputs(string, test_file);
-	
-	fclose(test_file);
-	if(!test_file)
-	{
-		printf("error with fclose");
-		return;
-	}
-}
-
-/**********************************************************************************
-Exercise 2 - phase 2
+*Exercise 2 
 **********************************************************************************/
 typedef int (*PFnComparison)(const char *, const char *);
-typedef void (*PFnOperation)(const char *);
+typedef enum output (*PFnOperation)(const char *);
 
 typedef struct special_input
 {
@@ -85,10 +53,45 @@ typedef struct special_input
 	PFnOperation Operation;
 } special_input;
 
-int StrCmp(const char *str1, const char *str2)
+char string[85] = {0};
+
+/**********************************************************************************
+*Exercise 2 - Error message functions
+**********************************************************************************/
+enum output FileErrorMessage(FILE *test_file)
+{
+	if(!test_file)
+	{
+		printf("error with file function\n");
+		return ERROR;
+	}
+	
+	return SUCCESS;
+}
+
+enum output RemoveFileError(int ret)
+{
+	if(ret != 0) 
+	{
+		printf("Error: unable to delete the file\n");
+		return ERROR;
+	}
+	
+	return SUCCESS;
+}
+
+/**********************************************************************************
+*Exercise 2 - Comparison function
+**********************************************************************************/
+int StrFileEditorCmp(const char *str1, const char *str2)
 {
 	assert(NULL != str1);
 	assert(NULL != str2);
+		
+	if('<' == *str1 && '<' == *str2)
+	{
+		return (0);
+	}
 	
 	while(*str1 == *str2 && '\0' != *str1)
 	{
@@ -99,35 +102,28 @@ int StrCmp(const char *str1, const char *str2)
 	return (*str1 - *str2);
 }
 
-void RemoveCommand(const char *file_name)
+/**********************************************************************************
+*Exercise 2 - Operation functions
+**********************************************************************************/
+enum output RemoveCommand(const char *file_name)
 {
 	int ret;
 	
 	ret = remove(file_name);
-	  
-	if(ret == 0) 
-	{
-		printf("File deleted successfully\n");
-	} 
-	else 
-	{
-		printf("Error: unable to delete the file\n");
-	}	
+	RemoveFileError(ret);
+	
+	return SUCCESS;
 }
 
-void CountCommand(const char *file_name)
+enum output CountCommand(const char *file_name)
 {
+
 	int count = 0;
-	int ret;
 	char c;
 	FILE *test_file;
 	
 	test_file = fopen(file_name, "r");
-	if(!test_file)
-	{
-		printf("error with fopen\n");
-		return;
-	}
+	FileErrorMessage(test_file);
 	
 	for (c = getc(test_file); c != EOF; c = getc(test_file))
 	{
@@ -137,66 +133,130 @@ void CountCommand(const char *file_name)
 		}
 	}
 	
-	ret = fclose(test_file);
-	if(ret == 0) 
-	{
-		printf("File closed successfully\n");
-	} 
-	else 
-	{
-		printf("Error: unable to close the file\n");
-	}
+	fclose(test_file);
+	FileErrorMessage(test_file);
 	
 	printf("The file %s has %d lines\n", file_name, count);
+	
+	return SUCCESS;
 }
 
-void ExitCommand(const char *file_name)
+enum output ExitCommand(const char *file_name)
 {
 	(void)file_name;
-	exit(0);
+	return EXIT;
 }
 
-/*void AddToStartCommand(const char *file_name)*/
-/*{*/
+enum output AddToStartCommand(const char *file_name)
+{
+	char ch;
+	char *temp_name = "temp.txt";
+    	FILE *temp_file;
+    	FILE *test_file; 
+    	
+    	temp_file = fopen(temp_name, "w");
+	FileErrorMessage(temp_file);
+	
+	test_file = fopen(file_name, "r");
+	FileErrorMessage(test_file);
+	
+	fputs(string + 2, temp_file);
+	
+	while ((ch = fgetc(test_file)) != EOF)
+	{
+		fputc(ch, temp_file);
+	}
+	
+	fclose(temp_file);
+	FileErrorMessage(temp_file);
+		
+	fclose(test_file);
+	FileErrorMessage(test_file);
+	
+	RemoveCommand(file_name);
+	
+	if(rename(temp_name, file_name))
+	{
+		printf("error with rename\n");
+		return ERROR;
+	}
+	
+	return SUCCESS;	
+}
 
-/*}*/
+enum output WriteCommand(const char *file_name)
+{
+	FILE *test_file;
+	
+	test_file = fopen(file_name, "a");
+	FileErrorMessage(test_file);
+	
+	fputs(string, test_file);
+	
+	fclose(test_file);
+	FileErrorMessage(test_file);
+	
+	return SUCCESS;
+}
 
+/**********************************************************************************
+*Exercise 2 - chain of responsibility function
+**********************************************************************************/
 void FileEditor(const char *file_name)
 {
-	char string[85] = {0};
 	int i = 0;
-	int size = 3;
-	char *command[3] = {"-remove", "-count", "-exit"};
-	special_input array[4];
+	int size = 4;
+	char *cmnd[4] = {"-remove\n", "-count\n", "-exit\n", "<"};
+	enum output state = SUCCESS;
+	special_input cmnd_array[5];
+
+	cmnd_array[0].str = cmnd[0];
+	cmnd_array[1].str = cmnd[1];
+	cmnd_array[2].str = cmnd[2];
+	cmnd_array[3].str = cmnd[3];
+	cmnd_array[4].str = NULL;
 	
-	for(i = 0; i < size; i++)
+	cmnd_array[0].Comparison = StrFileEditorCmp;
+	cmnd_array[1].Comparison = StrFileEditorCmp;
+	cmnd_array[2].Comparison = StrFileEditorCmp;
+	cmnd_array[3].Comparison = StrFileEditorCmp;
+	cmnd_array[4].Comparison = NULL;
+	
+	cmnd_array[0].Operation = RemoveCommand;
+	cmnd_array[1].Operation = CountCommand;
+	cmnd_array[2].Operation = ExitCommand;
+	cmnd_array[3].Operation = AddToStartCommand;
+	cmnd_array[4].Operation = WriteCommand;
+	
+	while(state != EXIT)
 	{
-		array[i].str = command[i];
-		array[i].Comparison = StrCmp;
-	}
-	
-	array[0].Operation = RemoveCommand;
-	array[1].Operation = CountCommand;
-	array[2].Operation = ExitCommand;
-	
-	printf("Enter string (up to 85 charecters):\n");
-	if(!fgets(string, 85, stdin))
-	{
-		printf("error with fgets");
-		return;
-	}
-	
-	for(i = 0; i < size; i++)
-	{
-		if(!array[i].Comparison(array[i].str, string))
+		printf("Enter string (up to 85 charecters):\n");
+		if(!fgets(string, 85, stdin))
 		{
-			array[i].Operation(file_name);
+			printf("error with fgets");
+			return;
 		}
+		
+		for(i = 0; i < size; i++)
+		{
+			if(!cmnd_array[i].Comparison(cmnd_array[i].str, string))
+			{
+				state = cmnd_array[i].Operation(file_name);
+				break;
+			}
+			if(4 == (i+1))
+			{
+				state = cmnd_array[i+1].Operation(file_name);
+			}
+		}			
 	}	
 }
 
 
+
+
 	
+
 
 
 

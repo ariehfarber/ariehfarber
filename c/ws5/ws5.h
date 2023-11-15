@@ -7,6 +7,15 @@
 #ifndef  __WS5_H__
 #define __WS5_H__
 
+#include <stdio.h> /*FILE*/
+
+enum output
+{
+	SUCCESS,
+	ERROR,
+	EXIT
+};
+
 /**********************************************************************************
 Exercise 1
 **********************************************************************************/
@@ -17,15 +26,21 @@ void PrintInt();
 /**********************************************************************************
 Exercise 2
 **********************************************************************************/
-void FileEditorPhase1(const char *file);
+enum output FileErrorMessage(FILE *test_file);
 
-int StrCmp(const char *str1, const char *str2);
+enum output RemoveFileError(int ret);
 
-void RemoveCommand(const char *file_name);
+int StrFileEditorCmp(const char *str1, const char *str2);
 
-void CountCommand(const char *file_name);
+enum output RemoveCommand(const char *file_name);
 
-void ExitCommand(const char *file_name);
+enum output CountCommand(const char *file_name);
+
+enum output ExitCommand(const char *file_name);
+
+enum output AddToStartCommand(const char *str);
+
+enum output WriteCommand(const char *file_name);
 
 void FileEditor(const char *file);
 
