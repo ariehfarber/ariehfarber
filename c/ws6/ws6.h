@@ -32,8 +32,17 @@ void ThreeBitsOn(unsigned int *arr, unsigned int size);
 /***********************************************************************************
 *Exercise 5
 ***********************************************************************************/
-int ByteMirrorWithLoop(int n);
+unsigned char ByteMirrorWithLoop(unsigned char n);
 
-int ByteMirrorNoLoop(int n);
+unsigned char ByteMirrorNoLoop(unsigned char n);
+
+/***********************************************************************************
+*Exercise 6
+***********************************************************************************/
+int Bits2And6(unsigned char n);
+
+int Bits2Or6(unsigned char n);
+
+unsigned char SwitchBits2And6(unsigned char n);
 
 #endif /*__WS6_H__*/

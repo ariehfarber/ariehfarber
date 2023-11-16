@@ -97,10 +97,10 @@ void ThreeBitsOn(unsigned int *arr, unsigned int size)
 /***********************************************************************************
 *Exercise 5
 ***********************************************************************************/
-int ByteMirrorWithLoop(int n)
+unsigned char ByteMirrorWithLoop(unsigned char n)
 {
 	int mirror_n = 0;
-	int number_of_bits = sizeof(int) * 8;
+	int number_of_bits = sizeof(unsigned char);
 	int i = 0;
 	
 	for(i = 0; i < number_of_bits; i++)
@@ -111,10 +111,73 @@ int ByteMirrorWithLoop(int n)
 	return (mirror_n);
 }
 
-int ByteMirrorNoLoop(int n)
+unsigned char ByteMirrorNoLoop(unsigned char n)
 {
-
+	n = (n & 240) >> 4 | (n & 15) << 4;  
+	n = (n & 204) >> 2 | (n & 51) << 2;  
+	n = (n & 170) >> 1 | (n & 85) << 1;  
+	
+	return (n);
 }
+
+/***********************************************************************************
+*Exercise 6
+***********************************************************************************/
+int Bits2And6(unsigned char n)
+{
+	int result = 0;
+	
+	result = n & 34;
+
+	return(result == 34);
+}
+
+int Bits2Or6(unsigned char n)
+{
+	int result_two = 0;
+	int result_six = 0;
+	
+	result_two = n & 2;
+	result_six = n & 32;
+
+	return(result_two == 2 || result_six == 32);
+}
+
+unsigned char SwitchBits2And6(unsigned char n)
+{
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

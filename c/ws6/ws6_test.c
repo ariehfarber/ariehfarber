@@ -13,6 +13,9 @@ void TestAddOne();
 void TestThreeBitsOn();
 void TestByteMirrorWithLoop();
 void TestByteMirrorNoLoop();
+void TestBits2And6();
+void TestBits2Or6();
+void TestSwitchBits2And6();
 
 int main()
 {
@@ -23,6 +26,9 @@ int main()
 	TestThreeBitsOn();
 	TestByteMirrorWithLoop();
 	TestByteMirrorNoLoop();
+	TestBits2And6();
+	TestBits2Or6();
+	TestSwitchBits2And6();
 	
 	return (0);
 }
@@ -30,13 +36,13 @@ int main()
 /***********************************************************************************
 *Help function
 ***********************************************************************************/
-void PrintInBinary(int number) 
+void PrintInBinary(char number) 
 {
 	int i = 0;
 	int size = 0;
-	int binaryDigit = 0;
+	char binaryDigit = 0;
 	
-	size = sizeof(int) * 8 - 1;
+	size = sizeof(unsigned char) * 8 - 1;
 	
 	for (i = size; i >= 0; i--) 
 	{
@@ -140,8 +146,8 @@ void TestThreeBitsOn()
 ***********************************************************************************/
 void TestByteMirrorWithLoop()
 {
-	int num = 11;
-	int mirror_num = 0;
+	char num = 11;
+	char mirror_num = 0;
 	
 	printf("Test ByteMirrorWithLoop:\n");
 	printf("	Original number ");
@@ -150,15 +156,75 @@ void TestByteMirrorWithLoop()
 	mirror_num = ByteMirrorWithLoop(num);
 
 	printf(" Mirrored Binary number ");
-	PrintInBinary(mirror_num); 
+	PrintInBinary(mirror_num);
+	printf("\n"); 
 }
 
 void TestByteMirrorNoLoop()
 {
+	char num = 7;
+	char mirror_num = 0;
+	
+	printf("Test ByteMirrorNoLoop:\n");
+	printf("	Original number ");
+	PrintInBinary(num); 
+	
+	mirror_num = ByteMirrorNoLoop(num);
 
+	printf(" Mirrored Binary number ");
+	PrintInBinary(mirror_num); 
+	printf("\n");
 }
 
+/***********************************************************************************
+*Exercise 6
+***********************************************************************************/
+void TestBits2And6()
+{
+	unsigned char num = 35;
+	char res = 0;
+	
+	printf("Test BitsOn2And6:\n");
+	printf("number %d\n", num);
+	PrintInBinary(num); 
 
+	res = BitsOn2And6(num);
+		if(res == 1)
+		{
+			printf("the 2nd and 6th bits are set\n");
+		}
+		else if(res == 0)
+		{
+			printf("the 2nd and 6th bits are not set\n");
+		}	
+	printf("\n");
+}
+
+void TestBits2Or6()
+{
+	unsigned char num = 4;
+	char res = 0;
+	
+	printf("Test BitsOn2Or6:\n");
+	printf("number %d\n", num);
+	PrintInBinary(num); 
+
+	res = BitsOn2Or6(num);
+		if(res == 1)
+		{
+			printf("the 2nd or 6th bits are set\n");
+		}
+		else if(res == 0)
+		{
+			printf("the 2nd and 6th bits are not set\n");
+		}	
+	printf("\n");
+}
+
+void TestSwitchBits2And6()
+{
+
+}
 
 
 
