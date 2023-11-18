@@ -13,9 +13,14 @@ void TestAddOne();
 void TestThreeBitsOn();
 void TestByteMirrorWithLoop();
 void TestByteMirrorNoLoop();
-void TestBits2And6();
-void TestBits2Or6();
-void TestSwitchBits2And6();
+void TestIsBitsTwoAndSix();
+void TestIsBitsTwoOrSix();
+void TestSwapBitsThreeAndFive();
+void TestClosestDivisibleBy16();
+void TestSwapWithBits();
+void TestNumberOfBitsWithLoop();
+void TestNumberOfBitsNoLoop();
+void TestFloatInBits();
 
 int main()
 {
@@ -26,24 +31,47 @@ int main()
 	TestThreeBitsOn();
 	TestByteMirrorWithLoop();
 	TestByteMirrorNoLoop();
-	TestBits2And6();
-	TestBits2Or6();
-	TestSwitchBits2And6();
+	TestIsBitsTwoAndSix();
+	TestIsBitsTwoOrSix();
+	TestSwapBitsThreeAndFive();
+	TestClosestDivisibleBy16();
+	TestSwapWithBits();
+	TestNumberOfBitsWithLoop();
+	TestNumberOfBitsNoLoop();
+	TestFloatInBits();
 	
 	return (0);
 }
 
 /***********************************************************************************
-*Help function
+*Help function for printing number in binary
 ***********************************************************************************/
-void PrintInBinary(char number) 
+void PrintInBinary8Bits(char number) 
 {
 	int i = 0;
-	int size = 0;
+	char size = 0;
 	char binaryDigit = 0;
 	
 	size = sizeof(unsigned char) * 8 - 1;
 	
+	printf("In binary ");
+	for (i = size; i >= 0; i--) 
+	{
+		binaryDigit = (number >> i) & 1;
+		printf("%d", binaryDigit);
+	}
+	printf("\n");
+}
+
+void PrintInBinary32Bits(unsigned int number) 
+{
+	int i = 0;
+	int size = 0;
+	int binaryDigit = 0;
+	
+	size = sizeof(unsigned int) * 8 - 1;
+	
+	printf("In binary ");
 	for (i = size; i >= 0; i--) 
 	{
 		binaryDigit = (number >> i) & 1;
@@ -53,7 +81,7 @@ void PrintInBinary(char number)
 }
 
 /***********************************************************************************
-*Exercise 1
+*Test exercise 1 
 ***********************************************************************************/
 void TestPow2()
 {
@@ -69,7 +97,7 @@ void TestPow2()
 }
 
 /***********************************************************************************
-*Exercise 2
+*Test exercise 2
 ***********************************************************************************/
 void TestIsPow2WithLoop()
 {
@@ -116,7 +144,7 @@ void TestIsPow2NoLoop()
 }
 
 /***********************************************************************************
-*Exercise 3
+*Test exercise 3
 ***********************************************************************************/
 void TestAddOne()
 {
@@ -129,7 +157,7 @@ void TestAddOne()
 }
 
 /***********************************************************************************
-*Exercise 4
+*Test exercise 4
 ***********************************************************************************/
 void TestThreeBitsOn()
 {
@@ -142,7 +170,7 @@ void TestThreeBitsOn()
 }
 
 /***********************************************************************************
-*Exercise 5
+*Test exercise 5
 ***********************************************************************************/
 void TestByteMirrorWithLoop()
 {
@@ -150,13 +178,13 @@ void TestByteMirrorWithLoop()
 	char mirror_num = 0;
 	
 	printf("Test ByteMirrorWithLoop:\n");
-	printf("	Original number ");
-	PrintInBinary(num); 
+	printf("Original binary number ");
+	PrintInBinary8Bits(num); 
 	
 	mirror_num = ByteMirrorWithLoop(num);
 
 	printf(" Mirrored Binary number ");
-	PrintInBinary(mirror_num);
+	PrintInBinary8Bits(mirror_num);
 	printf("\n"); 
 }
 
@@ -166,29 +194,29 @@ void TestByteMirrorNoLoop()
 	char mirror_num = 0;
 	
 	printf("Test ByteMirrorNoLoop:\n");
-	printf("	Original number ");
-	PrintInBinary(num); 
+	printf("Original binary number ");
+	PrintInBinary8Bits(num); 
 	
 	mirror_num = ByteMirrorNoLoop(num);
 
 	printf(" Mirrored Binary number ");
-	PrintInBinary(mirror_num); 
+	PrintInBinary8Bits(mirror_num); 
 	printf("\n");
 }
 
 /***********************************************************************************
-*Exercise 6
+*Test exercise 6
 ***********************************************************************************/
-void TestBits2And6()
+void TestIsBitsTwoAndSix()
 {
 	unsigned char num = 35;
 	char res = 0;
 	
-	printf("Test BitsOn2And6:\n");
-	printf("number %d\n", num);
-	PrintInBinary(num); 
+	printf("Test ISBitsTwoAndSix:\n");
+	printf("Given number %d\n", num);
+	PrintInBinary8Bits(num); 
 
-	res = BitsOn2And6(num);
+	res = IsBitsTwoAndSix(num);
 		if(res == 1)
 		{
 			printf("the 2nd and 6th bits are set\n");
@@ -200,19 +228,19 @@ void TestBits2And6()
 	printf("\n");
 }
 
-void TestBits2Or6()
+void TestIsBitsTwoOrSix()
 {
-	unsigned char num = 4;
+	unsigned char num = 32;
 	char res = 0;
 	
-	printf("Test BitsOn2Or6:\n");
-	printf("number %d\n", num);
-	PrintInBinary(num); 
+	printf("Test IsBitsTwoOrSix:\n");
+	printf("Given number %d\n", num);
+	PrintInBinary8Bits(num); 
 
-	res = BitsOn2Or6(num);
+	res = IsBitsTwoOrSix(num);
 		if(res == 1)
 		{
-			printf("the 2nd or 6th bits are set\n");
+			printf("the 2nd or/and 6th bits are set\n");
 		}
 		else if(res == 0)
 		{
@@ -221,19 +249,92 @@ void TestBits2Or6()
 	printf("\n");
 }
 
-void TestSwitchBits2And6()
-{
+void TestSwapBitsThreeAndFive()
+{	
+	unsigned char num = 16;
+	unsigned char res = 0;
+	
+	printf("Test SwapBitsThreeAndFive:\n");
+	printf("Given number %d\n", num);
+	PrintInBinary8Bits(num); 
 
+	res = SwapBitsThreeAndFive(num);
+	printf("the 3rd or 5th bits swaped gives us %d\n", res);
+	PrintInBinary8Bits(res); 
+	printf("\n");
 }
 
+/***********************************************************************************
+*Test exercise 7
+***********************************************************************************/
+void TestClosestDivisibleBy16()
+{
+	unsigned int num = 444150687;
+	unsigned int res = 0;
+	
+	printf("Test ClosestDivisibleBy16:\n");
+	printf("Given number %d\n", num);
 
+	res = ClosestDivisibleBy16(num);
+	printf("The closest number divisible by 16 with no remainder is %u\n", res);
+	PrintInBinary32Bits(res);
+	printf("\n"); 
+}
 
+/***********************************************************************************
+*Test exercise 8
+***********************************************************************************/
+void TestSwapWithBits()
+{
+	int x = 5;
+	int y = 123;
+	
+	printf("Test SwapWithBits:\n");
+	printf("Before swap x = %u\n", x);
+	printf("Before swap y = %u\n", y);
+	
+	SwapWithBits(&x, &y);
+	
+	printf("After swap x = %u\n", x);
+	printf("After swap y = %u\n\n", y);	
+}
 
+/***********************************************************************************
+*Test exercise 9
+***********************************************************************************/
+void TestNumberOfBitsWithLoop()
+{
+	int num = 7;
+	int res = 0;
+	
+	res = NumberOfBitsWithLoop(num);
+	
+	printf("Test NumberOfBitsWithLoop:\n");
+	printf("The number of bits in %d is %d\n\n", num, res);
+}
 
+void TestNumberOfBitsNoLoop()
+{
+	int num = 1156798;
+	int res = 0;
+	
+	res = NumberOfBitsNoLoop(num);
+	
+	printf("Test NumberOfBitsNoLoop:\n");
+	printf("The number of bits in %d is %d\n", num, res);
+	PrintInBinary32Bits(num);
+	printf("\n"); 
+}
 
-
-
-
+/***********************************************************************************
+*Test exercise 10
+***********************************************************************************/
+void TestFloatInBits()
+{
+	float num = 1.1;
+	
+	FloatInBits(num);
+}
 
 
 

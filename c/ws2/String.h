@@ -9,7 +9,7 @@
 
 #include <stddef.h> /*size_t*/
 /***********************************************************************************
-*Notes: Undefind beahaviour if Arguments are NULL.
+*Note: Undefind beahaviour if Arguments are NULL.
 ***********************************************************************************/
 
 
