@@ -92,16 +92,3 @@ void FloatInBits(float f_num);
 
 #endif /*__WS6_H__*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-

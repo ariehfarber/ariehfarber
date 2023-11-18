@@ -336,22 +336,3 @@ void TestFloatInBits()
 	FloatInBits(num);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
