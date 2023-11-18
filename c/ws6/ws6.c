@@ -1,7 +1,7 @@
 /***********************************************************************************
 *Author: Arieh Farber 
 *Reviewer: Artur Livshits
-*Date: 
+*Date: 18/11/2023
 ***********************************************************************************/
 #include <stdio.h> /*printf*/
 #include "ws6.h"
@@ -15,7 +15,7 @@ long Pow2(unsigned int x, unsigned int y)
 
 	result = x << y;
 	
-	return result;	 
+	return (result);	 
 }
 
 /***********************************************************************************
@@ -77,20 +77,25 @@ void ThreeBitsOn(unsigned int *arr, unsigned int size)
 	unsigned int mask = 1;
 	
 	printf("ThreeBitsOn:\n");
+	
 	for(i = 0; i < size; i++)
 	{
 		num = arr[i];
+		
 		while(num)
 		{
 			count+= (num & mask);
 			num >>= 1;
 		}
+		
 		if(3 == count)
 		{
-		printf("%d has exactly 3 bits on\n", arr[i]);
+			printf("%d has exactly 3 bits on\n", arr[i]);
 		}
+		
 		count = 0;
 	}
+	
 	printf("\n");
 }
 
@@ -140,7 +145,7 @@ int IsBitsTwoOrSix(unsigned char n)
 	result_two = n & 2;
 	result_six = n & 32;
 
-	return(result_two == 2 || result_six == 32);
+	return (result_two == 2 || result_six == 32);
 }
 
 unsigned char SwapBitsThreeAndFive(unsigned char n)
@@ -245,6 +250,7 @@ void FloatInBits(float f_num)
 		binaryDigit = (number >> i) & 1;
 		printf("%d", binaryDigit);
 	}
+	
 	printf("\n");
 }
 
