@@ -8,6 +8,7 @@
 #include <stddef.h> /*size_t  */
 #include <stdlib.h> /*malloc  */
 #include <assert.h> /*assert  */
+
 #include "String.h"
 
 void TestStrLen();

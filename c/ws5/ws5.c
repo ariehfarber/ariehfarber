@@ -4,21 +4,47 @@
 *Date: 15/11/2023
 ***********************************************************************************/
 
-#include <stdio.h> /*printf, FILE, remove, size_t*/
-#include <string.h>  /*strncmp, strlen*/
+#include <stdio.h>  /*printf, remove, size_t, fopen, fclose, getc, gets, fputs*/
+#include <string.h> /*strncmp, strlen					      */
+
 #include "ws5.h"
 
-/**********************************************************************************
-*Exercise 1
-**********************************************************************************/
+#define COMMANDS_NUM 	 5   /*FileEditor number of command options	    */
+#define INPUT_MAX_LENGTH 100 /*FileEditor maximum input number of charecters*/
+
+char string[INPUT_MAX_LENGTH] = {0};
+
 typedef void (*PFnPrint)(int);
 
 typedef struct print_me
 {
 	int number;
 	PFnPrint StrPrint;
-} print_me;
+} print_me_t;
 
+typedef enum output
+{
+	SUCCESS = 0,
+	REMOVE_ERROR = 1,
+	FILE_ERROR = 2,
+	RENAME_ERROR = 3,
+	INPUT_ERROR = 4,
+	EXIT = 5
+} output_t;
+
+typedef int (*PFnComparison)(const char *, const char *, size_t);
+typedef output_t (*PFnOperation)(const char *);
+
+typedef struct special_input
+{
+	char *str;
+	PFnComparison Comparison;
+	PFnOperation Operation;
+} special_input_t;
+
+/**********************************************************************************
+*Exercise 1
+**********************************************************************************/
 void Print(int n)
 {
 	printf("%d\n", n);
@@ -28,7 +54,7 @@ void PrintInt()
 {
 	int i = 0;
 	int size = 10;
-	print_me array[10];
+	print_me_t array[10];
 
 	for(i = 0; i < size; i++)
 	{
@@ -40,34 +66,9 @@ void PrintInt()
 }
 
 /**********************************************************************************
-*Exercise 2 
-**********************************************************************************/
-enum output
-{
-	SUCCESS,
-	REMOVE_ERROR,
-	FILE_ERROR,
-	RENAME_ERROR,
-	INPUT_ERROR,
-	EXIT
-};
-
-typedef int (*PFnComparison)(const char *, const char *, size_t);
-typedef enum output (*PFnOperation)(const char *);
-
-typedef struct special_input
-{
-	char *str;
-	PFnComparison Comparison;
-	PFnOperation Operation;
-} special_input;
-
-char string[100] = {0};
-
-/**********************************************************************************
 *Exercise 2 - Operation functions
 **********************************************************************************/
-enum output RemoveCommand(const char *title)
+output_t RemoveCommand(const char *title)
 {
 	if(remove(title)) 
 	{
@@ -77,7 +78,7 @@ enum output RemoveCommand(const char *title)
 	return (SUCCESS);
 }
 
-enum output CountCommand(const char *title)
+output_t CountCommand(const char *title)
 {
 
 	int count = 0;
@@ -90,7 +91,7 @@ enum output CountCommand(const char *title)
 		return (FILE_ERROR);
 	}
 	
-	/*Counting the lines using a for() loop*/
+	/*Counting the lines using a for loop*/
 	for (c = getc(test_file); c != EOF; c = getc(test_file))
 	{
 		if (c == '\n')
@@ -110,12 +111,12 @@ enum output CountCommand(const char *title)
 	return (SUCCESS);	
 }
 
-enum output ExitCommand()
+output_t ExitCommand()
 {
 	return (EXIT);
 }
 
-enum output AddToStartCommand(const char *title)
+output_t AddToStartCommand(const char *title)
 {
 	int ret;
 	char ch;
@@ -171,7 +172,7 @@ enum output AddToStartCommand(const char *title)
 	return (SUCCESS);	
 }
 
-enum output WriteCommand(const char *title)
+output_t WriteCommand(const char *title)
 {
 	FILE *test_file;
 	
@@ -198,21 +199,21 @@ enum output WriteCommand(const char *title)
 int FileEditor(const char *title)
 {
 	int i = 0;
-	int size = 4;
+	int size = COMMANDS_NUM;
 	size_t n = 0;
-	enum output state = SUCCESS;
+	output_t state = SUCCESS;
 
 	/*initializing the struct*/
-	special_input cmnd_array[5] = 
+	special_input_t cmnd_array[COMMANDS_NUM] = 
 	{
 		{"-remove\n", strncmp, RemoveCommand},
 		{"-count\n", strncmp, CountCommand},
 		{"-exit\n", strncmp, ExitCommand},
 		{"<", strncmp, AddToStartCommand},
-		{NULL, NULL, WriteCommand}
+		{"", strncmp, WriteCommand}
 	};
 	
-	while(1)
+	while(SUCCESS == state)
 	{	
 		printf("Enter string (up to 100 charecters):\n");
 		if(!fgets(string, 100, stdin))
@@ -221,13 +222,14 @@ int FileEditor(const char *title)
 		}
 		
 		
-		/*We use n and strncmp to decide which command to use*/
+		/*using strncmp to help decide which command to use*/
 		n = strlen(string);
 		if('<' == string[0])
 		{
 			n = 1;
 		}
 		
+		/*checking which command to use*/
 		for(i = 0; i < size; i++)
 		{
 			if(!cmnd_array[i].Comparison(cmnd_array[i].str, string, n))
@@ -235,7 +237,7 @@ int FileEditor(const char *title)
 				state = cmnd_array[i].Operation(title);
 				break;
 			}
-			if(4 == (i+1))
+			if(4 == i + 1)
 			{
 				state = cmnd_array[i+1].Operation(title);
 			}
@@ -263,10 +265,12 @@ int FileEditor(const char *title)
 				break;
 			
 			case EXIT:
-				return (0);
+				return (SUCCESS);
 				break;
 		}			
-	}	
+	}
+	
+	return (state);	
 }
 
 	

@@ -9,6 +9,7 @@
 #include <stddef.h> /*size_t, sizeof*/
 #include <ctype.h>  /*tolower       */
 #include <string.h> /*strlen, strcpy*/
+
 #include "ws3.h"
 
 /**********************************************************************************

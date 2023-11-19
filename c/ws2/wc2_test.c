@@ -8,6 +8,7 @@
 #include <assert.h> /*assert*/
 #include <stdlib.h> /*malloc*/
 #include <stddef.h> /*size_t*/
+
 #include "wc2.h"
 
 void TestIntSwap();

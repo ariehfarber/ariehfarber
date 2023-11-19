@@ -8,6 +8,7 @@
 #include <stddef.h> /*size_t*/
 #include <string.h> /*strcmp*/
 #include <stdlib.h> /*malloc*/
+
 #include "wc2.h"
 
 void IntSwap(int *var1, int *var2)

@@ -5,7 +5,8 @@
 ***********************************************************************************/
 
 #include <stdio.h>  /*printf, getchar*/
-#include <stdlib.h>  /*system*/
+#include <stdlib.h> /*system*/
+
 #include "ws4.h"
 
 #define ESC 27

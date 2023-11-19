@@ -8,19 +8,21 @@
 #define __WS5_H__
 
 /**********************************************************************************
-*Exercise 1 -
+*Exercise 1
+*Description: prints a list of 10 redefined integers
 **********************************************************************************/
 void PrintInt();
 
 /**********************************************************************************
-*Exercise 2 -
-*Description: Add text to a file with 4 command options:
-*	      '-remove' Deletes the file.
+*Exercise 2
+*Description: add text to a file, with 4 command options:
+*	      '-remove' Deletes the file
 *	      '-count' Counts the number of lines
 *	      '-exit' Exits the program
 *	      '<' adds the text to the beginning of the file
-*	      Defualt - the text will be added to the end of the file.
-*Notes: the text string is limitid to 100 charecters per input.         
+*	      Defualt - the text will be added to the end of the file
+*Return values: if exited successfully returns 0
+*Notes: the text string is limitid to 100 charecters per input
 **********************************************************************************/
 int FileEditor(const char *file);
 

@@ -8,6 +8,7 @@
 #include <stddef.h> /*size_t */
 #include <stdlib.h> /*malloc */
 #include <ctype.h>  /*tolower*/
+
 #include "String.h"
 
 size_t StrLen(const char *str)
