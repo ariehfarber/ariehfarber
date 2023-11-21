@@ -20,7 +20,7 @@ void TestAllFiveArray();
 void TestMatrixRowSums();
 void TestJosephusProblem();
 void TestDataSize();
-void TestCpyEnvVariables();
+void TestPrintEnvVariablesLowCase();
 
 int main()
 {
@@ -32,7 +32,7 @@ int main()
 	TestMatrixRowSums();
 	TestJosephusProblem();
 	TestDataSize();
-	TestCpyEnvVariables();
+	TestPrintEnvVariablesLowCase();
 	
 	return (0);
 }
@@ -270,9 +270,9 @@ void TestDataSize()
 /**********************************************************************************
 Exercise 4
 **********************************************************************************/
-void TestCpyEnvVariables()
+void TestPrintEnvVariablesLowCase()
 {
-	CpyEnvVariables(environ);
+	PrintEnvVariablesLowCase(environ);
 }
 
 

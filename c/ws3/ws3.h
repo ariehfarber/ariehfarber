@@ -45,7 +45,7 @@ void DataSize();
 /***********************************************************************************
 *Description: Copies the environment variables in lower case
 ***********************************************************************************/
-void CpyEnvVariables(char **env_var);
+void PrintEnvVariablesLowCase(const char **env_var);
 
 
 #endif /*__WS3_H__*/

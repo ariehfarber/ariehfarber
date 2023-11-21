@@ -210,7 +210,7 @@ char *ToLowerString(char *str)
 /**********************************************************************************
 *Exercise 4
 **********************************************************************************/
-void CpyEnvVariables(char **env_var)
+void PrintEnvVariablesLowCase(const char **env_var)
 {
 	char **buffer = NULL;
 	size_t size = 0;

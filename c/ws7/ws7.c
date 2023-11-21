@@ -4,155 +4,159 @@
 *Date: 
 ***********************************************************************************/
 
-#include <stdio.h>  /*printf		*/
-#include <stdlib.h> /*size_t,malloc,free*/
-#include <assert.h> /*assert		*/
-#include <string.h> /*strlen,strcat	*/
+#include <stdio.h>  /*printf			*/
+#include <stdlib.h> /*size_t,malloc,realloc,free*/
+#include <assert.h> /*assert			*/
+#include <string.h> /*strlen,strcat		*/
 
 #include "ws7.h"
 
 #define ELEMENT_NUM 5
 
-typedef enum data_type
-{
-	INT = 1,
-	FLOAT = 2,
-	STRING = 3
-} data_type_t;
+typedef void (*PFnPrint)(size_t);
+typedef void (*PFnAdd)(size_t *, int);
+typedef void (*PFnClean)(size_t *);
 
 typedef struct element
 {
-	size_t *data;
-	data_type_t type;
+	size_t data;
+	PFnPrint PrintValue;
+	PFnAdd AddNumber;
+	PFnClean CleanValue;
 } element_t;
 
 void SetInt(element_t *target, int int_number) 
 {
-	target->data = malloc(sizeof(int));
-	assert(target->data);
-
-	*(int *)(target->data) = int_number; 
-	target->type = INT;
+	target->data = *(size_t *)&int_number; 
 }
 
 void SetFloat(element_t *target, float float_number) 
 {
-	target->data = malloc(sizeof(float));
-	assert(target->data);
-
-	*(float *)(target->data) = float_number; 
-	target->type = FLOAT;
+	target->data = *(size_t *)&float_number;
 }
 
 void SetString(element_t *target, char *str) 
 {
-	size_t length = 0;
-	length = strlen(str) + 1;
+	target->data = (size_t)str; 
+}
+
+void PrintInt(size_t value)
+{
+	printf("%d, ", *(int *)&value);	
+}
+
+void PrintFloat(size_t value)
+{
+	printf("%.6f, ", *(float *)&value);	
+}
+
+void PrintString(size_t value)
+{
+	printf("%s, ", (char *)value);	
+}
+
+void AddInt(size_t *target, int int_value)
+{
+	int temp_int = 0;
 	
-	target->data = malloc(length);
-	assert(target->data);
-
-	strcpy((char *)(target->data), str); 
-	target->type = STRING;
+	temp_int = *(int *)target;
+	temp_int += int_value;
+	*target = *(size_t *)&temp_int;	
 }
 
-
-void PrintElement(element_t *target)
+void AddFloat(size_t *target, int float_value)
 {
-	switch (target->type)
-	{
-		case INT:
-			printf("%d, ", *(int *)target->data);
-			break;
-		case FLOAT:
-			printf("%.6f, ", *(float *)target->data);
-			break;
-		case STRING:
-			printf("%s ", (char *)target->data);
-			break;
-	}
+	float temp_float = 0;
+	
+	temp_float = *(float *)target;
+	temp_float += (float)float_value;
+	*target = *(size_t *)&temp_float;	
 }
 
-void AddInt(element_t *target, int value)
+void AddString(size_t *target, int value)
 {
-	size_t length = 0;
-	void *temp_ptr = NULL;
-	char buffer[12];
+	char temp_buffer[11];
+	char *new_str = NULL;
+	size_t new_str_length = 0;
 
-	switch (target->type)
-	{
-		case INT:
-			*(int *)(target->data) += value; 
-			break;
-		case FLOAT:
-			*(float *)(target->data) += (float)value; 
-			break;
-		case STRING:
-			sprintf(buffer, "%d", value);
-			length = strlen((char *)(target->data)) + strlen(buffer) + 1;
-			temp_ptr = realloc(target->data, length);
-			assert(temp_ptr);
-			target->data = temp_ptr;
-			strcat((char *)target->data, buffer); 
-			break;
-	}
+	/*convert int to char*/
+	sprintf(temp_buffer, "%d", value);
+
+	 /*+1 for NULL terminator*/
+	new_str_length = strlen((char *)(*target)) + strlen(temp_buffer) + 1;
+
+	new_str = realloc(((char *)(*target)), new_str_length);
+	assert(new_str);
+
+	/*concatenate the string with the number*/
+	strcat(new_str, temp_buffer);
+
+	/*set the struct pointer to the concatenated string*/
+	*target = (size_t)new_str;
+}
+
+void CleanInt(size_t *target)
+{
+	(void)target;
+}
+
+void CleanFloat(size_t *target)
+{
+	(void)target;
+}
+
+void CleanString(size_t *target)
+{
+	free((char *)(*target));
+	*target = '\0'; 
 }
 
 void ListElements()
 {		
 	int i = 0;
+	char *string = NULL;
 	
-	element_t element_array[ELEMENT_NUM]; 
-
-	SetFloat(&element_array[0], 4.2);
-	SetFloat(&element_array[1], 6.7);
-	SetString(&element_array[2], "chapter");
-	SetInt(&element_array[3], 12);
-	SetFloat(&element_array[4], 56.32);
-	
-	for (i = 0; i < ELEMENT_NUM; i++) 
+	/*initialize struct array*/
+	element_t element_array[ELEMENT_NUM] =
 	{
-		PrintElement(&element_array[i]);
+		{0, PrintFloat, AddFloat, CleanFloat},
+		{0, PrintInt, AddInt, CleanInt},
+		{0, PrintInt, AddInt, CleanInt},
+		{0, PrintFloat, AddFloat, CleanFloat},
+		{0, PrintString, AddString, CleanString}
+	}; 
+	
+	string =  malloc(sizeof(char *) * strlen("chapter") + 1);
+	assert(string);
+	
+    	strcpy(string, "chapter");
+
+	SetFloat(&element_array[0], 4.212212);
+	SetInt(&element_array[1], 500);
+	SetInt(&element_array[2], 12);
+	SetFloat(&element_array[3], 56.32);
+	SetString(&element_array[4], string);
+	
+	for(i = 0; i < ELEMENT_NUM; i++)
+	{
+		element_array[i].PrintValue(element_array[i].data);
 	}
 	printf("\n");
 	
-	for (i = 0; i < ELEMENT_NUM; i++) 
+	for(i = 0; i < ELEMENT_NUM; i++)
 	{
-		AddInt(&element_array[i], 10);
+		element_array[i].AddNumber(&element_array[i].data, 10);
 	}
-
-	for (i = 0; i < ELEMENT_NUM; i++) 
+	
+	for(i = 0; i < ELEMENT_NUM; i++)
 	{
-		PrintElement(&element_array[i]);
+		element_array[i].PrintValue(element_array[i].data);
 	}
 	printf("\n");
 	
-	for (i = 0; i < ELEMENT_NUM; i++) 
+	for(i = 0; i < ELEMENT_NUM; i++)
 	{
-		if (element_array[i].data != NULL) 
-		{
-			free(element_array[i].data);
-		}
+		element_array[i].CleanValue(&element_array[i].data);
 	}
 }
 
-
-
-
-
-
-
-/*char *StrDup(const char *str)*/
-/*{*/
-/*	char *duplicated = NULL;*/
-/*	*/
-/*	assert(NULL != str);*/
-/*	*/
-/*	duplicated = (char *)malloc(strlen(str) + 1);*/
-/*	if(!duplicated)*/
-/*	{*/
-/*		return (NULL);*/
-/*	}*/
-/*	*/
-/*	return (strcpy(duplicated ,str));*/
-/*}*/
