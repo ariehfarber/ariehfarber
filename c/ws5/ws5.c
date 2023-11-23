@@ -1,16 +1,17 @@
-/***********************************************************************************
+/*******************************************************************************
 *Author: Arieh Farber 
 *Reviewer: Artur Livshits
 *Date: 15/11/2023
-***********************************************************************************/
+*******************************************************************************/
 
-#include <stdio.h>  /*printf, remove, size_t, fopen, fclose, getc, gets, fputs*/
-#include <string.h> /*strncmp, strlen					      */
+#include <stdio.h>  /*printf, FILE*, remove, size_t, fopen, fclose, getc,
+		      gets, fputs                                           */
+#include <string.h> /*strncmp, strlen                                       */
 
 #include "ws5.h"
 
-#define COMMANDS_NUM 	 5   /*FileEditor number of command options	    */
-#define INPUT_MAX_LENGTH 100 /*FileEditor maximum input number of charecters*/
+#define COMMANDS_NUM 	 5   /*number of command option    */
+#define INPUT_MAX_LENGTH 100 /*maximum input charecters*/
 
 char string[INPUT_MAX_LENGTH] = {0};
 
@@ -42,9 +43,9 @@ typedef struct special_input
 	PFnOperation Operation;
 } special_input_t;
 
-/**********************************************************************************
+/*******************************************************************************
 *Exercise 1
-**********************************************************************************/
+*******************************************************************************/
 void Print(int n)
 {
 	printf("%d\n", n);
@@ -65,9 +66,9 @@ void PrintInt()
 	
 }
 
-/**********************************************************************************
+/*******************************************************************************
 *Exercise 2 - Operation functions
-**********************************************************************************/
+*******************************************************************************/
 output_t RemoveCommand(const char *title)
 {
 	if(remove(title)) 
@@ -193,9 +194,9 @@ output_t WriteCommand(const char *title)
 	return (SUCCESS);
 }
 
-/**********************************************************************************
+/*******************************************************************************
 *Exercise 2 - chain of responsibility function
-**********************************************************************************/
+*******************************************************************************/
 int FileEditor(const char *title)
 {
 	int i = 0;
@@ -232,7 +233,8 @@ int FileEditor(const char *title)
 		/*checking which command to use*/
 		for(i = 0; i < size; i++)
 		{
-			if(!cmnd_array[i].Comparison(cmnd_array[i].str, string, n))
+			if(!cmnd_array[i].Comparison(cmnd_array[i].str,\
+			   string, n))
 			{
 				state = cmnd_array[i].Operation(title);
 				break;

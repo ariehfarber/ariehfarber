@@ -1,8 +1,8 @@
-/***********************************************************************************
+/*******************************************************************************
 *Author: Arieh Farber
 *Reviewer: Yarden Shai
 *Date: 9/11/2023
-***********************************************************************************/
+*******************************************************************************/
 
 #include <stdio.h>  /*printf()*/
 #include <stddef.h> /*size_t  */
@@ -111,8 +111,8 @@ void TestStrNCmp()
 		{
 			printf("str1: \"%s\" ,str2: \"%s\"\n", 
 			str1[i], str2[i]);
-			printf("up to %lu charecters at least, they are equal\n\n", 			
-			n);
+			printf("up to %lu charecters at least,\
+			they are equal\n\n", n);
 		}
 	}
 }

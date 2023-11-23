@@ -1,15 +1,15 @@
-/***********************************************************************************
+/*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
-***********************************************************************************/
+*Reviewer: Dvir Monajem
+*Date: 22/11/2023
+*******************************************************************************/
 
 #include <stdio.h>  /*printf			*/
 #include <stdlib.h> /*size_t,malloc,realloc,free*/
 #include <assert.h> /*assert			*/
 #include <string.h> /*strlen,strcat		*/
 
-#include "ws7.h"
+#include "ws8.h"
 
 #define ELEMENT_NUM 5
 
@@ -75,7 +75,7 @@ void AddFloat(size_t *target, int float_value)
 
 void AddString(size_t *target, int value)
 {
-	char temp_buffer[11];
+	char temp_buffer[10]; /*the biggest integer is 10 charecters*/
 	char *new_str = NULL;
 	size_t new_str_length = 0;
 
@@ -108,7 +108,7 @@ void CleanFloat(size_t *target)
 void CleanString(size_t *target)
 {
 	free((char *)(*target));
-	*target = '\0'; 
+	*target = 0; 
 }
 
 void ListElements()
@@ -131,10 +131,10 @@ void ListElements()
 	
     	strcpy(string, "chapter");
 
-	SetFloat(&element_array[0], 4.212212);
+	SetFloat(&element_array[0], 4.2);
 	SetInt(&element_array[1], 500);
 	SetInt(&element_array[2], 12);
-	SetFloat(&element_array[3], 56.32);
+	SetFloat(&element_array[3], 56.3);
 	SetString(&element_array[4], string);
 	
 	for(i = 0; i < ELEMENT_NUM; i++)
