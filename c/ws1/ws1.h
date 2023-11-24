@@ -1,48 +1,29 @@
 /*******************************************************************************
-*Author: Arieh Farber 
-*Reviewer: Omer Bruker
-*Date: 12/09/2023
+*Auther: Arieh Farber
+*Reviewr: Igal Maikis
+*Date: 5/11/2023
 *******************************************************************************/
-#ifndef  __WS3_H__
-#define __WS3_H__
-
-#include <stddef.h> /*size_t*/
-#include <stdlib.h> /*environ*/
-
-extern char **environ;
-#define ROWS 3 
-#define COLS 3
+#ifndef __WS1_H__
+#define __WS1_H__
 
 /*******************************************************************************
-*Description: Calculates the sum of each row in a matrix.
+*Description: Prints the provided string.
 *******************************************************************************/
-int *MatrixRowSums(int **matrix, int *rows_sums);
+void PrintStr(char *str);
 
 /*******************************************************************************
-*Description: Calculates the index of the last soldier standing
-*			  in Josephus Problem. 
+*Description: Calculates 10 to the Power of n.
 *******************************************************************************/
-size_t JosephusProblem(size_t *array, size_t array_size);
+double PowerBaseTen(signed int exponent);
 
 /*******************************************************************************
-*Description: Prints the size of each data type.
+*Description: Flips the digits of a provided integer.
 *******************************************************************************/
-void DataSize();
+int FlipDigits(signed int number);
 
 /*******************************************************************************
-*Description: Copies the environment variables in lower case.
+*Description: Swap two postive integer variables.
 *******************************************************************************/
-void PrintEnvVariablesLowCase(char **env_var);
+void Swap(signed int *var1, signed int *var2);
 
-#endif /*__WS3_H__*/
-
-
-
-
-
-
-
-
-
-
-
+#endif /*__WS1_H__*/ 

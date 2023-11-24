@@ -3,12 +3,11 @@
 *Reviewer: Artur Livshits
 *Date: 13/11/2023
 *******************************************************************************/
-
 #include "ws4.h"
 
-void TestSwitchKeyInputAT();
-void TestIfKeyInput();
-void TestLUTKeyInput();
+static void TestSwitchKeyInputAT();
+static void TestIfKeyInput();
+static void TestLUTKeyInput();
 
 int main()
 {
@@ -19,26 +18,17 @@ int main()
 	return (0);
 }
 
-/*******************************************************************************
-Exercise Switch
-*******************************************************************************/
-void TestSwitchKeyInputAT()
+static void TestSwitchKeyInputAT()
 {
 	SwitchKeyInputAT();
 }
 
-/*******************************************************************************
-Exercise if
-*******************************************************************************/
-void TestIfKeyInput()
+static void TestIfKeyInput()
 {
 	IfKeyInput();
 }
 
-/*******************************************************************************
-Exercise LUT
-*******************************************************************************/
-void TestLUTKeyInput()
+static void TestLUTKeyInput()
 {
 	LUTKeyInput();
 }

@@ -3,26 +3,29 @@
 *Reviewer: Yarden Shai
 *Date: 9/11/2023
 *******************************************************************************/
+#define _POSIX_C_SOURCE 200809L /*a macro for using strdup with c89 compiler*/
 
-#include <stdio.h>  /*printf()*/
-#include <stddef.h> /*size_t  */
-#include <stdlib.h> /*malloc  */
-#include <assert.h> /*assert  */
-
+#include <stdio.h>   /*printf()											 */
+#include <stddef.h>  /*size_t  											 */
+#include <stdlib.h>  /*malloc  											 */
+#include <assert.h>  /*assert											 */
+#include <strings.h> /*strcasecmp										 */
+#include <string.h>  /*strlen, strcmp, strncmp, , strcpy, strncpy  	     */
+					 /*strchr, strdup, strcat, strncat, strstr, strspn   */
 #include "String.h"
 
-void TestStrLen();
-void TestStrCmp();
-void TestStrNCmp();
-void TestStrCaseCmp();
-void TestStrCpy();
-void TestStrNCpy();
-void TestStrChr();
-void TestStrDup();
-void TestStrCat();
-void TestStrNCat();
-void TestStrStr();
-void TestStrSpn();
+static void TestStrLen();
+static void TestStrCmp();
+static void TestStrNCmp();
+static void TestStrCaseCmp();
+static void TestStrCpy();
+static void TestStrNCpy();
+static void TestStrChr();
+static void TestStrDup();
+static void TestStrCat();
+static void TestStrNCat();
+static void TestStrStr();
+static void TestStrSpn();
 
 int main()
 {
@@ -42,269 +45,158 @@ int main()
 	return (0);
 }
 
-void TestStrLen()
+static void TstResInt(int control, int func_res, int line)
+{
+	if (control != func_res)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+}
+
+static void TstResChar(char *control, char *func_res, int line)
+{
+	if (strcmp(control, func_res))
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+}
+
+static void TestStrLen()
 {
 	const char str1[] = "Hello there";
-	size_t length = StrLen(str1);
 	
-	printf("TestStrLen-\n");
-	printf("The length of \"%s\" is: %lu charecters\n\n", str1, length);
+	TstResInt(strlen(str1), StrLen(str1), __LINE__);
 }
 
-void TestStrCmp()
+static void TestStrCmp()
 {
-	const char *str1[] ={"check", "abc", "ab"};
-	const char *str2[] ={"check", "abcc", "Ab"};
-	int i = 0, size = 3;
-	int value = 0;
+	const char *s1[] ={"check", "abc", "ab"};
+	const char *s2[] ={"check", "abcc", "Ab"};
+	int i = 0;
+	int size = 3;
 	
-	printf("TestStrCmp-\n");
-	for(i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
-		value = StrCmp(str1[i], str2[i]);
-		if(value > 0)
-		{
-			printf("str1: \"%s\" ,str2: \"%s\"\n", 
-			str1[i], str2[i]);
-			printf("str1 is lexicographicaly greater\n\n");
-		}
-		else if(value < 0)
-		{
-			printf("str1: \"%s\" ,str2: \"%s\"\n", 
-			str1[i], str2[i]);
-			printf("str2 is lexicographicaly greater\n\n");
-		}
-		else if(value == 0)
-		{
-			printf("str1: \"%s\" ,str2: \"%s\"\n", 
-			str1[i], str2[i]);
-			printf("strings are equal\n\n");
-		}
+		TstResInt(strcmp(s1[i], s2[i]), StrCmp(s1[i], s2[i]), __LINE__);
 	}
 }
 
-void TestStrNCmp()
+static void TestStrNCmp()
 {
-	const char *str1[] ={"new check", "abcddefggrr", "AB"};
-	const char *str2[] ={"new check", "abcc", "BC"};
-	int i = 0, size = 3;
+	const char *s1[] ={"new check", "abcddefggrr", "AB"};
+	const char *s2[] ={"new check", "abcc", "BC"};
+	int i = 0;
+	int size = 3;
 	size_t n = 4; 
-	int value = 0;
-	
-	printf("TestStrNCmp-\n");
-	for(i = 0; i < size; i++)
+
+	for (i = 0; i < size; i++)
 	{
-		value = StrNCmp(str1[i], str2[i], n);
-		if(value > 0)
-		{
-			printf("str1: \"%s\" ,str2: \"%s\"\n", 
-			str1[i], str2[i]);
-			printf("str1 > (lexico) for %lu characters\n\n", n);		
-		}
-		else if(value < 0)
-		{
-			printf("str1: \"%s\" ,str2: \"%s\"\n", 
-			str1[i], str2[i]);
-			printf("str2 > (lexico) for %lu characters\n\n", n);
-		}
-		else if(value == 0)
-		{
-			printf("str1: \"%s\" ,str2: \"%s\"\n", 
-			str1[i], str2[i]);
-			printf("up to %lu charecters at least,\
-			they are equal\n\n", n);
-		}
+		TstResInt(strncmp(s1[i], s2[i], n), StrNCmp(s1[i], s2[i], n), __LINE__);
 	}
 }
 
-void TestStrCaseCmp()
+static void TestStrCaseCmp()
 {
-	const char *str1[] ={"NEW", "abc", "abcd"};
-	const char *str2[] ={"check", "ABC", "AbCd"};
-	int i = 0, size = 3;
-	int value = 0;
-	
-	printf("TestStrCaseCmp-\n");
-	for(i = 0; i < size; i++)
+	const char *s1[] ={"NEW", "abc", "abcd"};
+	const char *s2[] ={"check", "ABC", "AbCd"};
+	int i = 0;
+	int size = 3;
+
+	for (i = 0; i < size; i++)
 	{
-		value = StrCaseCmp(str1[i], str2[i]);
-		if(value > 0)
-		{
-			printf("str1: \"%s\" ,str2: \"%s\"\n", 
-			str1[i], str2[i]);
-			printf("str1 is lexicographicaly greater\n\n");
-		}
-		else if(value < 0)
-		{
-			printf("str1: \"%s\" ,str2: \"%s\"\n", 
-			str1[i], str2[i]);
-			printf("str2 is lexicographicaly greater\n\n");
-		}
-		else if(value == 0)
-		{
-			printf("str1: \"%s\" ,str2: \"%s\"\n", 
-			str1[i], str2[i]);
-			printf("strings are equal\n\n");
-		}
+		TstResInt(strcasecmp(s1[i], s2[i]), StrCaseCmp(s1[i], s2[i]), __LINE__);
 	}
 }
 
-void TestStrCpy()
+static void TestStrCpy()
 {
 	const char str1[] = "Here comes the sun";
-	char *copied_str1 = NULL; 
+	char *str2 = NULL; 
 	
-	copied_str1 = (char *)malloc(StrLen(str1) + 1); 
-	if(!copied_str1)
-	{
-        	printf("Memory allocation failed\n");
-        	return; 
-	}
-
-	StrCpy(copied_str1, str1);
-	
-	printf("TestStrCpy-\n");
-	printf("Original string: \"%s\", ", str1);
-	printf("Copied string: \"%s\"\n\n", copied_str1);
-	
-	free(copied_str1);
-	copied_str1 = NULL;
-}
-
-void TestStrNCpy()
-{
-	const char str1[] = "Here comes the sun";
-	char *copied_str1 = NULL;
-	size_t n = 4; 
-	
-	copied_str1 = (char *)malloc(n + 1); 
-	if(!copied_str1)
+	str2 = (char *)malloc(StrLen(str1) + 1); 
+	if (!str2)
 	{
         	printf("Memory allocation failed\n");
         	return; 
 	}
 	
-	StrNCpy(copied_str1, str1, n);
-	copied_str1[n] = '\0'; /*In case StrNCpy dose not NULL terminate'*/
-
-	printf("TestStrNCpy-\n");
-	printf("Original string: \"%s\", ", str1);
-	printf("Copied %lu charecters of the string: \"%s\"\n\n", n, 	
-	copied_str1);
+	TstResChar(strcpy(str2, str1), StrCpy(str2, str1), __LINE__);
 	
-	free(copied_str1);
-	copied_str1 = NULL;
+	free(str2);
+	str2 = NULL;
 }
 
-void TestStrChr()
+static void TestStrNCpy()
+{
+	const char str1[] = "Here comes the sun";
+	char *str2 = NULL;
+	size_t n = 4; 
+	
+	str2 = (char *)malloc(n + 1); 
+	if (!str2)
+	{
+        	printf("Memory allocation failed\n");
+        	return; 
+	}
+	
+	TstResChar(strncpy(str2, str1, n), StrNCpy(str2, str1, n), __LINE__);
+	
+	free(str2);
+	str2 = NULL;
+}
+
+static void TestStrChr()
 {
 	const char str1[] = "Here we go again";
 	int symbol = 'g';
-	char *check = NULL;
-	
-	check = StrChr(str1, symbol);
-	
-	printf("TestStrChr-\n");
-	if (check != NULL)
-	{
-		printf("String: \"%s\"\n", str1);
-		printf("string after %c is \"%s\"\n\n", symbol, check);
-	}
-	else
-	{
-		printf("Character %c not found in the string.\n\n", symbol);
-	}
+
+	TstResChar(strchr(str1, symbol), StrChr(str1, symbol), __LINE__);
 }
 
-void TestStrDup()
+static void TestStrDup()
 {
 	const char str1[] = "Wait, am I the clone?";
 	char *duplicated_str1 = NULL;
 	
-	duplicated_str1 = StrDup(str1);
-	
-	printf("TestStrDup-\n");
-	printf("Original string: \"%s\", ", str1);
-	printf("Duplicated string: \"%s\"\n\n", duplicated_str1);
+	TstResChar(strdup(str1), StrDup(str1), __LINE__);
 	
 	free(duplicated_str1);
 	duplicated_str1 = NULL;
 }
 
-void TestStrCat()
+static void TestStrCat()
 {
 	char str1[30] = "Every beginning, ";
-	const char str1_copy[30] = "Every beginning, ";
 	const char str2[] = "Has an end";
-	char *str3 = NULL;
 	
-	str3 = StrCat(str1, str2);
-	
-	printf("TestStrCat-\n");
-	printf("String 1: \"%s\", String 2: \"%s\"\n", str1_copy, str2);
-	printf("concatenated string: \"%s\"\n\n", str3);
+	TstResChar(strcat(str1, str2), StrCat(str1, str2), __LINE__);
 }
 
-void TestStrNCat()
+static void TestStrNCat()
 {
 	char str1[30] = "Every beginning, ";
-	const char str1_copy[30] = "Every beginning, ";
 	const char str2[] = "Has an end";
 	size_t n = 4;
 	
-	StrNCat(str1, str2, n);
-	
-	printf("TestStrNCat-\n");
-	printf("string1: \"%s\", string2: \"%s\"\n", str1_copy, str2);
-	printf("concatenated string up to n = %lu: \"%s\"\n\n", n, str1);
+	TstResChar(strncat(str1, str2, n), StrNCat(str1, str2, n), __LINE__);
 }
 
-void TestStrStr()
+static void TestStrStr()
 {
 	const char str1[] = "Like looking for a needle in a haystack";
 	const char str2[] = "needle";
-	char *ptr = NULL;
-	
-	ptr = StrStr(str1, str2);
-	
-	printf("TestStrStr-\n");
-	if(NULL != ptr)
-	{
-	printf("returned string from the function: \"%s\".\n", ptr);
-	printf("\"%s\" exists in the string \"%s\"\n\n", str2, str1);
-	}
-	else
-	{
-	printf("function not working\n\n");
-	}
+
+	TstResChar(strstr(str1, str2), StrStr(str1, str2), __LINE__);
 }
 
-void TestStrSpn()
+static void TestStrSpn()
 {
 	const char str1[] = "ababbcd123456abc";
 	const char str2[] = "abcd";
-	size_t n = 0;
 	
-	n = StrSpn(str1, str2);
-	
-	printf("TestStrSpn-\n");
-	printf("string1: \"%s\", string2: \"%s\"\n", str1, str2);
-	printf("After %lu charecters, we reach a non string2 charecter\n\n", n);
+	TstResInt(strspn(str1, str2), StrSpn(str1, str2), __LINE__);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

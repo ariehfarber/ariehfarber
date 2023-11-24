@@ -3,7 +3,6 @@
 *Reviewer: Artur Livshits
 *Date: 18/11/2023
 *******************************************************************************/
-
 #ifndef  __WS6_H__
 #define __WS6_H__
 
@@ -17,8 +16,8 @@ long Pow2(unsigned int x, unsigned int y);
 *Retuern values: returns 1 if n is a power of 2. Otherwise it returns 0
 *Notes: both functions perform the same task with differnet implementations 
 *******************************************************************************/
-unsigned int IsPow2WithLoop(unsigned int n);
-unsigned int IsPow2NoLoop(unsigned int n);
+unsigned int IsPowOf2WithLoop(unsigned int n);
+unsigned int IsPowOf2NoLoop(unsigned int n);
 
 /*******************************************************************************
 *Description: adds 1 to a number without using arithmetic operators

@@ -3,31 +3,33 @@
 *Reviewer: Artur Livshits
 *Date: 18/11/2023
 *******************************************************************************/
-#include <stdio.h> /*printf*/
+#include <stdio.h>  /*printf*/
+#include <math.h>   /*pow   */
+#include <string.h> /*strcmp*/
 
 #include "ws6.h"
 
-void TestPow2();
-void TestIsPow2WithLoop();
-void TestIsPow2NoLoop();
-void TestAddOne();
-void TestThreeBitsOn();
-void TestByteMirrorWithLoop();
-void TestByteMirrorNoLoop();
-void TestIsBitsTwoAndSix();
-void TestIsBitsTwoOrSix();
-void TestSwapBitsThreeAndFive();
-void TestClosestDivisibleBy16();
-void TestSwapWithBits();
-void TestNumberOfBitsWithLoop();
-void TestNumberOfBitsNoLoop();
-void TestFloatInBits();
+static void TestPow2();
+static void TestIsPowOf2WithLoop();
+static void TestIsPowOf2NoLoop();
+static void TestAddOne();
+static void TestThreeBitsOn();
+static void TestByteMirrorWithLoop();
+static void TestByteMirrorNoLoop();
+static void TestIsBitsTwoAndSix();
+static void TestIsBitsTwoOrSix();
+static void TestSwapBitsThreeAndFive();
+static void TestClosestDivisibleBy16();
+static void TestSwapWithBits();
+static void TestNumberOfBitsWithLoop();
+static void TestNumberOfBitsNoLoop();
+static void TestFloatInBits();
 
 int main()
 {
 	TestPow2();
-	TestIsPow2WithLoop();
-	TestIsPow2NoLoop();
+	TestIsPowOf2WithLoop();
+	TestIsPowOf2NoLoop();
 	TestAddOne();
 	TestThreeBitsOn();
 	TestByteMirrorWithLoop();
@@ -44,10 +46,47 @@ int main()
 	return (0);
 }
 
-/*******************************************************************************
-*Help function for printing numbers in binary
-*******************************************************************************/
-void PrintInBinary8Bits(char number) 
+static void TstResInt(int control, int func_res, int line)
+{
+	if (control != func_res)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+}
+
+static void TstResUnInt(unsigned int control, unsigned int func_res, int line)
+{
+	if (control != func_res)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+}
+
+static void TstResUnChr(unsigned char ctrl, unsigned char res, int line)
+{
+	if (ctrl != res)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+}
+
+static void TstResLong(long control, long func_res, int line)
+{
+	if (control != func_res)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+}
+
+static void PrintInBinary8Bits(char number) 
 {
 	int i = 0;
 	char size = 0;
@@ -64,103 +103,46 @@ void PrintInBinary8Bits(char number)
 	printf("\n");
 }
 
-void PrintInBinary32Bits(unsigned int number) 
-{
-	int i = 0;
-	int size = 0;
-	int binaryDigit = 0;
-	
-	size = sizeof(unsigned int) * 8 - 1;
-	
-	printf("In binary ");
-	for (i = size; i >= 0; i--) 
-	{
-		binaryDigit = (number >> i) & 1;
-		printf("%d", binaryDigit);
-	}
-	printf("\n");
-}
-
-/*******************************************************************************
-*Test exercise 1 
-*******************************************************************************/
-void TestPow2()
+static void TestPow2()
 {
 	unsigned int x = 4;
 	unsigned int y = 3;
-	long result = 0;
 	
-	result = Pow2(x, y);
-	
-	printf("Test Pow2:\n");
-	printf("The resultult of %d*(2^%d) is %ld\n", x, y, result);
-	printf("\n");
+	TstResLong((x * pow(2, y)), Pow2(x, y), __LINE__);
 }
 
-/*******************************************************************************
-*Test exercise 2
-*******************************************************************************/
-void TestIsPow2WithLoop()
+static void TestIsPowOf2WithLoop()
 {
-	unsigned int n = 4;
-	unsigned int result = 0;
-	unsigned i = 0;
-
-	printf("Test IsPow2WithLoop:\n");
-	for(i = 0; i <= n; i++)
-	{
-		result = IsPow2WithLoop(i);
-		if(result == 1)
-		{
-			printf("%d is a power of 2\n", i);
-		}
-		else if(result == 0)
-		{
-			printf("%d is not a power of 2\n", i);
-		}	
-	}
-	printf("\n");
-}
-
-void TestIsPow2NoLoop()
-{
-	unsigned int n = 4;
-	unsigned int result = 0;
+	unsigned int n = 5;
 	unsigned int i = 0;
+	unsigned int control[5] = {0, 1, 1, 0, 1};
 
-	printf("Test IsPow2NoLoop:\n");
-	for(i = 0; i <= n; i++)
+	for (i = 0; i < n; i++)
 	{
-		result = IsPow2NoLoop(i);
-		if(result == 1)
-		{
-			printf("%d is a power of 2\n", i);
-		}
-		else if(result == 0)
-		{
-			printf("%d is not a power of 2\n", i);
-		}	
+		TstResUnInt(control[i], IsPowOf2WithLoop(i), __LINE__);
 	}
-	printf("\n");
 }
 
-/*******************************************************************************
-*Test exercise 3
-*******************************************************************************/
-void TestAddOne()
+static void TestIsPowOf2NoLoop()
 {
-	int n = -1;
-	int sum = 0;
-	
-	sum = AddOne(n);
-	printf("Test AddOne:\n");
-	printf("%d + 1 is %d\n\n", n, sum);
+	unsigned int n = 5;
+	unsigned int i = 0;
+	unsigned int control[5] = {0, 1, 1, 0, 1};
+
+	for (i = 0; i < n; i++)
+	{
+		TstResUnInt(control[i], IsPowOf2NoLoop(i), __LINE__);
+	}
 }
 
-/*******************************************************************************
-*Test exercise 4
-*******************************************************************************/
-void TestThreeBitsOn()
+static void TestAddOne()
+{
+	int n = 50;
+
+	TstResInt(51, AddOne(n), __LINE__);
+}
+
+static void TestThreeBitsOn()
 {
 	unsigned int array[] = {1, 4 ,7, 9, 11, 15};
 	unsigned int size = 0;
@@ -170,10 +152,7 @@ void TestThreeBitsOn()
 	ThreeBitsOn(array, size);
 }
 
-/*******************************************************************************
-*Test exercise 5
-*******************************************************************************/
-void TestByteMirrorWithLoop()
+static void TestByteMirrorWithLoop()
 {
 	char num = 11;
 	char mirror_num = 0;
@@ -189,7 +168,7 @@ void TestByteMirrorWithLoop()
 	printf("\n"); 
 }
 
-void TestByteMirrorNoLoop()
+static void TestByteMirrorNoLoop()
 {
 	char num = 7;
 	char mirror_num = 0;
@@ -205,135 +184,69 @@ void TestByteMirrorNoLoop()
 	printf("\n");
 }
 
-/*******************************************************************************
-*Test exercise 6
-*******************************************************************************/
-void TestIsBitsTwoAndSix()
+static void TestIsBitsTwoAndSix()
 {
 	unsigned char num = 35;
-	char result = 0;
-	
-	printf("Test ISBitsTwoAndSix:\n");
-	printf("Given number %d\n", num);
-	PrintInBinary8Bits(num); 
+	int control = 1;
 
-	result = IsBitsTwoAndSix(num);
-		if(result == 1)
-		{
-			printf("the 2nd and 6th bits are set\n");
-		}
-		else if(result == 0)
-		{
-			printf("the 2nd and 6th bits are not set\n");
-		}	
-	printf("\n");
+	TstResInt(control, IsBitsTwoAndSix(num), __LINE__);
 }
 
-void TestIsBitsTwoOrSix()
+static void TestIsBitsTwoOrSix()
 {
 	unsigned char num = 32;
-	char result = 0;
-	
-	printf("Test IsBitsTwoOrSix:\n");
-	printf("Given number %d\n", num);
-	PrintInBinary8Bits(num); 
+	int control = 1;
 
-	result = IsBitsTwoOrSix(num);
-		if(result == 1)
-		{
-			printf("the 2nd or/and 6th bits are set\n");
-		}
-		else if(result == 0)
-		{
-			printf("the 2nd and 6th bits are not set\n");
-		}	
-	printf("\n");
+	TstResInt(control, IsBitsTwoOrSix(num), __LINE__);
 }
 
-void TestSwapBitsThreeAndFive()
+static void TestSwapBitsThreeAndFive()
 {	
 	unsigned char num = 16;
-	unsigned char result = 0;
+	unsigned char control = 4;
 	
-	printf("Test SwapBitsThreeAndFive:\n");
-	printf("Given number %d\n", num);
-	PrintInBinary8Bits(num); 
-
-	result = SwapBitsThreeAndFive(num);
-	printf("the 3rd or 5th bits swaped gives us %d\n", result);
-	PrintInBinary8Bits(result); 
-	printf("\n");
+	TstResUnChr(control, SwapBitsThreeAndFive(num), __LINE__);
 }
 
-/*******************************************************************************
-*Test exercise 7
-*******************************************************************************/
-void TestClosestDivisibleBy16()
+static void TestClosestDivisibleBy16()
 {
-	unsigned int num = 444150687;
-	unsigned int result = 0;
-	
-	printf("Test ClosestDivisibleBy16:\n");
-	printf("Given number %d\n", num);
+	unsigned int num = 40;
+	unsigned int control = 32;
 
-	result = ClosestDivisibleBy16(num);
-	printf("The closest number divisible by 16 with no remainder is %u\n", result);
-	PrintInBinary32Bits(result);
-	printf("\n"); 
+	TstResUnInt(control, ClosestDivisibleBy16(num), __LINE__);
 }
 
-/*******************************************************************************
-*Test exercise 8
-*******************************************************************************/
-void TestSwapWithBits()
+static void TestSwapWithBits()
 {
 	int x = 5;
 	int y = 123;
-	
-	printf("Test SwapWithBits:\n");
-	printf("Before swap x = %u\n", x);
-	printf("Before swap y = %u\n", y);
+	int control_x = 123;
+	int control_y = 5;
 	
 	SwapWithBits(&x, &y);
-	
-	printf("After swap x = %u\n", x);
-	printf("After swap y = %u\n\n", y);	
+	TstResInt(control_x, x, __LINE__);
+	TstResInt(control_y, y, __LINE__);
 }
 
-/*******************************************************************************
-*Test exercise 9
-*******************************************************************************/
-void TestNumberOfBitsWithLoop()
+static void TestNumberOfBitsWithLoop()
 {
 	int num = 7;
-	int result = 0;
+	int control = 3;
 	
-	result = NumberOfBitsWithLoop(num);
-	
-	printf("Test NumberOfBitsWithLoop:\n");
-	printf("The number of bits in %d is %d\n\n", num, result);
+	TstResInt(control, NumberOfBitsWithLoop(num), __LINE__);
 }
 
-void TestNumberOfBitsNoLoop()
+static void TestNumberOfBitsNoLoop()
 {
-	int num = 1156798;
-	int result = 0;
-	
-	result = NumberOfBitsNoLoop(num);
-	
-	printf("Test NumberOfBitsNoLoop:\n");
-	printf("The number of bits in %d is %d\n", num, result);
-	PrintInBinary32Bits(num);
-	printf("\n"); 
+	int num = 8;
+	int control = 1;
+
+	TstResInt(control, NumberOfBitsNoLoop(num), __LINE__);
 }
 
-/*******************************************************************************
-*Test exercise 10
-*******************************************************************************/
-void TestFloatInBits()
+static void TestFloatInBits()
 {
 	float num = 1.1;
 	
 	FloatInBits(num);
 }
-

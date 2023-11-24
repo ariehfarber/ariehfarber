@@ -3,13 +3,12 @@
 *Reviewer: Yarden Shai
 *Date: 9/11/2023
 *******************************************************************************/
-
 #include <assert.h> /*assert*/
 #include <stddef.h> /*size_t*/
 #include <string.h> /*strcmp*/
 #include <stdlib.h> /*malloc*/
 
-#include "wc2.h"
+#include "ws2.h"
 
 void IntSwap(int *var1, int *var2)
 {
@@ -63,38 +62,18 @@ void PtrSwapCombo(size_t **ptr1, size_t **ptr2)
 
 int IsPalindrome(const char *str)
 {
-	int length = 0;
-	int value = 0;
+	size_t length = 0;
 	size_t i = 0 ,j = 0;
 		
 	length = strlen(str);
 		
 	for (i = 0, j = length - 1; i < length; ++i, --j) 
 	{
-		if(str[i] != str[j])
+		if (str[i] != str[j])
 		{
-			return(value);	
+			return(0);	
 		}
 	}
-	
-	value = 1;
 		
-	return(value);
+	return(1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

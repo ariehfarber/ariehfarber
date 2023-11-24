@@ -3,15 +3,14 @@
 *Reviewer: Yarden Shai
 *Date: 9/11/2023
 *******************************************************************************/
-
 #ifndef __STRING_H__
 #define __STRING_H__
 
 #include <stddef.h> /*size_t*/
+
 /*******************************************************************************
 *Note: Undefind beahaviour if Arguments are NULL.
 *******************************************************************************/
-
 
 /*******************************************************************************
 *Description: Calculate the length of a string, excluding the NULL terminator.
@@ -49,22 +48,22 @@ char *StrCpy(char *dest, const char *src);
 
 /*******************************************************************************
 *Description: Similar to StrCpy, but copied only the first
-*	     (at most) n charecters of src into dest.
+*	     	  (at most) n charecters of src into dest.
 *Arguments: The 2 strings and the n amount of charecters to copy.
 *Retuern values: A pointer to the dest string.
 *Notes: If dest is bigger than n, the rest of the memmory will be padded
-*	with null-terminaters.
-*	The user is responsible for allocating the memory.
-*	The strings must not overlap.
-*	Warning! If there is no null byte among the first n bytes of src, 
-*	the string placed in dest will not be null-terminated.
+*		with null-terminaters.
+*		The user is responsible for allocating the memory.
+*		The strings must not overlap.
+*		Warning! If there is no null byte among the first n bytes of src, 
+*		the string placed in dest will not be null-terminated.
 *******************************************************************************/
 char *StrNCpy(char *dest, const char *src, size_t n);
 
 /*******************************************************************************
 *Description: Locate character in string.
 *Retuern values: A pointer to the matched character or NULL if
-*		 the character is not found.
+*				 the character is not found.
 *******************************************************************************/
 char *StrChr(const char *str, int c);
 
@@ -72,20 +71,21 @@ char *StrChr(const char *str, int c);
 *Description: Duplicate a string.
 *Retuern values: A pointer to a new duplicated string.
 *Notes: If the function fails NULL will be returnd.
-	Warning! The user is responsible for freeing the memory.	*******************************************************************************/
+		Warning! The user is responsible for freeing the memory.	
+*******************************************************************************/
 char *StrDup(const char *str); 
 
 /*******************************************************************************
 *Description: Concatenate two strings.
 *Retuern values: A pointer to the dest string.
 *Notes: The strings must not overlap.
-	The dest string must be large enough to receive the result.
+		The dest string must be large enough to receive the result.
 *******************************************************************************/
 char *StrCat(char *dest, const char *src);
 
 /*******************************************************************************
 *Description: Similar to StrCat, but it concatenate only the
-*	      first n charecters of src into dest.
+*	     	  first n charecters of src into dest.
 *Arguments: The 2 strings and the n amount of charecters to be concatenated.
 *Retuern values: See StrCat.
 *Notes: See StrCat.
@@ -101,12 +101,8 @@ char *StrStr(const char *haystack, const char *needle);
 /*******************************************************************************
 *Description: Get length of a prefix substring
 *Retuern values: The number of bytes in the initial segment of str which consist
-*		 only of bytes from accept.
+*				 only of bytes from accept.
 *******************************************************************************/
 size_t StrSpn(const char *str, const char *accept);
 
 #endif /* __STRING_H__ */
-
-
-
-

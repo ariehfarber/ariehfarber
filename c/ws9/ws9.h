@@ -1,17 +1,11 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer:
-*Date: 
+*Reviewer: Dvir Monajem
+*Date: 23/11/2023
 *******************************************************************************/
 
 #ifndef  __WS9_H__
 #define __WS9_H__
-
-typedef enum output
-{
-	SUCCESS = 0,
-	FILE_ERROR = 1
-} output_t;
 
 typedef struct humanistic
 {
@@ -24,7 +18,6 @@ typedef struct real
     float chemistry;
     float physics;
 } real;    
-
 
 typedef struct all_grades
 {
@@ -41,28 +34,17 @@ typedef struct student
 } student;
 
 /*******************************************************************************
-*Description: creates a struct representing a student and his grades.
-	      it then saves the student struct to a binary file,
-	      and loads the binary file back into a new student struct.
+*Description: saves a student struct to a binary file
 *Return values: success - 0
-		error   - non zero
+		fail    - non-zero
 *******************************************************************************/
-int ManageStudentID();
+int SaveToBinFile(student *my_student, char *title);
+
+/*******************************************************************************
+*Description: loads a student struct from a binary file
+*Return values: success - 0
+		fail    - non-zero
+*******************************************************************************/
+int LoadFromBinFile(student *my_student, char *title);
 
 #endif /*__WS9_H__*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

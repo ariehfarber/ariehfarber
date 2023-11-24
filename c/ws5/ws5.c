@@ -3,17 +3,16 @@
 *Reviewer: Artur Livshits
 *Date: 15/11/2023
 *******************************************************************************/
-
-#include <stdio.h>  /*printf, FILE*, remove, size_t, fopen, fclose, getc,
-		      gets, fputs                                           */
-#include <string.h> /*strncmp, strlen                                       */
+#include <stdio.h>  /*printf, FILE*, remove, size_t, fopen, fclose, getc,*/
+		     		/*gets, fputs                                        */
+#include <string.h> /*strncmp, strlen                                    */
 
 #include "ws5.h"
 
-#define COMMANDS_NUM 	 5   /*number of command option    */
+#define COMMANDS_NUM 	 5   /*number of command option*/
 #define INPUT_MAX_LENGTH 100 /*maximum input charecters*/
 
-char string[INPUT_MAX_LENGTH] = {0};
+char string[INPUT_MAX_LENGTH];
 
 typedef void (*PFnPrint)(int);
 
@@ -43,35 +42,14 @@ typedef struct special_input
 	PFnOperation Operation;
 } special_input_t;
 
-/*******************************************************************************
-*Exercise 1
-*******************************************************************************/
-void Print(int n)
+static void Print(int n)
 {
 	printf("%d\n", n);
 }
 
-void PrintInt()
+static output_t RemoveCommand(const char *title)
 {
-	int i = 0;
-	int size = 10;
-	print_me_t array[10];
-
-	for(i = 0; i < size; i++)
-	{
-		array[i].number = i * 5;
-		array[i].StrPrint = Print;
-		array[i].StrPrint(array[i].number);	
-	}
-	
-}
-
-/*******************************************************************************
-*Exercise 2 - Operation functions
-*******************************************************************************/
-output_t RemoveCommand(const char *title)
-{
-	if(remove(title)) 
+	if (remove(title)) 
 	{
 		return (REMOVE_ERROR);
 	}
@@ -79,7 +57,7 @@ output_t RemoveCommand(const char *title)
 	return (SUCCESS);
 }
 
-output_t CountCommand(const char *title)
+static output_t CountCommand(const char *title)
 {
 
 	int count = 0;
@@ -87,7 +65,7 @@ output_t CountCommand(const char *title)
 	FILE *test_file;
 	
 	test_file = fopen(title, "r");
-	if(!test_file)
+	if (!test_file)
 	{
 		return (FILE_ERROR);
 	}
@@ -102,7 +80,7 @@ output_t CountCommand(const char *title)
 	}
 	
 	fclose(test_file);
-	if(!test_file)
+	if (!test_file)
 	{
 		return (FILE_ERROR);
 	}
@@ -112,34 +90,34 @@ output_t CountCommand(const char *title)
 	return (SUCCESS);	
 }
 
-output_t ExitCommand()
+static output_t ExitCommand()
 {
 	return (EXIT);
 }
 
-output_t AddToStartCommand(const char *title)
+static output_t AddToStartCommand(const char *title)
 {
 	int ret;
 	char ch;
-	char *temp_title = "temp.txt";
-    	FILE *temp_file;
-    	FILE *test_file; 
+	char *temp_title = "temporary_file.txt";
+   	FILE *temp_file;
+   	FILE *test_file; 
     	
 	/*Creating a temporary file and opening the original file*/
-    	temp_file = fopen(temp_title, "w+");
-	if(!temp_file)
+   	temp_file = fopen(temp_title, "w+");
+	if (!temp_file)
 	{
 		return (FILE_ERROR);
 	}
 	
 	test_file = fopen(title, "r+");
-	if(!test_file)
+	if (!test_file)
 	{
 		return (FILE_ERROR);
 	}
 	
 	/*Inserting the string as the first line of the temporary file,
-	 not icluding the '<' charecter*/
+	  not icluding the '<' charecter*/
 	fputs(string + 1, temp_file);
 	
 	/*copying the original file into the temporary file*/
@@ -149,13 +127,13 @@ output_t AddToStartCommand(const char *title)
 	}
 	
 	fclose(temp_file);
-	if(!temp_file)
+	if (!temp_file)
 	{
 		return (FILE_ERROR);
 	}
 		
 	fclose(test_file);
-	if(!test_file)
+	if (!test_file)
 	{
 		return (FILE_ERROR);
 	}
@@ -165,7 +143,7 @@ output_t AddToStartCommand(const char *title)
 	
 	/*Renaming the temporary file with the name of the original file*/
 	ret = rename(temp_title, title);
-	if(ret) 
+	if (ret) 
 	{
 		return (RENAME_ERROR);
 	}
@@ -173,12 +151,12 @@ output_t AddToStartCommand(const char *title)
 	return (SUCCESS);	
 }
 
-output_t WriteCommand(const char *title)
+static output_t AddToEndCommand(const char *title)
 {
 	FILE *test_file;
 	
 	test_file = fopen(title, "a");
-	if(!test_file)
+	if (!test_file)
 	{
 		return (FILE_ERROR);
 	}
@@ -186,7 +164,7 @@ output_t WriteCommand(const char *title)
 	fputs(string, test_file);
 	
 	fclose(test_file);
-	if(!test_file)
+	if (!test_file)
 	{
 		return (FILE_ERROR);
 	}
@@ -194,9 +172,20 @@ output_t WriteCommand(const char *title)
 	return (SUCCESS);
 }
 
-/*******************************************************************************
-*Exercise 2 - chain of responsibility function
-*******************************************************************************/
+void PrintInt()
+{
+	int i = 0;
+	int size = 10;
+	print_me_t array[10];
+
+	for (i = 0; i < size; i++)
+	{
+		array[i].number = i * 5;
+		array[i].StrPrint = Print;
+		array[i].StrPrint(array[i].number);	
+	}
+}
+
 int FileEditor(const char *title)
 {
 	int i = 0;
@@ -211,13 +200,13 @@ int FileEditor(const char *title)
 		{"-count\n", strncmp, CountCommand},
 		{"-exit\n", strncmp, ExitCommand},
 		{"<", strncmp, AddToStartCommand},
-		{"", strncmp, WriteCommand}
+		{"", strncmp, AddToEndCommand}
 	};
 	
-	while(SUCCESS == state)
+	while (SUCCESS == state)
 	{	
 		printf("Enter string (up to 100 charecters):\n");
-		if(!fgets(string, 100, stdin))
+		if (!fgets(string, 100, stdin))
 		{
 			state = INPUT_ERROR;
 		}
@@ -225,47 +214,41 @@ int FileEditor(const char *title)
 		
 		/*using strncmp to help decide which command to use*/
 		n = strlen(string);
-		if('<' == string[0])
+		if ('<' == string[0])
 		{
 			n = 1;
 		}
 		
 		/*checking which command to use*/
-		for(i = 0; i < size; i++)
+		for (i = 0; i < size; i++)
 		{
-			if(!cmnd_array[i].Comparison(cmnd_array[i].str,\
-			   string, n))
+			if (!cmnd_array[i].Comparison(cmnd_array[i].str, string, n))
 			{
 				state = cmnd_array[i].Operation(title);
 				break;
 			}
-			if(4 == i + 1)
+			else if (4 == i)
 			{
-				state = cmnd_array[i+1].Operation(title);
+				state = cmnd_array[i].Operation(title);
 			}
 		}
 		
-		switch(state)
+		switch (state)
 		{
 			case SUCCESS:
-				break;
-			
+				break;	
 			case REMOVE_ERROR:
 				printf("Error with a remove command\n");
-				break;
-			
+				break;		
 			case FILE_ERROR:
 				printf("Error with a file command\n");
-				break;
-		
+				break;	
 			case RENAME_ERROR:
 				printf("Error with a rename command\n");
-				break;
-		
+				break;	
 			case INPUT_ERROR:
 				printf("Error with a input command\n");
-				break;
-			
+				break;		
 			case EXIT:
 				return (SUCCESS);
 				break;
@@ -274,41 +257,3 @@ int FileEditor(const char *title)
 	
 	return (state);	
 }
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

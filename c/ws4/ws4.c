@@ -3,7 +3,6 @@
 *Reviewer: Artur Livshits
 *Date: 13/11/2023
 *******************************************************************************/
-
 #include <stdio.h>  /*printf, getchar*/
 #include <stdlib.h> /*system*/
 
@@ -14,26 +13,37 @@
 
 typedef void (*PFnPrintFunctions[SIZE_OF_ASCII])(void);
 
-/*******************************************************************************
-Exercise Switch
-*******************************************************************************/
+static void PrintA()
+{
+	printf("A-pressed\n");
+}
+
+static void PrintT()
+{
+	printf("T-pressed\n");
+}
+
+static void EmptyFunction()
+{
+}
+
 void SwitchKeyInputAT()
 {
 	int c = 0;
 
-	if(system("stty -icanon -echo"))
+	if (system("stty -icanon -echo"))
 	{
 		printf("Issue with system command\n");
 		return;
 	}
 	
 	printf("Switch function:\n");
-	while(ESC != c)
+	while (ESC != c)
 	{
-		printf( "Press A or T keys to activate:\n");
+		printf( "Press A or T keys to activate, Esc to exit:\n");
 		c = getchar( );
 		
-		switch(c)
+		switch (c)
 		{
 			case ('A'):
 			case ('a'):
@@ -47,71 +57,47 @@ void SwitchKeyInputAT()
 		}
 	} 
 	
-	if(system("stty -icanon -echo"))
+	if (system("stty icanon echo"))
 	{
 		printf("Issue with system command\n");
 		return;
 	}
 }
 
-/*******************************************************************************
-Exercise If
-*******************************************************************************/
 void IfKeyInput()
 {
 	int c = 0;
 	
-	if(system("stty -icanon -echo"))
+	if (system("stty -icanon -echo"))
 	{
 		printf("Issue with system command\n");
 		return;
 	}
 	
 	printf("if function:\n");
-	while(ESC != c)
+	while (ESC != c)
 	{
-		printf( "Press A or T keys to activate:\n");
+		printf( "Press A or T keys to activate, Esc to exit:\n");
 		c = getchar( );
 				
-		if(c == 'A' || c == 'a')
+		if (c == 'A' || c == 'a')
 		{
 			printf("A-pressed\n");
 		}
 		
-		if(c == 'T' || c == 't')
+		if (c == 'T' || c == 't')
 		{
 			printf("T-pressed\n");
 		}
-
 	} 
 	
-	if(system("stty -icanon -echo"))
+	if (system("stty icanon echo"))
 	{
 		printf("Issue with system command\n");
 		return;
 	}
 }
 
-/*******************************************************************************
-*Print functions for LUT function
-*******************************************************************************/
-void PrintA()
-{
-	printf("A-pressed\n");
-}
-
-void PrintT()
-{
-	printf("T-pressed\n");
-}
-
-void EmptyFunction()
-{
-}
-
-/*******************************************************************************
-Exercise LUT
-*******************************************************************************/
 void LUTKeyInput()
 {
 	int c = 0;
@@ -120,14 +106,14 @@ void LUTKeyInput()
 	/*Array of function pointers*/
 	PFnPrintFunctions PrintLetter;
 	
-	if(system("stty -icanon -echo"))
+	if (system("stty -icanon -echo"))
 	{
 		printf("Issue with system command\n");
 		return;
 	}
 	
 	/*Padding the array with empty functions*/
-	for(i = 0; i < 256; i++)
+	for (i = 0; i < 256; i++)
 	{
 		PrintLetter[i] = EmptyFunction;
 	}
@@ -139,50 +125,17 @@ void LUTKeyInput()
 	PrintLetter[(unsigned char)'t'] = PrintT;
 	
 	printf("LUT function:\n");
-	while(ESC != c)
+	while (ESC != c)
 	{
-		printf( "Press A or T keys to activate:\n");
+		printf( "Press A or T keys to activate, Esc to exit:\n");
 
 		c = getchar( );
 		PrintLetter[(unsigned char)c]();
 	} 
 	
-	if(system("stty -icanon -echo"))
+	if (system("stty icanon echo"))
 	{
 		printf("Issue with system command\n");
 		return;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

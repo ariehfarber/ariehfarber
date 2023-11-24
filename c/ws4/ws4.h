@@ -3,29 +3,25 @@
 *Reviewer: Artur Livshits
 *Date: 13/11/2023
 *******************************************************************************/
-
 #ifndef  __WS4_H__
 #define __WS4_H__
 
 /*******************************************************************************
-Exercise Switch
+*Desctiprion: When activated the function recognizes if the A or T keys
+*			  were pressed. The program finishes when the Esc key is pressed.
 *******************************************************************************/
 void SwitchKeyInputAT();
 
 /*******************************************************************************
-Exercise If
+*Desctiprion: When activated the function recognizes if the A or T keys
+*			  were pressed. The program finishes when the Esc key is pressed.
 *******************************************************************************/
 void IfKeyInput();
 
 /*******************************************************************************
-Exercise LUT
+*Desctiprion: When activated the function recognizes if the A or T keys
+*			  were pressed. The program finishes when the Esc key is pressed.
 *******************************************************************************/
-void PrintA();
-
-void PrintT();
-
-void EmptyFunction();
-
 void LUTKeyInput();
 
 #endif /*__WS4_H__*/

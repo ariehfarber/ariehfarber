@@ -3,59 +3,29 @@
 *Reviewer: Dvir Monajem
 *Date: 22/11/2023
 *******************************************************************************/
-
-#include <stdio.h>  /*printf			*/
-#include <stdlib.h> /*size_t,malloc,realloc,free*/
-#include <assert.h> /*assert			*/
-#include <string.h> /*strlen,strcat		*/
+#include <stdio.h>  /*printf					*/
+#include <stdlib.h> /*size_t,realloc,free		*/
+#include <assert.h> /*assert					*/
+#include <string.h> /*strlen,strcat				*/
 
 #include "ws8.h"
 
-#define ELEMENT_NUM 5
-
-typedef void (*PFnPrint)(size_t);
-typedef void (*PFnAdd)(size_t *, int);
-typedef void (*PFnClean)(size_t *);
-
-typedef struct element
-{
-	size_t data;
-	PFnPrint PrintValue;
-	PFnAdd AddNumber;
-	PFnClean CleanValue;
-} element_t;
-
-void SetInt(element_t *target, int int_number) 
-{
-	target->data = *(size_t *)&int_number; 
-}
-
-void SetFloat(element_t *target, float float_number) 
-{
-	target->data = *(size_t *)&float_number;
-}
-
-void SetString(element_t *target, char *str) 
-{
-	target->data = (size_t)str; 
-}
-
-void PrintInt(size_t value)
+static void PrintInt(size_t value)
 {
 	printf("%d, ", *(int *)&value);	
 }
 
-void PrintFloat(size_t value)
+static void PrintFloat(size_t value)
 {
 	printf("%.6f, ", *(float *)&value);	
 }
 
-void PrintString(size_t value)
+static void PrintString(size_t value)
 {
 	printf("%s, ", (char *)value);	
 }
 
-void AddInt(size_t *target, int int_value)
+static void AddInt(size_t *target, int int_value)
 {
 	int temp_int = 0;
 	
@@ -64,7 +34,7 @@ void AddInt(size_t *target, int int_value)
 	*target = *(size_t *)&temp_int;	
 }
 
-void AddFloat(size_t *target, int float_value)
+static void AddFloat(size_t *target, int float_value)
 {
 	float temp_float = 0;
 	
@@ -73,7 +43,7 @@ void AddFloat(size_t *target, int float_value)
 	*target = *(size_t *)&temp_float;	
 }
 
-void AddString(size_t *target, int value)
+static void AddString(size_t *target, int value)
 {
 	char temp_buffer[10]; /*the biggest integer is 10 charecters*/
 	char *new_str = NULL;
@@ -95,68 +65,74 @@ void AddString(size_t *target, int value)
 	*target = (size_t)new_str;
 }
 
-void CleanInt(size_t *target)
+static void CleanInt(size_t *target)
 {
 	(void)target;
 }
 
-void CleanFloat(size_t *target)
+static void CleanFloat(size_t *target)
 {
 	(void)target;
 }
 
-void CleanString(size_t *target)
+static void CleanString(size_t *target)
 {
 	free((char *)(*target));
 	*target = 0; 
 }
 
-void ListElements()
-{		
-	int i = 0;
-	char *string = NULL;
-	
-	/*initialize struct array*/
-	element_t element_array[ELEMENT_NUM] =
-	{
-		{0, PrintFloat, AddFloat, CleanFloat},
-		{0, PrintInt, AddInt, CleanInt},
-		{0, PrintInt, AddInt, CleanInt},
-		{0, PrintFloat, AddFloat, CleanFloat},
-		{0, PrintString, AddString, CleanString}
-	}; 
-	
-	string =  malloc(sizeof(char *) * strlen("chapter") + 1);
-	assert(string);
-	
-    	strcpy(string, "chapter");
+void SetInt(element_t *target, int int_number) 
+{
+	target->data = *(size_t *)&int_number; 
+	target->PrintValue = PrintInt;
+	target->AddNumber = AddInt;
+	target->CleanValue = CleanInt;
+}
 
-	SetFloat(&element_array[0], 4.2);
-	SetInt(&element_array[1], 500);
-	SetInt(&element_array[2], 12);
-	SetFloat(&element_array[3], 56.3);
-	SetString(&element_array[4], string);
-	
-	for(i = 0; i < ELEMENT_NUM; i++)
+void SetFloat(element_t *target, float float_number) 
+{
+	target->data = *(size_t *)&float_number;
+	target->PrintValue = PrintFloat;
+	target->AddNumber = AddFloat;
+	target->CleanValue = CleanFloat;
+}
+
+void SetString(element_t *target, char *str) 
+{
+	target->data = (size_t)str; 
+	target->PrintValue = PrintString;
+	target->AddNumber = AddString;
+	target->CleanValue = CleanString;
+}
+
+void PrintElements(element_t *my_elements)
+{	
+	int i = 0;
+				
+	for (i = 0; i < ELEMENT_NUM; i++)
 	{
-		element_array[i].PrintValue(element_array[i].data);
+		my_elements[i].PrintValue(my_elements[i].data);
 	}
 	printf("\n");
-	
-	for(i = 0; i < ELEMENT_NUM; i++)
+}
+
+void AddElements(element_t *my_elements, int int_num)
+{	
+	int i = 0;
+				
+	for (i = 0; i < ELEMENT_NUM; i++)
 	{
-		element_array[i].AddNumber(&element_array[i].data, 10);
+		my_elements[i].AddNumber(&my_elements[i].data, int_num);
 	}
-	
-	for(i = 0; i < ELEMENT_NUM; i++)
+}
+
+void CleanElements(element_t *my_elements)
+{	
+	int i = 0;
+				
+	for (i = 0; i < ELEMENT_NUM; i++)
 	{
-		element_array[i].PrintValue(element_array[i].data);
-	}
-	printf("\n");
-	
-	for(i = 0; i < ELEMENT_NUM; i++)
-	{
-		element_array[i].CleanValue(&element_array[i].data);
+		my_elements[i].CleanValue(&my_elements[i].data);
 	}
 }
 

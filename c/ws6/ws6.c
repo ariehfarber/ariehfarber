@@ -7,9 +7,6 @@
 
 #include "ws6.h"
 
-/*******************************************************************************
-*Exercise 1
-*******************************************************************************/
 long Pow2(unsigned int x, unsigned int y)
 {
 	long result = 0;
@@ -19,17 +16,14 @@ long Pow2(unsigned int x, unsigned int y)
 	return (result);	 
 }
 
-/*******************************************************************************
-*Exercise 2
-*******************************************************************************/
-unsigned int IsPow2WithLoop(unsigned int n)
+unsigned int IsPowOf2WithLoop(unsigned int n)
 {
 	if (n == 0)
 	{
 		return (0);		
 	}
 
-	while(0 == (n & 1))
+	while (0 == (n & 1))
 	{
 		n >>= 1;
 	}
@@ -37,7 +31,7 @@ unsigned int IsPow2WithLoop(unsigned int n)
 	return (n == 1);		
 }
 
-unsigned int IsPow2NoLoop(unsigned int n)
+unsigned int IsPowOf2NoLoop(unsigned int n)
 {
 	if (n == 0)
 	{
@@ -47,15 +41,12 @@ unsigned int IsPow2NoLoop(unsigned int n)
 	return (0 == (n & (n - 1)));		
 }
 
-/*******************************************************************************
-*Exercise 3
-*******************************************************************************/
 int AddOne(int n)
 {
 	int mask = 1;
 
 	/*Flip all the set bits until we find a 0*/
-	while(n & mask)
+	while (n & mask)
 	{
 		n ^= mask;
 		mask <<= 1;
@@ -67,9 +58,6 @@ int AddOne(int n)
 	return (n);
 }
 
-/*******************************************************************************
-*Exercise 4
-*******************************************************************************/
 void ThreeBitsOn(unsigned int *arr, unsigned int size)
 {
 	unsigned int i = 0;
@@ -79,17 +67,17 @@ void ThreeBitsOn(unsigned int *arr, unsigned int size)
 	
 	printf("ThreeBitsOn:\n");
 	
-	for(i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		num = arr[i];
 		
-		while(num)
+		while (num)
 		{
 			count+= (num & mask);
 			num >>= 1;
 		}
 		
-		if(3 == count)
+		if (3 == count)
 		{
 			printf("%d has exactly 3 bits on\n", arr[i]);
 		}
@@ -100,16 +88,13 @@ void ThreeBitsOn(unsigned int *arr, unsigned int size)
 	printf("\n");
 }
 
-/*******************************************************************************
-*Exercise 5
-*******************************************************************************/
 unsigned char ByteMirrorWithLoop(unsigned char n)
 {
 	int mirror_n = 0;
 	int number_of_bits = sizeof(unsigned char) * 8;
 	int i = 0;
 	
-	for(i = 0; i < number_of_bits; i++)
+	for (i = 0; i < number_of_bits; i++)
 	{
 		mirror_n |= (((n >> i) & 1) << (number_of_bits - 1 - i));
 	}
@@ -126,16 +111,13 @@ unsigned char ByteMirrorNoLoop(unsigned char n)
 	return (n);
 }
 
-/*******************************************************************************
-*Exercise 6
-*******************************************************************************/
 int IsBitsTwoAndSix(unsigned char n)
 {
 	int result = 0;
 	
 	result = n & 34;
 
-	return(result == 34);
+	return (result == 34);
 }
 
 int IsBitsTwoOrSix(unsigned char n)
@@ -160,7 +142,7 @@ unsigned char SwapBitsThreeAndFive(unsigned char n)
 	
 	result = result_three + result_five;
 	
-	if(result == 4 || result == 16)
+	if (result == 4 || result == 16)
 	{
 		n ^= 20;
 	}
@@ -168,9 +150,6 @@ unsigned char SwapBitsThreeAndFive(unsigned char n)
 	return (n);
 }
 
-/*******************************************************************************
-*Exercise 7
-*******************************************************************************/
 unsigned int ClosestDivisibleBy16(unsigned int n)
 {
 	n &= ~15;
@@ -178,12 +157,9 @@ unsigned int ClosestDivisibleBy16(unsigned int n)
 	return (n);
 }
 
-/*******************************************************************************
-*Exercise 8
-*******************************************************************************/
 void SwapWithBits(int *p1, int *p2)
 {
-	if(*p1 != *p2)
+	if (*p1 != *p2)
 	{
 		*p1 ^= *p2;
 		*p2 ^= *p1;
@@ -191,9 +167,6 @@ void SwapWithBits(int *p1, int *p2)
 	}	
 }
 
-/*******************************************************************************
-*Exercise 9
-*******************************************************************************/
 int NumberOfBitsWithLoop(int n)
 {
 	int count = 0;
@@ -212,23 +185,20 @@ int NumberOfBitsNoLoop(int n)
 	int count = 0;
 
 	count = (n & 1) + ((n >> 1) & 1) + ((n >> 2) & 1) + \
-	((n >> 3) & 1) + ((n >> 4) & 1) + ((n >> 5) & 1) + \
-	((n >> 6) & 1) + ((n >> 7) & 1) + ((n >> 8) & 1) + \
-	((n >> 9) & 1) + ((n >> 10) & 1) + ((n >> 11) & 1) + \
-        ((n >> 12) & 1) + ((n >> 13) & 1) + ((n >> 14) & 1) + \
-        ((n >> 15) & 1) + ((n >> 16) & 1) + ((n >> 17) & 1) + \
-        ((n >> 18) & 1) + ((n >> 19) & 1) + ((n >> 20) & 1) + \
-        ((n >> 21) & 1) + ((n >> 22) & 1) + ((n >> 23) & 1) + \
-        ((n >> 24) & 1) + ((n >> 25) & 1) + ((n >> 26) & 1) + \
-        ((n >> 27) & 1) + ((n >> 28) & 1) + ((n >> 29) & 1) + \
-        ((n >> 30) & 1) + ((n >> 31) & 1);
+			((n >> 3) & 1) + ((n >> 4) & 1) + ((n >> 5) & 1) + \
+			((n >> 6) & 1) + ((n >> 7) & 1) + ((n >> 8) & 1) + \
+			((n >> 9) & 1) + ((n >> 10) & 1) + ((n >> 11) & 1) + \
+      	    ((n >> 12) & 1) + ((n >> 13) & 1) + ((n >> 14) & 1) + \
+      	    ((n >> 15) & 1) + ((n >> 16) & 1) + ((n >> 17) & 1) + \
+      	    ((n >> 18) & 1) + ((n >> 19) & 1) + ((n >> 20) & 1) + \
+      	    ((n >> 21) & 1) + ((n >> 22) & 1) + ((n >> 23) & 1) + \
+      	    ((n >> 24) & 1) + ((n >> 25) & 1) + ((n >> 26) & 1) + \
+      	    ((n >> 27) & 1) + ((n >> 28) & 1) + ((n >> 29) & 1) + \
+      	    ((n >> 30) & 1) + ((n >> 31) & 1);
 	
 	return (count);
 }
 
-/*******************************************************************************
-*Exercise 10
-*******************************************************************************/
 void FloatInBits(float f_num)
 {
 	float *f_ptr = NULL;
