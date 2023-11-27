@@ -5,13 +5,13 @@
 *******************************************************************************/
 #define _POSIX_C_SOURCE 200809L /*a macro for using strdup with c89 compiler*/
 
-#include <stdio.h>   /*printf()											 */
-#include <stddef.h>  /*size_t  											 */
-#include <stdlib.h>  /*malloc  											 */
-#include <assert.h>  /*assert											 */
-#include <strings.h> /*strcasecmp										 */
-#include <string.h>  /*strlen, strcmp, strncmp, , strcpy, strncpy  	     */
-					 /*strchr, strdup, strcat, strncat, strstr, strspn   */
+#include <stdio.h>   /*printf()										  */
+#include <stddef.h>  /*size_t  										  */
+#include <stdlib.h>  /*malloc  										  */
+#include <assert.h>  /*assert										  */
+#include <strings.h> /*strcasecmp								      */
+#include <string.h>  /*strlen, strcmp, strncmp, , strcpy, strncpy     */
+					 /*strchr, strdup, strcat, strncat, strstr, strspn*/
 #include "String.h"
 
 static void TestStrLen();
