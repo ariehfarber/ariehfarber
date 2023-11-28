@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Ben Cohen
+*Date: 27/11/2023
 *******************************************************************************/
 #include <stdio.h>  /*printf								 */
 #include <stddef.h> /*size_t								 */
@@ -41,7 +41,7 @@ static void TestMemSet()
 	char original_string[] = "12345678_12345678";
 	char test_string[20];
 	char control_string[20];
-	int character = '0';
+	int character = 300;
 	size_t number_of_bytes = 10;
 	
 	/*Initialize the buffers*/
@@ -107,7 +107,7 @@ static void TestMemMove()
 	char control_string[10] = "123456789";
 	size_t number_of_bytes = 4;
 
-	/*test for aligned string*/
+	/*test for unaligned string*/
 	MemMove(test_string + 2, test_string, number_of_bytes);
 	
 	memmove(control_string + 2, control_string, number_of_bytes);

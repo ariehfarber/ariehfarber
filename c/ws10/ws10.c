@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Ben Cohen
+*Date: 27/11/2023
 *******************************************************************************/
 #include <stddef.h> /*size_t*/
 #include <assert.h> /*assert*/
@@ -16,7 +16,7 @@ void *MemSet(void *str, int c, size_t n)
     const size_t word_size = sizeof(size_t);
     size_t i = 0;
 
-    assert(str);
+    assert(NULL != str);
 
 	/*assaigning the c charecter to every byte in a size_t sized variable*/
     for (i = 0; i < word_size; i++) 

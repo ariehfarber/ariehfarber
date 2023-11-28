@@ -1,6 +1,9 @@
+/*******************************************************************************
+*Auther: Arieh Farber
+*******************************************************************************/
 #include <stdio.h>  /*printf*/
 
-#include "Quiz8.h"
+#include "quiz8.h"
 
 static void TestCountCoupledSetBits();
 static void TestSwapWithBits();

@@ -4,7 +4,7 @@
 #include <stdio.h>  /*printf*/
 #include <string.h>  /*strcmp*/
 
-#include "Quiz9.h"
+#include "quiz9.h"
 
 static void TestRemoveSpaces();
 

@@ -3,7 +3,7 @@
 *******************************************************************************/
 #include <string.h> /*strlen*/
 
-#include "Quiz9.h"
+#include "quiz9.h"
 
 char *RemoveSpaces(char *str)
 {
