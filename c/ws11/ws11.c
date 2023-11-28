@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Yarden Shai
+*Date: 28/11/2023
 *******************************************************************************/
 #include <stdio.h>  /*printf*/
 #include <stddef.h> /*size_t*/
@@ -10,7 +10,15 @@
 
 #include "ws11.h"
 
+#define ASCII_LETTER_DIFF 10
+#define NEGATIVE -1
+#define POSITIVE 1
+#define TRUE 1
+#define FALSE 0
+#define DECIMAL_BASE 10
 #define ASCII_SIZE 256
+#define TRUE_TRUE 2
+
 
 static int CharToInt(char c)
 {
@@ -20,7 +28,7 @@ static int CharToInt(char c)
 	}
 	else
 	{
-		return ((int)c - 'A' + 10); 
+		return ((int)c - 'A' + ASCII_LETTER_DIFF); 
 	}
 }
 
@@ -32,7 +40,7 @@ static char IntToChar(int n)
 	}
 	else
 	{
-		return ((char)n + 'A' - 10); 
+		return ((char)n + 'A' - ASCII_LETTER_DIFF); 
 	}
 }
 
@@ -54,41 +62,13 @@ static char *StrRev(char *str)
 
 int Atoi(const char *str)
 {
-	int digit = 0;
-	int sign = 1;
-	
-	assert(NULL != str);
-	
-	while (' ' == *str || '\t' == *str)
-	{
-		str++;
-	}
-	
-	if ('-' == *str)
-	{
-		sign = -1;
-		str++;
-	}
-	
-	while ('\0' != *str) 
-	{
-		if ('0' > *str || '9' < *str) 
-		{
-			return (digit);
-		}
-		
-		digit *= 10;
-		digit += *str - '0';
-		str++;
-	}
-	
-	return (digit * sign);
+	return (AtoiAnyBase(str, DECIMAL_BASE));
 }
 
 int AtoiAnyBase(const char *str, int base)
 {
 	int digit = 0;
-	int sign = 1;
+	int sign = POSITIVE;
 	
 	assert(NULL != str);
 	
@@ -99,7 +79,7 @@ int AtoiAnyBase(const char *str, int base)
 	
 	if ('-' == *str)
 	{
-		sign = -1;
+		sign = NEGATIVE;
 		str++;
 	}
 	
@@ -125,54 +105,14 @@ int AtoiAnyBase(const char *str, int base)
 
 char* Itoa(int num, char* buffer)
 {
-	char *buffer_start = NULL;
-	int digit = 0;
-	int is_negative = 0;
-	
-	assert(NULL != buffer);
-	
-	buffer_start = buffer;
-
-	if (0 == num)
-	{
-		*buffer = '0';
-		buffer++;
-		*buffer = '\0';
-		return (buffer_start);
-	}
-	
-	if (0 > num)
-	{
-		is_negative = 1;
-		num = -num;
-	}
-
-	while (0 < num)
-	{
-		digit = num % 10;
-		num /= 10;
-		*buffer = digit + '0';
-		buffer++;
-	}
-	
-	if (1 == is_negative)
-	{
-		*buffer = '-';
-		buffer++;
-	}
-	
-	*buffer = '\0';
-	
-	StrRev(buffer_start);
-	
-	return (buffer_start);
+	return (ItoaAnyBase(num, buffer, DECIMAL_BASE));
 }
 
 char* ItoaAnyBase(int num, char* buffer, int base)
 {
 	char *buffer_start = NULL;
 	int digit = 0;
-	int is_negative = 0;
+	int is_negative = FALSE;
 	
 	assert(NULL != buffer);
 	
@@ -188,7 +128,7 @@ char* ItoaAnyBase(int num, char* buffer, int base)
 	
 	if (0 > num)
 	{
-		is_negative = 1;
+		is_negative = TRUE;
 		num = -num;
 	}
 
@@ -200,7 +140,7 @@ char* ItoaAnyBase(int num, char* buffer, int base)
 		buffer++;
 	}
 	
-	if (1 == is_negative)
+	if (TRUE == is_negative)
 	{
 		*buffer = '-';
 		buffer++;
@@ -217,44 +157,47 @@ void PrintArrOfChars(char *str1, char *str2 ,char *str3, size_t size1,
 					 size_t size2, size_t size3)
 {
 	size_t i = 0;
-	char letter_table1[ASCII_SIZE] = {0};
-	char letter_table2[ASCII_SIZE] = {0};
+	char character_table[ASCII_SIZE] = {0};
 	
-	for (i = 0; i < size1; i++)
-	{
-		if (('A' <= str1[i] && 'Z' >= str1[i]) || ('a' <= str1[i] && 'z' >= str1[i]))
-		{
-			letter_table1[CharToInt(str1[i])]++;
-		}
-	}
-	
-	for (i = 0; i < size2; i++)
-	{
-		if (('A' <= str1[i] && 'Z' >= str1[i]) || ('a' <= str1[i] && 'z' >= str1[i]))
-		{
-			letter_table1[CharToInt(str2[i])]++;
-		}
-	}
-	
-	for (i = 0; i < size3; i++)
-	{
-		if (('A' <= str1[i] && 'Z' >= str1[i]) || ('a' <= str1[i] && 'z' >= str1[i]))
-		{
-			letter_table1[CharToInt(str3[i])]++;
-			letter_table2[CharToInt(str3[i])]++;
-		}
-	}
-	
-	for (i = 0; i < ASCII_SIZE; i++)
-	{
-		if (2 == letter_table1[i] && 0 == letter_table2[i])
-		{
-			printf("%c\n", IntToChar(letter_table1[i]));
-		}
-	}
+    for (i = 0; i < size1; i++) 
+    {
+        character_table[(int)str1[i]] = TRUE;
+    }
+
+    for (i = 0; i < size2; i++) 
+    {
+        if (character_table[(int)str2[i]] == TRUE) 
+        {
+            character_table[(int)str2[i]] = TRUE_TRUE;
+        }
+    }
+
+    for (i = 0; i < size3; i++) 
+    {
+        character_table[(int)str3[i]] = FALSE;
+    }
+
+    for (i = 0; i < ASCII_SIZE; i++) 
+    {
+        if (character_table[i] == TRUE_TRUE) 
+        {
+            printf("%c\n", (char)i);
+        }
+    }
 }
 
+int IsLittleEndian(void)
+{
+	int test = 1;
+	int endian_res = FALSE;
 
+	if (*(char *)&test == 1)
+	{
+		endian_res = TRUE;
+	}
+
+	return (endian_res);
+}
 
 
 

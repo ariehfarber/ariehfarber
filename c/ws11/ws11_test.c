@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Yarden Shai
+*Date: 28/11/2023
 *******************************************************************************/
 #include <stdio.h>  /*printf*/
 #include <stdlib.h> /*atoi  */
@@ -14,6 +14,7 @@ static void	TestAtoiAnyBase();
 static void TestItoa();
 static void	TestItoaAnyBase();
 static void TestPrintArrOfChars();
+static void TestIsLittleEndian();
 
 int main()
 {
@@ -22,6 +23,7 @@ int main()
 	TestItoa();
 	TestItoaAnyBase();
 	TestPrintArrOfChars();
+	TestIsLittleEndian();
 	
 	return (0);
 }
@@ -105,7 +107,7 @@ static void	TestItoaAnyBase()
 
 static void TestPrintArrOfChars()
 {
-    char array1[] = {'A', 'a', 'b'};
+    char array1[] = {'A', 'A', 'a'};
     char array2[] = {'A', 'a', 'f', 'f', 'f', 'f', 'f'};
     char array3[] = {'g', 'g', 'g', 'N', 'g'};
 	size_t size1 = 0;
@@ -119,5 +121,11 @@ static void TestPrintArrOfChars()
 	PrintArrOfChars(array1, array2 ,array3, size1, size2, size3);
 }
 
+static void TestIsLittleEndian()
+{
+	TstResInt(1, IsLittleEndian(), __LINE__);
+	
+	TstResInt(1, IS_LITTLE_ENDIAN, __LINE__);
+}
 
 

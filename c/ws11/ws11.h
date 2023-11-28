@@ -1,12 +1,13 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Yarden Shai
+*Date: 28/11/2023
 *******************************************************************************/
 #ifndef _WS11_
 #define _WS11_
 
-/*place macro here*/
+static const int one = 1;
+#define IS_LITTLE_ENDIAN (*(unsigned char *)&one == 1 ? 1 : 0)
 
 /*******************************************************************************
 *Description: Converts the initial portion of the string pointed to by
