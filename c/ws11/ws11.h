@@ -6,6 +6,8 @@
 #ifndef _WS11_
 #define _WS11_
 
+#include <stddef.h> /*size_t*/
+
 static const int one = 1;
 #define IS_LITTLE_ENDIAN (*(unsigned char *)&one == 1 ? 1 : 0)
 

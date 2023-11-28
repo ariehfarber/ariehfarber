@@ -6,6 +6,8 @@
 #ifndef  __WS8_H__
 #define __WS8_H__
 
+#include <stddef.h> /*size_t*/
+
 #define ELEMENT_NUM 5
 
 typedef void (*PFnPrint)(size_t);

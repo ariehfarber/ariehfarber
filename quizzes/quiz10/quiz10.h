@@ -10,7 +10,7 @@
 *Return values: Pointer values with the maximum sum and the indices that 
 				mark the range.
 *******************************************************************************/
-void MaxSubArray(int *arr, int arr_size, int *max, int *index_i, int *index_j);
+int *MaxSubArray(int *arr, int arr_size, int *buffer);
 
 #endif /*__QUIZ10_H__*/
 

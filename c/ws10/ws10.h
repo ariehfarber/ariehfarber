@@ -6,6 +6,8 @@
 #ifndef  __WS10_H__
 #define __WS10_H__
 
+#include <stddef.h> /*size_t*/
+
 /*******************************************************************************
 *Description: Fills the first n bytes of the memory area pointed to by str
 *			  with the constant byte c.

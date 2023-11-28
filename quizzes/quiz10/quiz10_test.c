@@ -1,7 +1,9 @@
 /*******************************************************************************
 *Auther: Arieh Farber
 *******************************************************************************/
-#include "Quiz10.h"
+#include <stdio.h>  /*printf*/
+#include <stdlib.h> /*malloc*/
+#include "quiz10.h"
 
 static void TestMaxSubArray();
 
@@ -24,21 +26,25 @@ static void TstResInt(int control, int func_res, int line)
 
 static void TestMaxSubArray()
 {
-	int array[8] = {-2, 1, -3, 4, -1, 2, 3, -5, 4};
-	int size = 0;
-	int *max; 
-	int *index_i; 
-	int *index_j;
+	int array[9] = {-2, 1, -3, 4, -1, 2, 3, -5, 4};
+	int array_size = 0;
+	int control_size = 0;
+	int *buffer = NULL;
 	int control[3] = {8, 3, 6};
-	int i = 0;
 	
-	size = sizeof(array) / sizeof(array[0]);
+	array_size = sizeof(array) / sizeof(array[0]);
+	control_size = sizeof(control) / sizeof(control[0]);
 	
-	MaxSubArray(array, size, max, index_i, index_j);
+	buffer = (int *)malloc(control_size);
 	
-	TstResInt(control[0], *max, __LINE__);
-	TstResInt(control[1], *index_i, __LINE__);
-	TstResInt(control[2], *index_j, __LINE__);
+	buffer = MaxSubArray(array, array_size, buffer);
+	
+	TstResInt(control[0], buffer[0], __LINE__);
+	TstResInt(control[1], buffer[1], __LINE__);
+	TstResInt(control[2], buffer[2], __LINE__);
+	
+	free(buffer);
+	buffer = NULL;
 }
 
 
