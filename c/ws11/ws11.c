@@ -19,7 +19,6 @@
 #define ASCII_SIZE 256
 #define TRUE_TRUE 2
 
-
 static int CharToInt(char c)
 {
 	if ('0' <= c && '9' >= c) 
