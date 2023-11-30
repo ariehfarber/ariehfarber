@@ -148,7 +148,7 @@ size_t BitArrayCountOnLUT(bitarray_t b_arr);
 *Description: mirror's the bitarray using LUT
 *Arguments: bitarray
 *Return Value: the modified bitarray
-*Time Complexity: O(n)
+*Time Complexity: O(1)
 *Space Complexity: O(1)
 ******************************************************************************/
 bitarray_t BitArrayMirrorLUT(bitarray_t b_arr);

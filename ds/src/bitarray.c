@@ -144,7 +144,7 @@ size_t BitArrayCountOff(bitarray_t b_arr)
 
 char *BitArrayToString(bitarray_t b_arr, char *buffer)
 {
-    size_t bit_counter = SIZE_T_BITS - 1;
+    size_t bit_counter = SIZE_T_BITS;
     char *buffer_start = buffer;
     int digit = 0;
 
@@ -152,7 +152,7 @@ char *BitArrayToString(bitarray_t b_arr, char *buffer)
 
     while (0 != bit_counter) 
     {
-        digit = (b_arr >> bit_counter) & MASK_ONE;
+        digit = (b_arr >> (bit_counter - 1)) & MASK_ONE;
         *buffer = (char)digit + '0';
         bit_counter--;
         buffer++;
