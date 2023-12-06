@@ -9,7 +9,7 @@
 #include <stddef.h> /*size_t*/
 
 /*******************************************************************************
-*Note: Undefind beahaviour if Arguments are NULL.
+*Note: Undefind beahaviour if Parameters are NULL.
 *******************************************************************************/
 
 /*******************************************************************************
@@ -28,7 +28,7 @@ int StrCmp(const char *string1, const char *string2);
 /*******************************************************************************
 *Description: Similar to StrCmp, but compares only the first
 *	     (at most) n charecters of string1 and string2.
-*Arguments: The 2 strings and the n amount of charecters to compare.
+*Parameters: The 2 strings and the n amount of charecters to compare.
 *Retuern values: See StrCmp.
 *******************************************************************************/
 int StrNCmp(const char *string1, const char *string2, size_t n);
@@ -49,7 +49,7 @@ char *StrCpy(char *dest, const char *src);
 /*******************************************************************************
 *Description: Similar to StrCpy, but copied only the first
 *	     	  (at most) n charecters of src into dest.
-*Arguments: The 2 strings and the n amount of charecters to copy.
+*Parameters: The 2 strings and the n amount of charecters to copy.
 *Retuern values: A pointer to the dest string.
 *Notes: If dest is bigger than n, the rest of the memmory will be padded
 *		with null-terminaters.
@@ -86,7 +86,7 @@ char *StrCat(char *dest, const char *src);
 /*******************************************************************************
 *Description: Similar to StrCat, but it concatenate only the
 *	     	  first n charecters of src into dest.
-*Arguments: The 2 strings and the n amount of charecters to be concatenated.
+*Parameters: The 2 strings and the n amount of charecters to be concatenated.
 *Retuern values: See StrCat.
 *Notes: See StrCat.
 *******************************************************************************/

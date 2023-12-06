@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Yael Argov
+*Date: 06/11/2023
 *******************************************************************************/
 #include <assert.h> /*assert	  */
 #include <stdlib.h> /*malloc, free*/
@@ -15,18 +15,18 @@
 struct node
 {
 	void *data;
-	struct node *next;
+	slist_iter_t next;
 };
 
 struct list
 {
-	struct node *head;
-	struct node *tail;
+	slist_iter_t head;
+	slist_iter_t tail;
 };
 
 list_t *SLLCreate(void)
 {
-	slist_iter_t dummy_node;
+	slist_iter_t dummy_node = NULL;
 	 
 	list_t *list = (list_t *)malloc(sizeof(list_t));
     if (NULL == list) 
@@ -52,7 +52,7 @@ list_t *SLLCreate(void)
 
 void SLLDestroy(list_t *list)
 {
-	slist_iter_t current;
+	slist_iter_t current = NULL;
 
 	assert(NULL != list);
 
@@ -69,7 +69,7 @@ void SLLDestroy(list_t *list)
 
 slist_iter_t SLLInsert(list_t *list, slist_iter_t iterator, void *value)
 {
-    slist_iter_t new_node;
+    slist_iter_t new_node = NULL;
 
     assert(NULL != list);
     assert(NULL != iterator);
@@ -91,18 +91,18 @@ slist_iter_t SLLInsert(list_t *list, slist_iter_t iterator, void *value)
         list->tail = new_node;
     }
     
-    return (new_node);
+    return (iterator);
 }
 
 slist_iter_t SLLRemove(slist_iter_t iterator)
 {	
-	slist_iter_t temp_node;
+	slist_iter_t temp_node = NULL;
 	
 	assert(NULL != iterator);
 	assert(NULL != iterator->next);
 	
 	temp_node = iterator->next;
-	iterator->data = iterator->next->data;
+	iterator->data = temp_node->data;
 	iterator->next = temp_node->next;
 	
 	if (NULL == temp_node->next)
@@ -111,6 +111,7 @@ slist_iter_t SLLRemove(slist_iter_t iterator)
 	}
 	
 	free(temp_node);
+	temp_node = NULL;
 
 	return (iterator);
 }
@@ -118,13 +119,15 @@ slist_iter_t SLLRemove(slist_iter_t iterator)
 size_t SLLCount(const list_t *list)
 {
 	size_t counter = 0;
-	slist_iter_t runner;
+	slist_iter_t runner = NULL;
+	slist_iter_t end_node = NULL;
 
 	assert(NULL != list);
 
 	runner = SLLBegin(list);
+	end_node = SLLEnd(list);
 
-	while (runner != SLLEnd(list)) 
+	while (TRUE != SLLIsEqual(runner, end_node)) 
 	{
 		runner = SLLNext(runner);
 		counter++;
@@ -138,24 +141,15 @@ slist_iter_t SLLFind(slist_iter_t from, slist_iter_t to,
 {
 	assert(NULL != from);
 	assert(NULL != to);
+
 	
-	if (is_match_func(from->data, params) == TRUE)
-	{			
-		return (from);
-	}
-	
-	while (from->next != to->next)
+	while (TRUE != SLLIsEqual(from, to)) 
 	{
-		if (is_match_func(from->data, params) == TRUE)
+		if (TRUE ==is_match_func(from->data, params))
 		{
 			return (from);
 		}
 		from = SLLNext(from);
-		
-		if (NULL == from->next)
-		{
-			break;
-		}
 	}
 	
 	return (NULL);
@@ -163,7 +157,7 @@ slist_iter_t SLLFind(slist_iter_t from, slist_iter_t to,
 
 int SLLIsEmpty(const list_t *list)
 {
-	return (0 == SLLCount(list));
+	return (TRUE == SLLIsEqual(SLLBegin(list), SLLEnd(list)));
 }
 
 slist_iter_t SLLEnd(const list_t *list)
@@ -206,7 +200,7 @@ int SLLIsEqual(slist_iter_t iterator_1, slist_iter_t iterator_2)
 	assert(NULL != iterator_1);
 	assert(NULL != iterator_2);
 
-	return (iterator_1->next == iterator_2->next);
+	return (iterator_1 == iterator_2);
 }
 
 int SLLForEach(slist_iter_t from, slist_iter_t to, action_t act_func,
@@ -214,14 +208,9 @@ int SLLForEach(slist_iter_t from, slist_iter_t to, action_t act_func,
 {
 	assert(NULL != from);
 	assert(NULL != to);
-	
-	if (act_func(from->data, params) != SUCCESS)
-	{			
-		return (ERROR);
-	}
-	
-	
-	while (from->next != to->next)
+	assert(NULL != act_func);
+		
+	while (TRUE != SLLIsEqual(from, to)) 
 	{
 		if (act_func(from->data, params) != SUCCESS)
 		{			
