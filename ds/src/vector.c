@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer:  
-*Date: 
+*Reviewer: Yael Argov 
+*Date: 04/12/2023
 *******************************************************************************/
 #include <string.h> /*memcpy*/
 #include <stdlib.h> /*malloc*/
@@ -9,10 +9,11 @@
 
 #include "vector.h"
 
-#define STEP(i) (i * vector->element_size * sizeof(char))
+#define BYTE_SIZE(i) (i * vector->element_size * sizeof(char))
 #define GROWTH_FACTOR 2
 #define ERROR -1
 #define SUCCESS 0
+#define VECTOR_POINTER(a) (char *)(vector->array) + BYTE_SIZE(a)
 
 struct vector
 {
@@ -24,11 +25,15 @@ struct vector
 
 static int ResizeArray(vector_t *vector, size_t new_size)
 {
-	vector->array = realloc(vector->array, STEP(new_size));
+	void *temp_buffer = NULL;
+	
+	temp_buffer = realloc(vector->array, BYTE_SIZE(new_size));
 	if (NULL == vector->array) 
     {
-        return (ERROR);
+        return (ERROR); 
     }
+    
+    vector->array = temp_buffer;
     
     vector->capacity = new_size;
     
@@ -45,16 +50,17 @@ vector_t *VectorCreate(size_t element_size, size_t initial_capacity)
 	
 	assert(0 != initial_capacity);
 	assert(0 != element_size);
-
-	vector->array = malloc(initial_capacity * element_size * sizeof(char));
-	if (NULL == vector->array)
-	{
-		return (NULL);
-	}
 	
 	vector->element_size = element_size;
 	vector->current_size = 0;
 	vector->capacity = initial_capacity;
+	vector->array = malloc(BYTE_SIZE(initial_capacity));
+	if (NULL == vector->array)
+	{
+		free(vector);
+		
+		return (NULL); 
+	}
 	
 	return (vector);
 }
@@ -65,15 +71,14 @@ void VectorDestroy(vector_t *vector)
 	vector->array = NULL;
 	
 	free(vector);
-	vector = NULL;
 }
 
 void *VectorGetAccess(vector_t *vector, size_t index)
 {
 	assert(NULL != vector);
-	assert((vector->capacity) > index);
+	assert((vector->current_size) > index); 
 	
-	return ((char *)(vector->array) + STEP(index));
+	return (VECTOR_POINTER(index)); 
 }
 
 int VectorPushBack(vector_t *vector, const void *data)
@@ -83,12 +88,11 @@ int VectorPushBack(vector_t *vector, const void *data)
 	
 	assert(NULL != vector);
 	assert(NULL != data);
-	assert(vector -> current_size < vector -> capacity);
 	
 	element_size = vector->element_size;
 	current_size = vector->current_size;
 
-	memcpy((char *)(vector->array) + STEP(current_size), data, element_size);
+	memcpy(VECTOR_POINTER(current_size), data, element_size);
 	
 	vector->current_size++;
 			
@@ -100,7 +104,7 @@ int VectorPushBack(vector_t *vector, const void *data)
 	return (SUCCESS);
 }
 
-int VectorPopBack(vector_t *vector)
+int VectorPopBack(vector_t *vector) 
 {
 	assert(NULL != vector);
 	

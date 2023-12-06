@@ -1,5 +1,5 @@
 # Project Name - modify as needed
-PROJECT = vector
+PROJECT = sll
 
 # Directories
 DIR = /home/arieh/git/ds
@@ -51,3 +51,7 @@ $(REL_TEST_OBJ): $(TEST_FILE)
 .PHONY: clean
 clean:
 	rm -f $(DBG_OBJ_DIR)/*.o $(REL_OBJ_DIR)/*.o $(PROJECT).out
+	
+open:
+	find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&
+	find . -type f -name "$(PROJECT)*.h" -exec gedit {} +&
