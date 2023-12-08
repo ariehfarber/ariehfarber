@@ -1,14 +1,13 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Eytan Peros
+*Date: 09/12/2023
 *******************************************************************************/
 #include <stdio.h> /*printf*/
 
 #include "sll.h"
 #include "queue.h"
 
-#define ERROR -1
 #define SUCCESS 0
 #define TRUE 1
 #define FALSE 0
@@ -86,33 +85,27 @@ static void TestQueueStatus(queue_t *queue, int control)
 
 static void TestQueue()
 {
-	queue_t *queue = NULL;
-	int queue_val[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	queue_t *queue_1 = NULL;
+	queue_t *queue_2 = NULL;
+	int queue_val_1[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	int queue_val_2[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	int queue_size = 10;
 	
-	queue = QueueCreate();
+	queue_1 = QueueCreate();
+	queue_2 = QueueCreate();
 	
-	TestQueueStatus(queue, TRUE);
+	TestQueueStatus(queue_1, TRUE);
 	
-	TestQueueEnqueueAndDequeue(queue, queue_val, queue_size);
+	TestQueueEnqueueAndDequeue(queue_1, queue_val_1, queue_size);
+	TestQueueEnqueueAndDequeue(queue_2, queue_val_2, queue_size);
 	
-	TestQueueSize(queue, queue_size / 2);
+	TestQueueSize(queue_1, queue_size / 2);
+	TestQueueStatus(queue_1, FALSE);
 	
-	TestQueueStatus(queue, FALSE);
+	QueueAppend(queue_1, queue_2);
+	TestQueueSize(queue_1, queue_size);
+	TestQueueStatus(queue_1, FALSE);
 	
-	QueueDestroy(queue);
+	QueueDestroy(queue_1);
+	QueueDestroy(queue_2);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

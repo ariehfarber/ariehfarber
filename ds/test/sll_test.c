@@ -149,6 +149,8 @@ static void TestFind(list_t *test_list_1)
 	int i = 0;
 	int status = 0;
 	
+	assert(NULL != test_list_1);
+	
 	test_from = SLLBegin(test_list_1);
 	test_to = SLLEnd(test_list_1);
 	
@@ -168,6 +170,8 @@ static void TestSetData(list_t *test_list_1)
 {
 	int data = 0;
 	void *get_data = NULL;
+	
+	assert(NULL != test_list_1);
 	
 	SLLSetData(SLLBegin(test_list_1), &data);
 	get_data = SLLGetData(SLLBegin(test_list_1));

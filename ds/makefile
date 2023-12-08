@@ -1,67 +1,37 @@
-# Project Name
-PROJECT = sll
+# List of projects
+PROJECTS = bitarray stack vector sll sll_ext queue
 
-# Directories
-DIR = /home/arieh/git/ds
-DBG_OBJ_DIR = $(DIR)/bin/debug
-REL_OBJ_DIR = $(DIR)/bin/release
-DBG_OBJ_TEST_DIR = $(DIR)/bin/debug/test
-REL_OBJ_TEST_DIR = $(DIR)/bin/release/test
-HDR_DIR = $(DIR)/include
-SRC_DIR =  $(DIR)/src
-TEST_DIR = $(DIR)/test
+# Binaries for each project
+BINS = $(addsuffix .out, $(PROJECTS))
 
-# Compiler
-CC = gcc
-CFLAGS = -ansi -pedantic-errors -Wall -Wextra -I$(HDR_DIR)
-DBG_FLAGS = -g
-REL_FLAGS = -O3
+# Flags for Debug and Release
+DEBUG_FLAG = debug
+RELEASE_FLAG = release
 
-# Source files
-SRC_FILE = $(SRC_DIR)/$(PROJECT).c
-TEST_FILE = $(TEST_DIR)/$(PROJECT)_test.c
+# Default target to build all projects
+.PHONY: all
+all: $(BINS)
 
-# Object files for debug and release
-ALL_DBG_OBJ = $(wildcard $(DBG_OBJ_DIR)/*.o)
-DBG_OBJ = $(DBG_OBJ_DIR)/$(PROJECT).o
-DBG_TEST_OBJ = $(DBG_OBJ_TEST_DIR)/test_$(PROJECT).o
-REL_OBJ = $(REL_OBJ_DIR)/$(PROJECT).o
-REL_TEST_OBJ = $(REL_OBJ_TEST_DIR)/test_$(PROJECT).o
+$(BINS):
+	@ $(MAKE) --no-print-directory -f makefile.$(@:.out=)
 
-# Default target
-all: debug
+# Target to build all projects in debug mode
+.PHONY: debug_all
+debug_all:
+	@ for project in $(PROJECTS); do \
+		$(MAKE) --no-print-directory -f makefile.$$project $(DEBUG_FLAG); \
+	done
 
-# Debug and Release targets
-debug: $(DBG_OBJ) $(DBG_TEST_OBJ)
-	$(CC) $(DBG_FLAGS) $^ -o $(DIR)/$(PROJECT).out
+# Target to build all projects in release mode
+.PHONY: release_all
+release_all:
+	@ for project in $(PROJECTS); do \
+		$(MAKE) --no-print-directory -f makefile.$$project $(RELEASE_FLAG); \
+	done
 
-release: $(REL_OBJ) $(REL_TEST_OBJ)
-	$(CC) $(REL_FLAGS) $^ -o $(DIR)/$(PROJECT).out
-
-# Rule to generate object file for project in debug
-$(DBG_OBJ): $(SRC_FILE)
-	$(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
-$(DBG_TEST_OBJ): $(TEST_FILE)
-	$(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
-
-# Rule to generate object file for project in release
-$(REL_OBJ): $(SRC_FILE)
-	$(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@
-$(REL_TEST_OBJ): $(TEST_FILE)
-	$(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@	
-
-# Clean
-.PHONY: clean
-clean:
-	rm -f $(DBG_OBJ_DIR)/*.o $(REL_OBJ_DIR)/*.o $(PROJECT).out
-
-obj:
-	$(pwd)/bin/debug/$(PROJECT).o
-	
-open:
-	find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&
-	find . -type f -name "$(PROJECT)*.h" -exec gedit {} +&
-
-	
-combine: $(ALL_DBG_OBJ) $(TEST_FILE)
-	$(CC) $(CFLAGS) $(DBG_FLAGS) $^ -o $(DIR)/$(PROJECT).out
+# Cleanup target to clean all projects
+.PHONY: clean_all
+clean_all:
+	@ for project in $(PROJECTS); do \
+		$(MAKE) --no-print-directory -f makefile.$$project clean; \
+	done

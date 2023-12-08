@@ -227,6 +227,11 @@ void SLLAppend(list_t *dest, list_t *src)
 	slist_iter_t dest_end_node = NULL;
 	slist_iter_t src_start_node = NULL;
 	
+	if (src->tail == src->head)
+	{
+		return;
+	}
+	
 	dest_end_node = SLLEnd(dest);
 	src_start_node = SLLBegin(src);
 	
