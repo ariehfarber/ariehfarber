@@ -7,6 +7,7 @@
 # Don't ignore files:
 !*.c
 !*.h
+!*.o
 !*.md
 !makefile*
 
