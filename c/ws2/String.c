@@ -12,16 +12,17 @@
 
 size_t StrLen(const char *str)
 {
-	size_t i = 0;
+	size_t count = 0;
 	
 	assert(NULL != str);
 	
-	while ('\0' != *str++)
+	while ('\0' != *str)
 	{
-		i++;
+		count++;
+		str++;
 	}
 	
-	return (i);
+	return (count);
 }
 
 int StrCmp(const char *str1, const char *str2)
@@ -79,36 +80,37 @@ int StrCaseCmp(const char *str1, const char *str2)
 
 char *StrCpy(char *dest, const char *src)
 {
-	char *origin = NULL;
+	char *start = NULL;
 	
 	assert(NULL != src);
 	assert(NULL != dest);
 	
-	origin = dest;
+	start = dest;
 	
 	while ('\0' != *src)
 	{
 		*dest = *src;
-		
 		src++;
 		dest++;
 	}
+	
 	*dest = '\0';
 	
-	return (origin);
+	return (start);
 }
 
 char *StrNCpy(char *dest, const char *src, size_t n)
 {
-	char *origin = dest;
+	char *start = NULL;
 	
 	assert(NULL != src);
 	assert(NULL != dest);
 	
+	start = dest;
+	
 	while ('\0' != *src && n > 0)
 	{
-		*dest = *src;
-		
+		dest = *src;
 		src++;
 		dest++;
 		n--;
@@ -116,13 +118,12 @@ char *StrNCpy(char *dest, const char *src, size_t n)
 
 	while (n > 0)
 	{
-		*dest = '\0';
-		
+		*dest = '\0';	
 		dest++;
 		n--;
 	}
 	
-	return (origin);
+	return (start);
 }
 
 char *StrChr(const char *str, int c)
@@ -159,29 +160,29 @@ char *StrDup(const char *str)
 
 char *StrCat(char *dest, const char *src)
 {
-	char *origin = NULL;
+	char *start = NULL;
 	
 	assert(NULL != dest);
 	assert(NULL != src);
 
-	origin = dest;	
+	start = dest;	
 	
 	/*Moving the pointer to the end of dest*/
 	dest += StrLen(dest);
 	
 	dest = StrCpy(dest ,src);
 	
-	return (origin);
+	return (start);
 }
 
 char *StrNCat(char *dest, const char *src, size_t n)
 {
-	char *origin = NULL;
+	char *start = NULL;
 	
 	assert(NULL != dest);
 	assert(NULL != src);
 	
-	origin = dest;
+	start = dest;
 	
 	dest += StrLen(dest);
 	
@@ -195,7 +196,7 @@ char *StrNCat(char *dest, const char *src, size_t n)
 	}
 	*dest = '\0';
 	
-	return (origin);
+	return (start);
 }
 
 char *StrStr(const char *haystack, const char *needle)

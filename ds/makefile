@@ -1,10 +1,12 @@
-# Project Name - modify as needed
+# Project Name
 PROJECT = sll
 
 # Directories
 DIR = /home/arieh/git/ds
 DBG_OBJ_DIR = $(DIR)/bin/debug
 REL_OBJ_DIR = $(DIR)/bin/release
+DBG_OBJ_TEST_DIR = $(DIR)/bin/debug/test
+REL_OBJ_TEST_DIR = $(DIR)/bin/release/test
 HDR_DIR = $(DIR)/include
 SRC_DIR =  $(DIR)/src
 TEST_DIR = $(DIR)/test
@@ -20,10 +22,11 @@ SRC_FILE = $(SRC_DIR)/$(PROJECT).c
 TEST_FILE = $(TEST_DIR)/$(PROJECT)_test.c
 
 # Object files for debug and release
+ALL_DBG_OBJ = $(wildcard $(DBG_OBJ_DIR)/*.o)
 DBG_OBJ = $(DBG_OBJ_DIR)/$(PROJECT).o
-DBG_TEST_OBJ = $(DBG_OBJ_DIR)/test_$(PROJECT).o
+DBG_TEST_OBJ = $(DBG_OBJ_TEST_DIR)/test_$(PROJECT).o
 REL_OBJ = $(REL_OBJ_DIR)/$(PROJECT).o
-REL_TEST_OBJ = $(REL_OBJ_DIR)/test_$(PROJECT).o
+REL_TEST_OBJ = $(REL_OBJ_TEST_DIR)/test_$(PROJECT).o
 
 # Default target
 all: debug
@@ -51,7 +54,14 @@ $(REL_TEST_OBJ): $(TEST_FILE)
 .PHONY: clean
 clean:
 	rm -f $(DBG_OBJ_DIR)/*.o $(REL_OBJ_DIR)/*.o $(PROJECT).out
+
+obj:
+	$(pwd)/bin/debug/$(PROJECT).o
 	
 open:
 	find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&
 	find . -type f -name "$(PROJECT)*.h" -exec gedit {} +&
+
+	
+combine: $(ALL_DBG_OBJ) $(TEST_FILE)
+	$(CC) $(CFLAGS) $(DBG_FLAGS) $^ -o $(DIR)/$(PROJECT).out

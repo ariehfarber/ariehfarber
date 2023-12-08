@@ -92,7 +92,7 @@ static int ActFuncInt(void *node_data, void *parametrs)
 	return (SUCCESS);
 }
 
-static void TestInsertAndRemove(list_t *test_list, int node_val[])
+static void TestInsertAndRemove(list_t *test_list_1, int node_val_1[])
 {
 	slist_iter_t node_array[10];
 	int i = 0;
@@ -102,10 +102,10 @@ static void TestInsertAndRemove(list_t *test_list, int node_val[])
 	
     for (i = 0; i < size; i++)
     {
-        node_array[i] = SLLInsert(test_list, SLLEnd(test_list), &node_val[i]);
+        node_array[i] = SLLInsert(test_list_1, SLLEnd(test_list_1), &node_val_1[i]);
     }
 
-	get_data = SLLGetData(SLLBegin(test_list));
+	get_data = SLLGetData(SLLBegin(test_list_1));
 	TstResInt(0, *(int *)get_data, __LINE__);
     for (i = 0; i < size - 1; i++)
     {
@@ -115,10 +115,10 @@ static void TestInsertAndRemove(list_t *test_list, int node_val[])
     
     for (i = 0; i < remove_size; i++)
     {
-        node_array[i] = SLLRemove(SLLBegin(test_list));
+        node_array[i] = SLLRemove(SLLBegin(test_list_1));
     }
     
-	get_data = SLLGetData(SLLBegin(test_list));
+	get_data = SLLGetData(SLLBegin(test_list_1));
 	TstResInt(remove_size, *(int *)get_data, __LINE__);
     for (i = remove_size + 1; i < size; i++)
     {
@@ -127,19 +127,19 @@ static void TestInsertAndRemove(list_t *test_list, int node_val[])
     }
 }
 
-static void TestCountAndIsEmpty(list_t *test_list, size_t control_counter)
+static void TestCountAndIsEmpty(list_t *test_list_1, size_t control_counter)
 {
 	size_t counter = 0;
 	int status = 0;
 		
-	counter = SLLCount(test_list);
+	counter = SLLCount(test_list_1);
 	TstResSizeT(control_counter, counter, __LINE__);
 	
-	status = SLLIsEmpty(test_list);
+	status = SLLIsEmpty(test_list_1);
 	TstResIsEmpty(status, TRUE);
 }
 
-static void TestFind(list_t *test_list)
+static void TestFind(list_t *test_list_1)
 {
 	slist_iter_t test_from = NULL;
 	slist_iter_t test_to = NULL;
@@ -149,12 +149,12 @@ static void TestFind(list_t *test_list)
 	int i = 0;
 	int status = 0;
 	
-	test_from = SLLBegin(test_list);
-	test_to = SLLEnd(test_list);
+	test_from = SLLBegin(test_list_1);
+	test_to = SLLEnd(test_list_1);
 	
 	test_iterator = SLLFind(test_from, test_to, IsMatchInt, &test_params);
 	
-	test_control = SLLBegin(test_list);
+	test_control = SLLBegin(test_list_1);
     for (i = 0; i < test_params - 5; i++)
     {
     	test_control = SLLNext(test_control); 
@@ -164,25 +164,25 @@ static void TestFind(list_t *test_list)
     TstResInt(status, TRUE, __LINE__);
 }
 
-static void TestSetData(list_t *test_list)
+static void TestSetData(list_t *test_list_1)
 {
 	int data = 0;
 	void *get_data = NULL;
 	
-	SLLSetData(SLLBegin(test_list), &data);
-	get_data = SLLGetData(SLLBegin(test_list));
+	SLLSetData(SLLBegin(test_list_1), &data);
+	get_data = SLLGetData(SLLBegin(test_list_1));
 	TstResInt(SUCCESS, *(int *)get_data, __LINE__);
 }
 
-static void TestForEach(list_t *test_list)
+static void TestForEach(list_t *test_list_1)
 {
 	slist_iter_t test_from = NULL;
 	slist_iter_t test_to = NULL;
 	int test_params = 10;
 	int status = 0;
 	
-	test_from = SLLBegin(test_list);
-	test_to = SLLEnd(test_list);
+	test_from = SLLBegin(test_list_1);
+	test_to = SLLEnd(test_list_1);
 	
 	status = SLLForEach(test_from, test_to, ActFuncInt, &test_params);
 	TstResInt(SUCCESS, status, __LINE__);
@@ -191,27 +191,37 @@ static void TestForEach(list_t *test_list)
 
 static void TestSLL()
 {
-	list_t *test_list = NULL;
+	list_t *test_list_1 = NULL;
+	list_t *test_list_2 = NULL;
 	size_t control_counter1 = 0;
 	size_t control_counter2 = 5;
-	int node_val[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	size_t control_counter3 = 10;
+	int node_val_1[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	int node_val_2[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	
-	test_list = SLLCreate();
-	assert(test_list);
+	test_list_1 = SLLCreate();
+	test_list_2 = SLLCreate();
+	assert(test_list_1);
+	assert(test_list_2);
 
-	TestCountAndIsEmpty(test_list, control_counter1);
+	TestCountAndIsEmpty(test_list_1, control_counter1);
 	
-	TestInsertAndRemove(test_list, node_val);
+	TestInsertAndRemove(test_list_1, node_val_1);
+	TestInsertAndRemove(test_list_2, node_val_2);
 	
-	TestFind(test_list);
+	TestFind(test_list_1);
 	
-	TestSetData(test_list);
+	TestSetData(test_list_1);
 	
-	TestCountAndIsEmpty(test_list, control_counter2);
+	TestCountAndIsEmpty(test_list_1, control_counter2);
 	
-	TestForEach(test_list);
+	TestForEach(test_list_1);
 	
-	SLLDestroy(test_list);
+	SLLAppend(test_list_1, test_list_2);
+	TestCountAndIsEmpty(test_list_1, control_counter3);
+	
+	SLLDestroy(test_list_1);
+	SLLDestroy(test_list_2);
 }
 
 

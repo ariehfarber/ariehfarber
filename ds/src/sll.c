@@ -221,3 +221,34 @@ int SLLForEach(slist_iter_t from, slist_iter_t to, action_t act_func,
 	
 	return (SUCCESS);
 }
+
+void SLLAppend(list_t *dest, list_t *src)
+{
+	slist_iter_t dest_end_node = NULL;
+	slist_iter_t src_start_node = NULL;
+	
+	dest_end_node = SLLEnd(dest);
+	src_start_node = SLLBegin(src);
+	
+	dest_end_node->data = src_start_node->data;
+	dest_end_node->next = src_start_node->next;
+	
+	src_start_node->data = NULL;
+	src_start_node->next = NULL;
+	
+	dest->tail = src->tail;
+	src->tail = src->head;
+	
+	dest->tail->data = dest;
+	src->tail->data = src;
+}
+
+
+
+
+
+
+
+
+
+

@@ -1,8 +1,8 @@
 /*******************************************************************************
 *Author: Arieh Farber 
 *******************************************************************************/
-#ifndef _WS12_
-#define _WS12_
+#ifndef _SLL_EXT_
+#define _SLL_EXT_
 
 typedef struct node *node_t;
 
@@ -39,4 +39,4 @@ void DestroyLinkedList(node_t head);
 
 void PrintList(node_t head);
 
-#endif /*_WS12_*/
+#endif /*_SLL_EXT_*/
