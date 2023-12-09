@@ -30,32 +30,50 @@ int main()
 	return (0);
 }
 
-static void TstResInt(int control, int func_res, int line)
+void TestInt(int control, int test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
 		printf("\033[0m"); 
 	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }
 
-static void TstResSizeT(size_t control, size_t func_res, int line)
+void TestSizeT(size_t control, size_t test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
 		printf("\033[0m"); 
 	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }
 
-static void TstResPtr(size_t *control, size_t *func_res, int line)
+void TestPtr(void *control, void *test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
 		printf("\033[0m"); 
 	}
 }
@@ -68,8 +86,8 @@ static void TestIntSwap()
 	int control_y = 11;
 	
 	IntSwap(&x ,&y);
-	TstResInt(control_x, x, __LINE__);
-	TstResInt(control_y, y, __LINE__);
+	TestInt(control_x, x, __LINE__);
+	TestInt(control_y, y, __LINE__);
 }
 
 static void TestCopyArray()
@@ -88,7 +106,7 @@ static void TestCopyArray()
 	
 	for (i = 0; i < size; i++)
 	{
-		TstResInt(new_array[i], original_array[i], __LINE__);
+		TestInt(new_array[i], original_array[i], __LINE__);
 	}
 	
 	free(new_array);
@@ -102,8 +120,8 @@ static void TestTSizeSwap()
 	size_t control_y = 55000;
 	
 	TSizeSwap(&x ,&y);
-	TstResSizeT(control_x, x, __LINE__);
-	TstResSizeT(control_y, y, __LINE__);
+	TestSizeT(control_x, x, __LINE__);
+	TestSizeT(control_y, y, __LINE__);
 }
 
 static void TestPtrSwap()
@@ -112,8 +130,8 @@ static void TestPtrSwap()
 	size_t *p1 = &x, *p2 = &y;
 	
 	PtrSwap(&p1 ,&p2);
-	TstResPtr(&x, p2, __LINE__);
-	TstResPtr(&y, p1, __LINE__);
+	TestPtr(&x, p2, __LINE__);
+	TestPtr(&y, p1, __LINE__);
 }
 
 static void TestPtrSwapCombo()
@@ -125,8 +143,8 @@ static void TestPtrSwapCombo()
 	size_t *p1 = &x, *p2 = &y;
 	
 	PtrSwapCombo(&p1 ,&p2);
-	TstResSizeT(control_x, x, __LINE__);
-	TstResSizeT(control_y, y, __LINE__);
+	TestSizeT(control_x, x, __LINE__);
+	TestSizeT(control_y, y, __LINE__);
 }
 
 static void TestIsPalindrome()
@@ -139,6 +157,6 @@ static void TestIsPalindrome()
 	value1 = IsPalindrome(pali);
 	value2 = IsPalindrome(not_pali);
 	
-	TstResInt(1, value1, __LINE__);	
-	TstResInt(0, value2, __LINE__);
+	TestInt(1, value1, __LINE__);	
+	TestInt(0, value2, __LINE__);
 }

@@ -23,12 +23,18 @@ int main()
 	return (0);
 }
 
-static void TstResInt(int control, int func_res, int line)
+void TestInt(int control, int test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
 		printf("\033[0m"); 
 	}
 }
@@ -42,37 +48,43 @@ static void TestPrintStr()
 
 static void TestPowerBaseTen()
 {
-	int cases[] = {-1, 0, 3};
+	int test_cases[] = {-1, 0, 3};
 	int control[] = {0.1, 1, 1000};
 	int size = 0;
 	int i = 0;
 	double epsilon = 0.05;
 	
-	size = sizeof(cases) / sizeof(cases[0]);
+	size = sizeof(test_cases) / sizeof(test_cases[0]);
 	
 	for (i = 0; i < size; i++)
 	{
-		if ((control[i] - PowerBaseTen(cases[i])) > epsilon)
+		if ((control[i] - PowerBaseTen(test_cases[i])) > epsilon)
 		{
 			printf("\033[0;31m");
 			printf("error in PowerBaseTen function result\n");
 			printf("\033[0m");
+		}
+		else
+		{
+			printf("\033[1;32m");
+			printf("Success!\n");
+			printf("\033[0m"); 
 		}
 	}
 }	
 
 static void TestFlipDigits()
 {
-	int cases[] = {568, -1324, 0};
+	int test_cases[] = {568, -1324, 0};
 	int control[] = {865, -4231, 0};
 	int size = 0;
 	int i = 0;
 	
-	size = sizeof(cases) / sizeof(cases[0]);
+	size = sizeof(test_cases) / sizeof(test_cases[0]);
 	
 	for (i = 0; i < size; i++)
 	{
-		TstResInt(control[i], FlipDigits(cases[i]), __LINE__);
+		TestInt(control[i], FlipDigits(test_cases[i]), __LINE__);
 	}
 }
 
@@ -81,7 +93,7 @@ static void TestSwap()
 	int x = 11;
 	int y = 2785;
 	
-	IntSwap(&x ,&y);
-	TstResInt(2785, x, __LINE__);
-	TstResInt(11, y, __LINE__);
+	Swap(&x ,&y);
+	TestInt(2785, x, __LINE__);
+	TestInt(11, y, __LINE__);
 }

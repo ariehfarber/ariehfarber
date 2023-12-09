@@ -49,14 +49,25 @@ int StrNCmp(const char *str1, const char *str2, size_t n)
         	return (0); 	
 	}
 
-	while ('\0' != *str1 && '\0' != *str2 && n > 0 && *str1 == *str2)
+	while ('\0' != *str1 && '\0' != *str2 && 0 < n)
 	{
+        if (*str1 != *str2)
+        {
+            return (*str1 - *str2);
+        }
 		str1++;
 		str2++;	
 		n--;
 	}
 	
-	return (*str1 - *str2);
+    if (0 == n)
+    {
+        return 0;
+    }
+    else
+    {
+        return (*str1 - *str2);
+    }
 }
 
 int StrCaseCmp(const char *str1, const char *str2)
@@ -110,13 +121,13 @@ char *StrNCpy(char *dest, const char *src, size_t n)
 	
 	while ('\0' != *src && n > 0)
 	{
-		dest = *src;
+		*dest = *src;
 		src++;
 		dest++;
 		n--;
 	}
 
-	while (n > 0)
+	while (0 < n)
 	{
 		*dest = '\0';	
 		dest++;
@@ -150,7 +161,7 @@ char *StrDup(const char *str)
 	assert(NULL != str);
 	
 	duplicated = (char *)malloc(StrLen(str) + 1);
-	if (!duplicated)
+	if (NULL == duplicated)
 	{
 		return (NULL);
 	}
@@ -167,7 +178,6 @@ char *StrCat(char *dest, const char *src)
 
 	start = dest;	
 	
-	/*Moving the pointer to the end of dest*/
 	dest += StrLen(dest);
 	
 	dest = StrCpy(dest ,src);
@@ -186,7 +196,7 @@ char *StrNCat(char *dest, const char *src, size_t n)
 	
 	dest += StrLen(dest);
 	
-	while ('\0' != *src && n > 0)
+	while ('\0' != *src && 0 < n)
 	{
 		*dest = *src;
 		

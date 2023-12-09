@@ -35,3 +35,11 @@ clean_all:
 	@ for project in $(PROJECTS); do \
 		$(MAKE) --no-print-directory -f makefile.$$project clean; \
 	done
+	
+# Project-specific commands
+$(PROJECTS):
+	@ $(MAKE) --no-print-directory -f makefile.$@ \
+	$(filter-out $@,$(MAKECMDGOALS))
+# Catch-all target that does nothing
+%:
+	@:

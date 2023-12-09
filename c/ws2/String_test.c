@@ -10,8 +10,8 @@
 #include <stdlib.h>  /*malloc  										  */
 #include <assert.h>  /*assert										  */
 #include <strings.h> /*strcasecmp								      */
-#include <string.h>  /*strlen, strcmp, strncmp, , strcpy, strncpy     */
-					 /*strchr, strdup, strcat, strncat, strstr, strspn*/
+#include <string.h>  /*strlen, strcmp, strncmp, , strcpy, strncpy...  */
+	 
 #include "String.h"
 
 static void TestStrLen();
@@ -45,22 +45,34 @@ int main()
 	return (0);
 }
 
-static void TstResInt(int control, int func_res, int line)
+void TestInt(int control, int test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
 		printf("\033[0m"); 
 	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }
 
-static void TstResChar(char *control, char *func_res, int line)
+void TestChar(char *control, char *test, int line)
 {
-	if (strcmp(control, func_res))
+	if (0 != strcmp(control, test))
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
 		printf("\033[0m"); 
 	}
 }
@@ -69,7 +81,7 @@ static void TestStrLen()
 {
 	const char str1[] = "Hello there";
 	
-	TstResInt(strlen(str1), StrLen(str1), __LINE__);
+	TestInt(strlen(str1), StrLen(str1), __LINE__);
 }
 
 static void TestStrCmp()
@@ -81,7 +93,7 @@ static void TestStrCmp()
 	
 	for (i = 0; i < size; i++)
 	{
-		TstResInt(strcmp(s1[i], s2[i]), StrCmp(s1[i], s2[i]), __LINE__);
+		TestInt(strcmp(s1[i], s2[i]), StrCmp(s1[i], s2[i]), __LINE__);
 	}
 }
 
@@ -95,7 +107,7 @@ static void TestStrNCmp()
 
 	for (i = 0; i < size; i++)
 	{
-		TstResInt(strncmp(s1[i], s2[i], n), StrNCmp(s1[i], s2[i], n), __LINE__);
+		TestInt(strncmp(s1[i], s2[i], n), StrNCmp(s1[i], s2[i], n), __LINE__);
 	}
 }
 
@@ -108,7 +120,7 @@ static void TestStrCaseCmp()
 
 	for (i = 0; i < size; i++)
 	{
-		TstResInt(strcasecmp(s1[i], s2[i]), StrCaseCmp(s1[i], s2[i]), __LINE__);
+		TestInt(strcasecmp(s1[i], s2[i]), StrCaseCmp(s1[i], s2[i]), __LINE__);
 	}
 }
 
@@ -118,35 +130,44 @@ static void TestStrCpy()
 	char *str2 = NULL; 
 	
 	str2 = (char *)malloc(StrLen(str1) + 1); 
-	if (!str2)
+	if (NULL == str2)
 	{
         	printf("Memory allocation failed\n");
         	return; 
 	}
 	
-	TstResChar(strcpy(str2, str1), StrCpy(str2, str1), __LINE__);
+	TestChar(strcpy(str2, str1), StrCpy(str2, str1), __LINE__);
 	
 	free(str2);
-	str2 = NULL;
 }
 
 static void TestStrNCpy()
 {
-	const char str1[] = "Here comes the sun";
-	char *str2 = NULL;
-	size_t n = 4; 
-	
-	str2 = (char *)malloc(n + 1); 
-	if (!str2)
-	{
-        	printf("Memory allocation failed\n");
-        	return; 
-	}
-	
-	TstResChar(strncpy(str2, str1, n), StrNCpy(str2, str1, n), __LINE__);
-	
-	free(str2);
-	str2 = NULL;
+    const char str1[] = "Here comes the sun";
+    char *str2 = NULL;
+    char *str3 = NULL;
+    size_t n = 4; 
+    
+    str2 = (char *)malloc(n + 1); 
+    str3 = (char *)malloc(n + 1);
+    if (NULL == str2 || NULL == str3)
+    {
+        printf("Memory allocation failed\n");
+        free(str2); 
+        free(str3);  
+        return; 
+    }
+
+    memset(str2, 0, n + 1);
+    memset(str3, 0, n + 1);
+
+    strncpy(str2, str1, n); 
+    StrNCpy(str3, str1, n); 
+
+    TestChar(str2, str3, __LINE__); 
+
+    free(str2); 
+    free(str3); 
 }
 
 static void TestStrChr()
@@ -154,18 +175,22 @@ static void TestStrChr()
 	const char str1[] = "Here we go again";
 	int symbol = 'g';
 
-	TstResChar(strchr(str1, symbol), StrChr(str1, symbol), __LINE__);
+	TestChar(strchr(str1, symbol), StrChr(str1, symbol), __LINE__);
 }
 
 static void TestStrDup()
 {
-	const char str1[] = "Wait, am I the clone?";
-	char *duplicated_str1 = NULL;
-	
-	TstResChar(strdup(str1), StrDup(str1), __LINE__);
-	
-	free(duplicated_str1);
-	duplicated_str1 = NULL;
+    const char str1[] = "Wait, am I the clone?";
+    char *duplicated_str1 = NULL;
+    char *duplicated_str2 = NULL;
+    
+    duplicated_str1 = strdup(str1); 
+    duplicated_str2 = StrDup(str1); 
+
+    TestChar(duplicated_str1, duplicated_str2, __LINE__); 
+
+    free(duplicated_str1); 
+    free(duplicated_str2);
 }
 
 static void TestStrCat()
@@ -173,7 +198,7 @@ static void TestStrCat()
 	char str1[30] = "Every beginning, ";
 	const char str2[] = "Has an end";
 	
-	TstResChar(strcat(str1, str2), StrCat(str1, str2), __LINE__);
+	TestChar(strcat(str1, str2), StrCat(str1, str2), __LINE__);
 }
 
 static void TestStrNCat()
@@ -182,7 +207,7 @@ static void TestStrNCat()
 	const char str2[] = "Has an end";
 	size_t n = 4;
 	
-	TstResChar(strncat(str1, str2, n), StrNCat(str1, str2, n), __LINE__);
+	TestChar(strncat(str1, str2, n), StrNCat(str1, str2, n), __LINE__);
 }
 
 static void TestStrStr()
@@ -190,7 +215,7 @@ static void TestStrStr()
 	const char str1[] = "Like looking for a needle in a haystack";
 	const char str2[] = "needle";
 
-	TstResChar(strstr(str1, str2), StrStr(str1, str2), __LINE__);
+	TestChar(strstr(str1, str2), StrStr(str1, str2), __LINE__);
 }
 
 static void TestStrSpn()
@@ -198,5 +223,5 @@ static void TestStrSpn()
 	const char str1[] = "ababbcd123456abc";
 	const char str2[] = "abcd";
 	
-	TstResInt(strspn(str1, str2), StrSpn(str1, str2), __LINE__);
+	TestInt(strspn(str1, str2), StrSpn(str1, str2), __LINE__);
 }

@@ -36,8 +36,8 @@ void PtrSwapCombo(size_t **ptr1, size_t **ptr2);
 
 /*******************************************************************************
 *Description: Checks if a string is a palindrome
-*Retuern values: success - 1
-				 fail	 - 0
+*Retuern values: True - 1
+				 false	 - 0
 *******************************************************************************/
 int IsPalindrome(const char *str);
 

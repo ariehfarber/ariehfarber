@@ -3,8 +3,8 @@ PROJECT = vector
 
 # Directories
 DIR = /home/arieh/git/ds
-DBG_OBJ_DIR = $(DIR)/bin/debug/
-REL_OBJ_DIR = $(DIR)/bin/release/
+DBG_OBJ_DIR = $(DIR)/bin/debug
+REL_OBJ_DIR = $(DIR)/bin/release
 HDR_DIR = $(DIR)/include
 SRC_DIR =  $(DIR)/src
 TEST_DIR = $(DIR)/test
@@ -31,20 +31,23 @@ REL_TEST_OBJ = $(REL_OBJ_DIR)/$(PROJECT)_test.o
 # Default target
 all: debug
 
-# Debug and Release targets
-debug: $(DBG_SRC_OBJ) $(DBG_TEST_OBJ)
-	@ $(CC) $(DBG_FLAGS) $^ -o $(DIR)/$(PROJECT).out
+# Debug target
+debug: $(DIR)/$(PROJECT).out
 
-release: $(REL_SRC_OBJ) $(REL_TEST_OBJ)
-	@ $(CC) $(REL_FLAGS) $^ -o $(DIR)/$(PROJECT).out
+$(DIR)/$(PROJECT).out: $(DBG_SRC_OBJ) $(DBG_TEST_OBJ)
+	@ $(CC) $(DBG_FLAGS) $^ -o $@
 
-# Rule to generate object file for project in debug
 $(DBG_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
 $(DBG_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
 
-# Rule to generate object file for project in release
+# Release target
+release: $(DIR)/$(PROJECT).out
+
+$(DIR)/$(PROJECT)_release.out: $(REL_SRC_OBJ) $(REL_TEST_OBJ)
+	@ $(CC) $(REL_FLAGS) $^ -o $@
+
 $(REL_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@
 $(REL_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)

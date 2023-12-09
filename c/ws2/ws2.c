@@ -3,10 +3,13 @@
 *Reviewer: Yarden Shai
 *Date: 9/11/2023
 *******************************************************************************/
-#include <assert.h> /*assert*/
-#include <stddef.h> /*size_t*/
-#include <string.h> /*strcmp*/
-#include <stdlib.h> /*malloc*/
+#include <assert.h>  /*assert */
+#include <stddef.h>  /*size_t */
+#include <string.h>  /*strcmp */
+#include <stdlib.h>  /*malloc */
+
+#define TRUE 1
+#define FALSE 0
 
 #include "ws2.h"
 
@@ -71,9 +74,9 @@ int IsPalindrome(const char *str)
 	{
 		if (str[i] != str[j])
 		{
-			return(0);	
+			return(FALSE);	
 		}
 	}
 		
-	return(1);
+	return(TRUE);
 }

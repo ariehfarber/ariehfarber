@@ -10,7 +10,7 @@
 
 void PrintStr(char *str)
 {
-	printf("%s\n", str);
+	printf("%s", str);
 }
 
 double PowerBaseTen(signed int exponent)
@@ -41,7 +41,7 @@ int FlipDigits(signed int number)
 	int marker = 1;
 	int base = 10;
 	
-	if (number < 0) 
+	if (0 > number) 
 	{
 		number = -number;
 		marker = -1;
