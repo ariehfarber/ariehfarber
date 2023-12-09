@@ -41,7 +41,7 @@ int QueueEnqueue(queue_t *queue, const void *val)
 {	
 	assert(NULL != queue);
 	
-	return (NULL == SLLInsert(queue->list, SLLBegin(queue->list), (void *)val));
+	return (NULL == SLLInsert(queue->list, SLLEnd(queue->list), (void *)val));
 }
 
 void QueueDequeue(queue_t *queue)

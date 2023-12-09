@@ -22,6 +22,15 @@ void TestInt(int control, int test, int line);
 void TestUnsignedInt(unsigned int control, unsigned int test, int line);
 
 /******************************************************************************
+*Description: Compares between the size of test variable and the size
+*			  of the control variable. If the test variable is bigger
+*			  it prints an error message with the line number.
+*Parameters: A control variable, test variable, and the __LINE__ macro.
+*Notes: Prints an error message with the line number if the values differ.
+******************************************************************************/
+void TestDouble(double control, double test, int line);
+
+/******************************************************************************
 *Description: Compares two long variables.
 *Parameters: A control variable, test variable, and the __LINE__ macro.
 *Notes: Prints an error message with the line number if the values differ.

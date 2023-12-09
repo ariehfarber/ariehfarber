@@ -8,9 +8,12 @@
 
 #include "ws1.h"
 
-void PrintStr(char *str)
+char *HexadecimalHelloWorld(void)
 {
-	printf("%s", str);
+	static char str[] = \
+	"\x22\x48\x65\x6c\x6c\x6f\x20\x77\x6f\x72\x6c\x64\x21\x22\x00";
+	
+	return (str);
 }
 
 double PowerBaseTen(signed int exponent)
@@ -38,13 +41,13 @@ double PowerBaseTen(signed int exponent)
 int FlipDigits(signed int number)
 {
 	int fliped = 0;
-	int marker = 1;
+	int sign = 1;
 	int base = 10;
 	
 	if (0 > number) 
 	{
 		number = -number;
-		marker = -1;
+		sign = -1;
 	}
 
 	while (0 != number)
@@ -53,7 +56,7 @@ int FlipDigits(signed int number)
 		number = number / base;
 	}
 	
-	return (fliped * marker);
+	return (sign * fliped);
 }
 
 void Swap(signed int *var1, signed int *var2)

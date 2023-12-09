@@ -62,6 +62,7 @@ static void TestQueueEnqueueAndDequeue(queue_t *queue, int data[], int size)
 	for (i = 0; i < size; i++)
 	{
 		status = QueueEnqueue(queue, &data[i]);
+		value = QueuePeek(queue);
 		TstResInt(SUCCESS, status, __LINE__);
 	}
 	
@@ -69,7 +70,7 @@ static void TestQueueEnqueueAndDequeue(queue_t *queue, int data[], int size)
 	{
 		QueueDequeue(queue);
 		value = QueuePeek(queue);
-		TstResInt(8 - i, *(int *)value, __LINE__);
+		TstResInt(i + 1, *(int *)value, __LINE__);
 	}
 }
 

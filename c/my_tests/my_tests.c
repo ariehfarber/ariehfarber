@@ -39,6 +39,22 @@ void TestUnsignedInt(unsigned int control, unsigned int test, int line)
 	}
 }
 
+void TestDouble(double control, double test, int line)
+{
+	if (control < test)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
 void TestLong(long control, long test, int line)
 {
 	if (control != test)

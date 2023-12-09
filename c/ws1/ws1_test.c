@@ -5,17 +5,18 @@
 *******************************************************************************/
 #include <stdio.h>  /*printf	*/
 #include <math.h>   /*pow, fabs */
+#include <string.h> /*strcmp	*/
 
 #include "ws1.h"
 
-static void TestPrintStr();
+static void TestHexadecimalHelloWorld();
 static void TestPowerBaseTen();
 static void TestFlipDigits();
 static void TestSwap();
 
 int main()
 {
-	TestPrintStr();
+	TestHexadecimalHelloWorld();
 	TestPowerBaseTen();
 	TestFlipDigits();
 	TestSwap();
@@ -39,11 +40,46 @@ void TestInt(int control, int test, int line)
 	}
 }
 
-static void TestPrintStr()
+void TestDouble(double control, double test, int line)
 {
-	char *s = "\x22\x48\x65\x6c\x6c\x6f\x20\x77\x6f\x72\x6c\x64\x21\x22\n";
+	if (control < test)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+void TestChar(char *control, char *test, int line)
+{
+	if (0 != strcmp(control, test))
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+static void TestHexadecimalHelloWorld()
+{
+	char *s = NULL;
+	char *control = "\"Hello world!\"";
 		
-	PrintStr(s);
+	s = HexadecimalHelloWorld();
+	
+	TestChar(control, s, __LINE__);
 }
 
 static void TestPowerBaseTen()
@@ -53,23 +89,15 @@ static void TestPowerBaseTen()
 	int size = 0;
 	int i = 0;
 	double epsilon = 0.05;
+	double test_val = 0.0;
 	
 	size = sizeof(test_cases) / sizeof(test_cases[0]);
 	
 	for (i = 0; i < size; i++)
 	{
-		if ((control[i] - PowerBaseTen(test_cases[i])) > epsilon)
-		{
-			printf("\033[0;31m");
-			printf("error in PowerBaseTen function result\n");
-			printf("\033[0m");
-		}
-		else
-		{
-			printf("\033[1;32m");
-			printf("Success!\n");
-			printf("\033[0m"); 
-		}
+		test_val = control[i] - PowerBaseTen(test_cases[i]);
+		
+		TestDouble(epsilon, test_val, __LINE__);
 	}
 }	
 

@@ -7,9 +7,10 @@
 #define __WS1_H__
 
 /*******************************************************************************
-*Description: Prints the provided string.
+*Description: Creats a Null terminated"hello, world!" string using 
+*			  hexadecimal values.
 *******************************************************************************/
-void PrintStr(char *str);
+char *HexadecimalHelloWorld(void);
 
 /*******************************************************************************
 *Description: Calculates 10 to the Power of n.
