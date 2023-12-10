@@ -6,7 +6,7 @@
 #ifndef __CBUFFER_H__
 #define __CBUFFER_H__
 
-#include <stddef.h>    /*size_t */
+#include <stddef.h> /*size_t */
 
 typedef struct buffer buffer_t;
 

@@ -3,11 +3,14 @@
 *Reviewer:  
 *Date: 
 *******************************************************************************/
-#include <stdio.h> 	   /*BUFSIZ		 */
-#include <stdlib.h>    /*malloc, free*/ 
-#include <stddef.h>    /*size_t  	 */
+#include <stdio.h>	/*printf	  */ 	  
+#include <stdlib.h> /*malloc, free*/ 
+#include <stddef.h> /*size_t  	  */
 
 #include "cbuffer.h"
+
+#define TRUE 1
+#define FALSE 0
 
 static void TestBuffer();
 
@@ -18,33 +21,101 @@ int main()
 	return (0);
 }
 
+void TestInt(int control, int test, int line)
+{
+	if (control != test)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+void TestSizeT(size_t control, size_t test, int line)
+{
+	if (control != test)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+static void TestBufferWrite(buffer_t *buffer, size_t n)
+{
+	char *src = "abcdefghijklmnop";
+	size_t control = 0;
+	
+	control = n;
+	
+	n = BufferWrite(src, buffer, n);
+	
+	TestSizeT(control, n, __LINE__);
+}
+
+static void TestBufferRead(void *dest, buffer_t *buffer, size_t n)
+{
+	size_t control = 0;
+	
+	control = n;
+	
+	n = BufferRead(dest, buffer, n);
+	TestSizeT(control, n, __LINE__);
+}
+
+static void TestBufferStatus(buffer_t *buffer, size_t capacity)
+{
+	size_t size = 0;
+	size_t free_space = 0;
+	
+	size = BufferSize(buffer);
+	free_space = BufferFreeSpace(buffer);
+	
+	TestSizeT(size, (capacity - free_space), __LINE__);
+}
+
 static void TestBuffer()
 {
 	buffer_t *buffer = NULL;
-	char *dest = NULL;
-	char *src = "abcd";
-	size_t n_write = 3;
-	size_t n_read = 15;
-	size_t capacity = 5;
-	int i = capacity;
+	void *dest = NULL;
+	size_t capacity = 6;
+	
+	dest = calloc(capacity, sizeof(char));
 
 	buffer = BufferCreate(capacity);
+	TestInt(TRUE, BufferIsEmpty(buffer), __LINE__);
+	TestBufferStatus(buffer, capacity);
 	
-	n_write = BufferWrite(src, buffer, n_write);
-	printf("n_write is %lu\n", n_write);
+	TestBufferWrite(buffer, 4);
+	TestInt(FALSE, BufferIsEmpty(buffer), __LINE__);
+	TestBufferStatus(buffer, capacity);
 	
-	dest = malloc(capacity);
-	n_read = BufferRead(dest, buffer, n_read);
-	printf("n_read is %lu\n", n_read);
+	TestBufferRead(dest, buffer, 2);
 	
-	while (0 != i)
-	{
-		printf("%c\n", dest[i]);
-		i--;
-	}
+	TestBufferWrite(buffer, 4);
+	TestInt(FALSE, BufferIsEmpty(buffer), __LINE__);
+	TestBufferStatus(buffer, capacity);
 	
-		
+	TestBufferRead(dest, buffer, 2);
+
 	BufferDestroy(buffer);
 	
 	free(dest);
 }
+
+
+
+
+

@@ -6,7 +6,7 @@
 #include <stddef.h>    /*size_t, ofsetof*/
 #include <stdlib.h>    /*malloc, free	*/  
 #include <string.h>    /*memcpy		 	*/  
-#include <assert.h>    /*assert 	 	*/
+#include <assert.h>    /*assert 	 	*/ 	
 
 #include "cbuffer.h"
 
@@ -25,8 +25,7 @@ buffer_t *BufferCreate(size_t capacity)
 {
 	buffer_t *buffer = NULL;
 	
-	buffer = (buffer_t *)malloc((sizeof(struct buffer)\
-			  + capacity) * sizeof(char));  
+	buffer = (buffer_t *)malloc(sizeof(buffer_t) + (capacity * sizeof(char)));  
 	if (NULL == buffer)
 	{
 		return NULL;
@@ -49,7 +48,6 @@ void BufferDestroy(buffer_t *buffer)
 size_t BufferRead(void *dest, buffer_t *buffer, size_t n)
 {
     size_t read_elements = 0;	
-    char *read_ptr = NULL;
     char *dest_ptr = NULL;
 	
 	assert(NULL != dest);
@@ -66,22 +64,17 @@ size_t BufferRead(void *dest, buffer_t *buffer, size_t n)
 	}
 	
 	read_elements = n;
-	
-	read_ptr = buffer->array + 1 + buffer->read;
 	dest_ptr = (char *)dest;
 
 	while (0 != n)
 	{
-		*dest_ptr = *read_ptr;
+		*dest_ptr = buffer->array[DUMMY + buffer->read];
 		dest_ptr++;
-		read_ptr++;
-		n--;
 		buffer->read++;
-		
+		n--;		
 		if (buffer->read > buffer->capacity)
 		{
 			buffer->read = 0;
-			read_ptr = buffer->array + 1;
 		}
 	}
 		
@@ -91,7 +84,6 @@ size_t BufferRead(void *dest, buffer_t *buffer, size_t n)
 size_t BufferWrite(const void *src, buffer_t *buffer, size_t n)
 {
     size_t write_elements = 0;	
-    char *write_ptr = NULL;
     char *src_ptr = NULL;
     
 	assert(NULL != src);
@@ -109,21 +101,17 @@ size_t BufferWrite(const void *src, buffer_t *buffer, size_t n)
 	
 	write_elements = n;
 	
-	write_ptr = buffer->array + 1 + buffer->write;
 	src_ptr = (char *)src;
 
 	while (0 != n)
 	{
-		*write_ptr = *src_ptr;
-		write_ptr++;
+		buffer->array[DUMMY + buffer->write] = *src_ptr;
 		src_ptr++;
-		n--;
 		buffer->write++;
-		
+		n--;	
 		if (buffer->write > buffer->capacity)
 		{
 			buffer->write = 0;
-			write_ptr = buffer->array + 1;
 		}
 	}
 		
