@@ -10,22 +10,22 @@
 
 void *MemSet(void *str, int c, size_t n)
 {
-    char *runner = (char *)str;
+    char *runner = NULL;
     char c_character = (char)c;
     size_t word_chunk = 0;
     const size_t word_size = sizeof(size_t);
     size_t i = 0;
 
     assert(NULL != str);
+    
+    runner = (char *)str;
 
-	/*assaigning the c charecter to every byte in a size_t sized variable*/
     for (i = 0; i < word_size; i++) 
     {
         word_chunk <<= 8;
         word_chunk |= c_character;
     }
     
-    /*assaign the c charecter into str byte by byte untill it's aligned*/
 	while (0 != ((size_t)runner & (word_size - 1)) && 0 != n)
 	{
 		*runner = c_character;
@@ -33,7 +33,6 @@ void *MemSet(void *str, int c, size_t n)
 		n--;
 	}
   
-    /*assaign the c charecter into str by word chunks*/
 	while (n > word_size)
 	{
 		*(size_t *)runner = word_chunk;
@@ -41,7 +40,6 @@ void *MemSet(void *str, int c, size_t n)
 		n -= word_size;
 	}
     
-    /*assaign the c charecter into str byte by byte for the reminder*/
     while (0 != n)
 	{
 		*runner = c_character;
@@ -54,8 +52,8 @@ void *MemSet(void *str, int c, size_t n)
 
 void *MemCpy(void *dest, const void *src, size_t n)
 { 
-    char *src_runner = (char *)src;
-    char *dest_runner = (char *)dest;
+    char *src_runner = NULL;
+    char *dest_runner = NULL;
     size_t *aligned_src_runner = NULL;
     size_t *aligned_dest_runner = NULL;
     const size_t word_size = sizeof(size_t);
@@ -63,8 +61,10 @@ void *MemCpy(void *dest, const void *src, size_t n)
 
     assert(src);
 	assert(dest);
+	
+    src_runner = (char *)src;
+    dest_runner = (char *)dest;
     
-    /*assaigning src to dest byte by byte untill they are aligned*/
 	while (0 != ((size_t)src_runner & (word_size - 1)) && 0 != n)
 	{
 		*dest_runner = *src_runner;
@@ -73,7 +73,6 @@ void *MemCpy(void *dest, const void *src, size_t n)
 		n--;
 	}
 
-	/*assaigning src to dest by word chunks*/
     aligned_src_runner = (size_t *)src_runner;
     aligned_dest_runner = (size_t *)dest_runner;
 	while (n > word_size)
@@ -84,7 +83,6 @@ void *MemCpy(void *dest, const void *src, size_t n)
 		n -= word_size;
 	}
    
-	/*assaign src to dest byte by byte for the reminder*/
     src_runner = (char *)aligned_src_runner;
     dest_runner = (char *)aligned_dest_runner; 
     while (0 != n)
@@ -100,8 +98,8 @@ void *MemCpy(void *dest, const void *src, size_t n)
 
 void *MemMove(void *dest, const void *src, size_t n)
 { 
-    char *dest_runner = (char *)dest;
-    char *src_runner = (char *)src;
+    char *dest_runner = NULL;
+    char *src_runner = NULL;
     size_t *aligned_dest_runner = NULL;
     size_t *aligned_src_runner = NULL;
     const size_t word_size = sizeof(size_t);
@@ -109,15 +107,17 @@ void *MemMove(void *dest, const void *src, size_t n)
 
     assert(dest);
 	assert(src);
+	
+    dest_runner = (char *)dest;
+    src_runner = (char *)src;
     
-    if (src < dest) /*Reverse Copying*/
+    if (src < dest)
     {
     	ptr_step = -1;
 	    dest_runner = (char *)dest + n - 1;
 		src_runner = (char *)src + n - 1;
     }
     
-	/*assaigning src to dest byte by byte untill they are aligned*/
 	while (0 != ((size_t)dest_runner & (word_size - 1)) && 0 != n)
 	{
 		*dest_runner = *src_runner;
@@ -126,7 +126,6 @@ void *MemMove(void *dest, const void *src, size_t n)
 		n--;
 	}
 
-	/*assaigning src to dest by word chunks*/
 	aligned_dest_runner = (size_t *)dest_runner;
 	aligned_src_runner = (size_t *)src_runner;
 	while (n > word_size)
@@ -136,8 +135,7 @@ void *MemMove(void *dest, const void *src, size_t n)
 		aligned_src_runner += ptr_step;
 		n -= word_size;
 	}
-
-	/*assaign src to dest byte by byte for the reminder*/	   
+  
 	dest_runner = (char *)aligned_dest_runner;
 	src_runner = (char *)aligned_src_runner; 
 	while (0 != n)

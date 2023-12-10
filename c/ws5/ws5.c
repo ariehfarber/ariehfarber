@@ -9,8 +9,8 @@
 
 #include "ws5.h"
 
-#define COMMANDS_NUM 	 5   /*number of command option*/
-#define INPUT_MAX_LENGTH 100 /*maximum input charecters*/
+#define COMMANDS_NUM 	 5   
+#define INPUT_MAX_LENGTH 100
 
 char string[INPUT_MAX_LENGTH];
 
@@ -49,7 +49,7 @@ static void Print(int n)
 
 static output_t RemoveCommand(const char *title)
 {
-	if (remove(title)) 
+	if (0 != remove(title)) 
 	{
 		return (REMOVE_ERROR);
 	}
@@ -65,12 +65,11 @@ static output_t CountCommand(const char *title)
 	FILE *test_file;
 	
 	test_file = fopen(title, "r");
-	if (!test_file)
+	if (NULL == test_file)
 	{
 		return (FILE_ERROR);
 	}
 	
-	/*Counting the lines using a for loop*/
 	for (c = getc(test_file); c != EOF; c = getc(test_file))
 	{
 		if (c == '\n')
@@ -80,7 +79,7 @@ static output_t CountCommand(const char *title)
 	}
 	
 	fclose(test_file);
-	if (!test_file)
+	if (NULL == test_file)
 	{
 		return (FILE_ERROR);
 	}
@@ -103,47 +102,41 @@ static output_t AddToStartCommand(const char *title)
    	FILE *temp_file;
    	FILE *test_file; 
     	
-	/*Creating a temporary file and opening the original file*/
    	temp_file = fopen(temp_title, "w+");
-	if (!temp_file)
+	if (NULL == temp_file)
 	{
 		return (FILE_ERROR);
 	}
 	
 	test_file = fopen(title, "r+");
-	if (!test_file)
+	if (NULL == test_file)
 	{
 		return (FILE_ERROR);
 	}
 	
-	/*Inserting the string as the first line of the temporary file,
-	  not icluding the '<' charecter*/
 	fputs(string + 1, temp_file);
 	
-	/*copying the original file into the temporary file*/
 	while ((ch = fgetc(test_file)) != EOF)
 	{
 		fputc(ch, temp_file);
 	}
 	
 	fclose(temp_file);
-	if (!temp_file)
+	if (NULL == temp_file)
 	{
 		return (FILE_ERROR);
 	}
 		
 	fclose(test_file);
-	if (!test_file)
+	if (NULL == test_file)
 	{
 		return (FILE_ERROR);
 	}
 	
-	/*Deleting the original file*/
 	RemoveCommand(title);
 	
-	/*Renaming the temporary file with the name of the original file*/
 	ret = rename(temp_title, title);
-	if (ret) 
+	if (0 != ret) 
 	{
 		return (RENAME_ERROR);
 	}
@@ -156,7 +149,7 @@ static output_t AddToEndCommand(const char *title)
 	FILE *test_file;
 	
 	test_file = fopen(title, "a");
-	if (!test_file)
+	if (NULL == test_file)
 	{
 		return (FILE_ERROR);
 	}
@@ -164,7 +157,7 @@ static output_t AddToEndCommand(const char *title)
 	fputs(string, test_file);
 	
 	fclose(test_file);
-	if (!test_file)
+	if (NULL == test_file)
 	{
 		return (FILE_ERROR);
 	}
@@ -193,7 +186,6 @@ int FileEditor(const char *title)
 	size_t n = 0;
 	output_t state = SUCCESS;
 
-	/*initializing the struct*/
 	special_input_t cmnd_array[COMMANDS_NUM] = 
 	{
 		{"-remove\n", strncmp, RemoveCommand},
@@ -206,20 +198,17 @@ int FileEditor(const char *title)
 	while (SUCCESS == state)
 	{	
 		printf("Enter string (up to 100 charecters):\n");
-		if (!fgets(string, 100, stdin))
+		if (NULL == fgets(string, 100, stdin))
 		{
 			state = INPUT_ERROR;
 		}
-		
-		
-		/*using strncmp to help decide which command to use*/
+
 		n = strlen(string);
 		if ('<' == string[0])
 		{
 			n = 1;
 		}
 		
-		/*checking which command to use*/
 		for (i = 0; i < size; i++)
 		{
 			if (!cmnd_array[i].Comparison(cmnd_array[i].str, string, n))

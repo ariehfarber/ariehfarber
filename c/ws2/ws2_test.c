@@ -30,7 +30,7 @@ int main()
 	return (0);
 }
 
-void TestInt(int control, int test, int line)
+static void TestInt(int control, int test, int line)
 {
 	if (control != test)
 	{
@@ -46,7 +46,7 @@ void TestInt(int control, int test, int line)
 	}
 }
 
-void TestSizeT(size_t control, size_t test, int line)
+static void TestSizeT(size_t control, size_t test, int line)
 {
 	if (control != test)
 	{

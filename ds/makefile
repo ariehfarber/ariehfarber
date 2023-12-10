@@ -1,5 +1,5 @@
 # List of projects
-PROJECTS = bitarray stack vector sll sll_ext queue
+PROJECTS = bitarray stack vector sll sll_ext queue cbuffer
 
 # Binaries for each project
 BINS = $(addsuffix .out, $(PROJECTS))

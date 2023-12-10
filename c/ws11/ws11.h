@@ -45,8 +45,8 @@ char* ItoaAnyBase(int num, char* buffer, int base);
 *Return values: 
 *Notes: 
 *******************************************************************************/
-void PrintArrOfChars(char *str1, char *str2 ,char *str3, size_t size1, 
-					 size_t size2, size_t size3);
+void PrintArrayOfChars(char *str1, char *str2 ,char *str3, size_t size1, 
+					   size_t size2, size_t size3);
 
 /*******************************************************************************
 *Description:

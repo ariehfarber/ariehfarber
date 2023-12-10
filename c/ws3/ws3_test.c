@@ -3,32 +3,41 @@
 *Reviewer: Omer Bruker
 *Date: 12/09/2023
 *******************************************************************************/
-#include <stdio.h>  /*printf*/
-#include <stdlib.h> /*malloc, size_t*/
+#define _POSIX_C_SOURCE 200809L /*a macro for using strdup with c89 compiler*/
+
+#include <stdio.h>  /*printf			  */
+#include <stdlib.h> /*malloc, size_t, free*/
+#include <string.h> /*strdup	  		  */
 
 #include "ws3.h"
 
 static void TestMatrixRowSums();
 static void TestJosephusProblem();
-static void TestDataSize();
+static void TestPrintDataSize();
 static void TestPrintEnvVariablesLowCase();
 
 int main()
 {
 	TestMatrixRowSums();
 	TestJosephusProblem();
-	TestDataSize();
+	TestPrintDataSize();
 	TestPrintEnvVariablesLowCase();
 	
 	return (0);
 }
 
-static void TstResInt(int control, int func_res, int line)
+static void TestInt(int control, int test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
 		printf("\033[0m"); 
 	}
 }
@@ -41,24 +50,26 @@ static void TestMatrixRowSums()
 	int control[COLS] = {3 , 12, 21};
 
 	array = (int **)malloc(ROWS * sizeof(int *));
-	if (!array)
+	if (NULL == array)
 	{
-		printf("Memory allocation failed");
+		printf("Memory allocation failed\n");
 	}
 	
 	for (i = 0; i < ROWS; i++) 
 	{
 		array[i] = (int *)malloc(COLS * sizeof(int));
-		if (!array[i])
+		if (NULL == array[i])
 		{
-			printf("Memory allocation failed");
+			free(array);
+			
+			printf("Memory allocation failed\n");
 		}
 	}
 	
 	sum_of_rows = (int *)malloc(COLS * sizeof(int *));
-	if (!sum_of_rows)
+	if (NULL == sum_of_rows)
 	{
-		printf("Memory allocation failed");
+		printf("Memory allocation failed\n");
 	}
 	
 	for (i = 0; i < ROWS; i++)
@@ -78,7 +89,7 @@ static void TestMatrixRowSums()
 	
 	for (i = 0; i < COLS; i++)
 	{
-			TstResInt(control[i], sum_of_rows[i], __LINE__);
+			TestInt(control[i], sum_of_rows[i], __LINE__);
 	}
 	
 	for (i = 0; i < ROWS; i++) 
@@ -86,10 +97,8 @@ static void TestMatrixRowSums()
     		free(array[i]);
 	}
 	free(array);
-	array = NULL;
 	
 	free(sum_of_rows);
-	sum_of_rows = NULL;
 }
 
 static void TestJosephusProblem()
@@ -108,15 +117,59 @@ static void TestJosephusProblem()
 	
 	index = JosephusProblem(array, size_of_array);
 
-	TstResInt(8, index, __LINE__);
+	TestInt(8, index, __LINE__);
 }
 
-static void TestDataSize()
+static void TestPrintDataSize()
 {
-	DataSize();
+	size_t i = 0;
+	size_t num_of_types = 0;	
+	char *types[] = {"int", "unsigned int", "int*", "int**",
+        				   "float", "double", "double*", "double**",
+        				   "char", "unsigned char", "size_t"};
+	size_t data_size[] = {sizeof(int), sizeof(unsigned int), sizeof(int*),
+        			  sizeof(int**), sizeof(float), sizeof(double),
+        			  sizeof(double*), sizeof(double**), sizeof(char),
+        			  sizeof(unsigned char), sizeof(size_t)}; 
+
+	num_of_types = sizeof(data_size) / sizeof(data_size[0]);
+	
+	printf("\n");
+	for (i = 0; i < num_of_types; i++)
+	{
+		PrintDataSize(types[i], data_size[i]);
+	}
+	printf("\n");
 }
 
 static void TestPrintEnvVariablesLowCase()
 {
-	PrintEnvVariablesLowCase(environ);
+	char **buffer = NULL;
+	size_t environ_size = 0;
+	size_t i = 0;
+	
+	while (NULL != environ[environ_size])
+	{
+		environ_size++;
+	}
+	
+	buffer = (char **)malloc(environ_size * sizeof(char *));
+	if (NULL == buffer)
+	{
+		printf("Memory allocation failed\n");
+		return;
+	}
+	
+	for (i = 0; i < environ_size; i++)
+	{
+		buffer[i] = strdup(environ[i]);
+	}
+	
+	PrintEnvVariablesLowCase(buffer, environ_size);
+	
+	for (i = 0; i < environ_size; i++)
+	{
+		free(buffer[i]);
+	}
+	free(buffer);
 }

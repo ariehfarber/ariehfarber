@@ -23,9 +23,9 @@ int main()
 	return (0);
 }
 
-static void TstResHasLoop(int control, int test_value)
+static void TestStatusHasLoop(int control, int test)
 {
-	if (control != test_value)
+	if (control != test)
 	{
 		printf("\033[0;32m");
 		printf("No loop!\n");
@@ -67,7 +67,7 @@ static void TestHasLoop()
 	
 	printf("Testing for loop:\n");
 	status = HasLoop(original_head);
-	TstResHasLoop(TRUE, status);
+	TestStatusHasLoop(TRUE, status);
 	printf("\n");
 }
 
@@ -92,13 +92,3 @@ static void TestFindIntersection()
 	
 	DestroyLinkedList(original_head);
 }
-
-
-
-
-
-
-
-
-
-

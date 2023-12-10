@@ -45,7 +45,7 @@ int main()
 	return (0);
 }
 
-void TestInt(int control, int test, int line)
+static void TestInt(int control, int test, int line)
 {
 	if (control != test)
 	{
@@ -61,7 +61,7 @@ void TestInt(int control, int test, int line)
 	}
 }
 
-void TestChar(char *control, char *test, int line)
+static void TestChar(char *control, char *test, int line)
 {
 	if (0 != strcmp(control, test))
 	{

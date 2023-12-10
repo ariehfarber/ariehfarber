@@ -46,12 +46,12 @@ int main()
 	return (0);
 }
 
-static void TstResInt(int control, int test_value, int line)
+static void TestInt(int control, int test, int line)
 {
-	if (control != test_value)
+	if (control != test)
 	{
 		printf("\033[0;31m");
-		printf("Error. Failed at line %d\n", line);
+		printf("Error. failed at line %d\n", line);
 		printf("\033[0m"); 
 	}
 	else
@@ -62,12 +62,12 @@ static void TstResInt(int control, int test_value, int line)
 	}
 }
 
-static void TstResBitArray(bitarray_t control, bitarray_t test_value, int line)
+static void TestSizeT(size_t control, size_t test, int line)
 {
-	if (control != test_value)
+	if (control != test)
 	{
 		printf("\033[0;31m");
-		printf("Error. Failed at line %d\n", line);
+		printf("Error. failed at line %d\n", line);
 		printf("\033[0m"); 
 	}
 	else
@@ -78,9 +78,9 @@ static void TstResBitArray(bitarray_t control, bitarray_t test_value, int line)
 	}
 }
 
-static void TstResSizeT(size_t control, size_t test_value, int line)
+static void TestBitArray(bitarray_t control, bitarray_t test, int line)
 {
-	if (control != test_value)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. Failed at line %d\n", line);
@@ -120,7 +120,7 @@ static void TestBitArrayGetVal()
 	
 	test_val = BitArrayGetVal(test_bit_array, test_index);
 	
-	TstResInt(control_val, test_val, __LINE__);
+	TestInt(control_val, test_val, __LINE__);
 }
 
 static void TestBitArraySetBit()
@@ -132,7 +132,7 @@ static void TestBitArraySetBit()
 	
 	test_bit_array = BitArraySetBit(test_bit_array, test_index, bool_val);
 	
-	TstResBitArray(control_bit_array, test_bit_array, __LINE__);
+	TestBitArray(control_bit_array, test_bit_array, __LINE__);
 }
 
 static void TestBitArrayResetAll()
@@ -142,7 +142,7 @@ static void TestBitArrayResetAll()
 	
 	test_bit_array = BitArrayResetAll(test_bit_array);
 	
-	TstResBitArray(control_bit_array, test_bit_array, __LINE__);
+	TestBitArray(control_bit_array, test_bit_array, __LINE__);
 }
 
 static void TestBitArraySetAll()
@@ -152,7 +152,7 @@ static void TestBitArraySetAll()
 	
 	test_bit_array = BitArraySetAll(test_bit_array);
 	
-	TstResBitArray(control_bit_array, test_bit_array, __LINE__);
+	TestBitArray(control_bit_array, test_bit_array, __LINE__);
 }
 
 static void TestBitArrayFlip()
@@ -163,7 +163,7 @@ static void TestBitArrayFlip()
 
 	test_bit_array = BitArrayFlip(test_bit_array, test_index);
 	
-	TstResBitArray(control_bit_array, test_bit_array, __LINE__);
+	TestBitArray(control_bit_array, test_bit_array, __LINE__);
 }
 
 static void TestBitArrayCountOn()
@@ -174,7 +174,7 @@ static void TestBitArrayCountOn()
 	
 	test_count = BitArrayCountOn(test_bit_array);
 
-	TstResSizeT(control_count, test_count, __LINE__);
+	TestSizeT(control_count, test_count, __LINE__);
 }
 
 static void TestBitArrayCountOff()
@@ -185,7 +185,7 @@ static void TestBitArrayCountOff()
 	
 	test_count = BitArrayCountOff(test_bit_array);
 
-	TstResSizeT(control_count, test_count, __LINE__);
+	TestSizeT(control_count, test_count, __LINE__);
 }
 
 static void TestBitArrayToString()
@@ -213,7 +213,7 @@ static void TestBitArrayRotateLeft()
 
 	test_bit_array = BitArrayRotateLeft(test_bit_array, offset);
 	
-	TstResBitArray(control_bit_array, test_bit_array, __LINE__);
+	TestBitArray(control_bit_array, test_bit_array, __LINE__);
 }
 
 static void TestBitArrayRotateRight()
@@ -224,7 +224,7 @@ static void TestBitArrayRotateRight()
 
 	test_bit_array = BitArrayRotateRight(test_bit_array, offset);
 	
-	TstResBitArray(control_bit_array, test_bit_array, __LINE__);
+	TestBitArray(control_bit_array, test_bit_array, __LINE__);
 }
 
 static void TestBitArrayMirror()
@@ -235,7 +235,7 @@ static void TestBitArrayMirror()
 		
 	test_bit_array = BitArrayMirror(test_bit_array);
 
-	TstResBitArray(control_bit_array, test_bit_array, __LINE__);
+	TestBitArray(control_bit_array, test_bit_array, __LINE__);
 }
 
 static void TestBitArrayCountOnLUT()
@@ -246,7 +246,7 @@ static void TestBitArrayCountOnLUT()
 	
 	test_count = BitArrayCountOnLUT(test_bit_array);
 	
-	TstResSizeT(control_count, test_count, __LINE__);
+	TestSizeT(control_count, test_count, __LINE__);
 }
 
 static void TestBitArrayMirrorLUT()
@@ -257,5 +257,5 @@ static void TestBitArrayMirrorLUT()
 		
 	test_bit_array = BitArrayMirrorLUT(test_bit_array);
 
-	TstResBitArray(control_bit_array, test_bit_array, __LINE__);
+	TestBitArray(control_bit_array, test_bit_array, __LINE__);
 }

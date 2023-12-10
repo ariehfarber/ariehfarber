@@ -10,6 +10,8 @@
 
 #include "ws8.h"
 
+#define ELEMENT_NUM 5
+
 static void PrintInt(size_t value)
 {
 	printf("%d, ", *(int *)&value);	
@@ -49,19 +51,15 @@ static void AddString(size_t *target, int value)
 	char *new_str = NULL;
 	size_t new_str_length = 0;
 
-	/*convert int to char*/
 	sprintf(temp_buffer, "%d", value);
 
-	 /*+1 for NULL terminator*/
 	new_str_length = strlen((char *)(*target)) + strlen(temp_buffer) + 1;
 
 	new_str = realloc(((char *)(*target)), new_str_length);
 	assert(new_str);
 
-	/*concatenate the string with the number*/
 	strcat(new_str, temp_buffer);
 
-	/*set the struct pointer to the concatenated string*/
 	*target = (size_t)new_str;
 }
 

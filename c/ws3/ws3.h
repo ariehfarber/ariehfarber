@@ -27,12 +27,12 @@ size_t JosephusProblem(size_t *array, size_t array_size);
 /*******************************************************************************
 *Description: Prints the size of each data type.
 *******************************************************************************/
-void DataSize();
+void PrintDataSize(char *type, size_t size);
 
 /*******************************************************************************
 *Description: Copies the environment variables in lower case.
 *******************************************************************************/
-void PrintEnvVariablesLowCase(char **env_var);
+void PrintEnvVariablesLowCase(char **buffer, size_t environ_size);
 
 #endif /*__WS3_H__*/
 

@@ -8,8 +8,6 @@
 
 #include <stddef.h> /*size_t*/
 
-#define ELEMENT_NUM 5
-
 typedef void (*PFnPrint)(size_t);
 typedef void (*PFnAdd)(size_t *, int);
 typedef void (*PFnClean)(size_t *);
@@ -20,7 +18,7 @@ typedef struct element
 	PFnPrint PrintValue;
 	PFnAdd AddNumber;
 	PFnClean CleanValue;
-} element_t;
+}element_t;
 
 /*******************************************************************************
 *Description: The following functions can be used to set elements into

@@ -152,8 +152,8 @@ char* ItoaAnyBase(int num, char* buffer, int base)
 	return (buffer_start);
 }
 
-void PrintArrOfChars(char *str1, char *str2 ,char *str3, size_t size1, 
-					 size_t size2, size_t size3)
+void PrintArrayOfChars(char *str1, char *str2 ,char *str3, size_t size1, 
+					   size_t size2, size_t size3)
 {
 	size_t i = 0;
 	char character_table[ASCII_SIZE] = {0};

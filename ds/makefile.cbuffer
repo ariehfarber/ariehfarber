@@ -1,5 +1,5 @@
 # Project Name
-PROJECT = sll
+PROJECT = cbuffer
 
 # Directories
 DIR = /home/arieh/git/ds
@@ -60,7 +60,6 @@ clean:
 	   $(PROJECT).out
 	
 open:
-	@ find . -type f -name "$(PROJECT).c" -exec gedit {} +&
-	@ find . -type f -name "$(PROJECT)_test.c" -exec gedit {} +&
-	@ find . -type f -name "$(PROJECT).h" -exec gedit {} +&
+	@ find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&
+	@ find . -type f -name "$(PROJECT)*.h" -exec gedit {} +&
 	

@@ -21,7 +21,7 @@ int main()
 	return (0);
 }
 
-static void TstResInt(int control, int test, int line)
+static void TestInt(int control, int test, int line)
 {
 	if (control != test)
 	{
@@ -37,9 +37,9 @@ static void TstResInt(int control, int test, int line)
 	}
 }
 
-static void TstResSizeT(size_t control, size_t func_res, int line)
+void TestSizeT(size_t control, size_t test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -63,25 +63,25 @@ static void TestQueueEnqueueAndDequeue(queue_t *queue, int data[], int size)
 	{
 		status = QueueEnqueue(queue, &data[i]);
 		value = QueuePeek(queue);
-		TstResInt(SUCCESS, status, __LINE__);
+		TestInt(SUCCESS, status, __LINE__);
 	}
 	
 	for (i = 0; i < (size / 2); i++)
 	{
 		QueueDequeue(queue);
 		value = QueuePeek(queue);
-		TstResInt(i + 1, *(int *)value, __LINE__);
+		TestInt(i + 1, *(int *)value, __LINE__);
 	}
 }
 
 static void TestQueueSize(queue_t *queue, int control_size)
 {
-	TstResSizeT(control_size, QueueSize(queue), __LINE__);
+	TestSizeT(control_size, QueueSize(queue), __LINE__);
 }
 
 static void TestQueueStatus(queue_t *queue, int control)
 {
-	TstResInt(control, QueueIsEmpty(queue), __LINE__);
+	TestInt(control, QueueIsEmpty(queue), __LINE__);
 }
 
 static void TestQueue()

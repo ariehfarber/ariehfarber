@@ -7,30 +7,33 @@
 
 #include "ws9.h"
 
+#define SUCCESS 0
+#define FAILURE 1
+
 int SaveToBinFile(student *my_student, char *title)
 {
 	FILE *fp;
 	
 	fp = fopen(title, "wb");
-	if (!fp)
+	if (NULL == fp)
 	{
-		return (1);
+		return (FAILURE);
 	}
 	
 	fwrite(my_student, sizeof(*my_student), 1, fp);
-	if (ferror(fp)) 
+	if (0 != ferror(fp)) 
 	{
-		return (1);
+		return (FAILURE);
 	}
 	clearerr(fp);
 	
 	fclose(fp);
-	if (!fp)
+	if (NULL == fp)
 	{
-		return (1);
+		return (FAILURE);
 	}
 	
-	return (0);
+	return (SUCCESS);
 }
 
 int LoadFromBinFile(student *my_student, char *title)
@@ -38,23 +41,23 @@ int LoadFromBinFile(student *my_student, char *title)
 	FILE *fp;
 	
 	fp = fopen(title, "rb");
-	if (!fp)
+	if (NULL == fp)
 	{
-		return (1);
+		return (FAILURE);
 	}
 	
 	fread(my_student, sizeof(*my_student), 1, fp);
-	if (ferror(fp)) 
+	if (0 != ferror(fp)) 
 	{
-		return (1);
+		return (FAILURE);
 	}
 	clearerr(fp);
 	
 	fclose(fp);
-	if (!fp)
+	if (NULL == fp)
 	{
-		return (1);
+		return (FAILURE);
 	}
 	
-	return (0);
+	return (SUCCESS);
 }

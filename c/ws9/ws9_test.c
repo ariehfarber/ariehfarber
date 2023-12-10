@@ -8,6 +8,9 @@
 
 #include "ws9.h"
 
+#define SUCCESS 0
+#define FAILURE 1
+
 static void TestManageStudent();
 
 int main()
@@ -17,12 +20,18 @@ int main()
 	return (0);
 }
 
-static void TstResInt(int control, int func_res, int line)
+static void TestInt(int control, int test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
 		printf("\033[0m"); 
 	}
 }
@@ -30,22 +39,19 @@ static void TstResInt(int control, int func_res, int line)
 static void TestManageStudent()
 {
 	int state = -1;
-	int control = 0;
 	size_t struct_size = 0;
 	student original_student = {"John", "Smith", {{88.5, 95.4},\
-				   {56.3, 32.9}, 90.0}};
+				   			   {56.3, 32.9}, 90.0}};
 	student copied_student;  
 
 	struct_size = sizeof(original_student);
 	
-	/*saveing the student struct to a binary file*/
 	state = SaveToBinFile(&original_student, "student.bin");
+	TestInt(SUCCESS, state, __LINE__);
 	
-	/*loading the binary file to a new student struct*/
 	state = LoadFromBinFile(&copied_student, "student.bin");
+	TestInt(SUCCESS, state, __LINE__);
 	
-	/*the structs have the exact same binary data so we can use memcmp*/
 	state = memcmp(&original_student, &copied_student, struct_size);
-	
-	TstResInt(control, state, __LINE__);
+	TestInt(SUCCESS, state, __LINE__);
 }

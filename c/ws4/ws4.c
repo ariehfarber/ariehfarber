@@ -103,7 +103,6 @@ void LUTKeyInput()
 	int c = 0;
 	int i = 0;
 	
-	/*Array of function pointers*/
 	PFnPrintFunctions PrintLetter;
 	
 	if (system("stty -icanon -echo"))
@@ -112,13 +111,11 @@ void LUTKeyInput()
 		return;
 	}
 	
-	/*Padding the array with empty functions*/
 	for (i = 0; i < 256; i++)
 	{
 		PrintLetter[i] = EmptyFunction;
 	}
 	
-	/*Assigning the print functions to the function pointers*/
 	PrintLetter[(unsigned char)'A'] = PrintA;
 	PrintLetter[(unsigned char)'a'] = PrintA;
 	PrintLetter[(unsigned char)'T'] = PrintT;

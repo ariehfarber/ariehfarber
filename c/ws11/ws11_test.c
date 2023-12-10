@@ -9,11 +9,13 @@
 
 #include "ws11.h"
 
+#define TRUE 1
+
 static void TestAtoi();
 static void	TestAtoiAnyBase();
 static void TestItoa();
 static void	TestItoaAnyBase();
-static void TestPrintArrOfChars();
+static void TestPrintArrayOfChars();
 static void TestIsLittleEndian();
 
 int main()
@@ -22,28 +24,40 @@ int main()
 	TestAtoiAnyBase();
 	TestItoa();
 	TestItoaAnyBase();
-	TestPrintArrOfChars();
+	TestPrintArrayOfChars();
 	TestIsLittleEndian();
 	
 	return (0);
 }
 
-static void TstResInt(int control, int func_res, int line)
+static void TestInt(int control, int test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
 		printf("\033[0m"); 
 	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }
 
-static void TstResChar(char *control, char *func_res, int line)
+static void TestChar(char *control, char *test, int line)
 {
-	if (strcmp(control, func_res))
+	if (0 != strcmp(control, test))
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
 		printf("\033[0m"); 
 	}
 }
@@ -57,7 +71,7 @@ static void TestAtoi()
 	test_num = Atoi(test_string);
 	control_num = atoi(test_string);
 	
-	TstResInt(control_num, test_num, __LINE__);
+	TestInt(control_num, test_num, __LINE__);
 }
 
 static void	TestAtoiAnyBase()
@@ -69,7 +83,7 @@ static void	TestAtoiAnyBase()
 	
 	test_num = AtoiAnyBase(test_string, base);
 	
-	TstResInt(control_num, test_num, __LINE__);
+	TestInt(control_num, test_num, __LINE__);
 }
 
 static void TestItoa()
@@ -82,7 +96,7 @@ static void TestItoa()
 	
 	Itoa(num, str_buffer);
 	
-	TstResChar(control_str, str_buffer, __LINE__);
+	TestChar(control_str, str_buffer, __LINE__);
 	
 	free(str_buffer);
 	str_buffer = NULL;
@@ -99,13 +113,13 @@ static void	TestItoaAnyBase()
 	
 	ItoaAnyBase(test_num, str_buffer, base);
 	
-	TstResChar(control_str, str_buffer, __LINE__);
+	TestChar(control_str, str_buffer, __LINE__);
 	
 	free(str_buffer);
 	str_buffer = NULL;
 }
 
-static void TestPrintArrOfChars()
+static void TestPrintArrayOfChars()
 {
     char array1[] = {'A', 'A', 'a'};
     char array2[] = {'A', 'a', 'f', 'f', 'f', 'f', 'f'};
@@ -118,14 +132,14 @@ static void TestPrintArrOfChars()
 	size2 = sizeof(array2) / sizeof(array2[0]);
 	size3 = sizeof(array3) / sizeof(array3[0]);
 	
-	PrintArrOfChars(array1, array2 ,array3, size1, size2, size3);
+	PrintArrayOfChars(array1, array2 ,array3, size1, size2, size3);
 }
 
 static void TestIsLittleEndian()
 {
-	TstResInt(1, IsLittleEndian(), __LINE__);
+	TestInt(TRUE, IsLittleEndian(), __LINE__);
 	
-	TstResInt(1, IS_LITTLE_ENDIAN, __LINE__);
+	TestInt(TRUE, IS_LITTLE_ENDIAN, __LINE__);
 }
 
 

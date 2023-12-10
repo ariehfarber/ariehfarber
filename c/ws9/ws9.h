@@ -35,14 +35,14 @@ typedef struct student
 /*******************************************************************************
 *Description: saves a student struct to a binary file
 *Return values: success - 0
-		fail    - non-zero
+*				failure - 1
 *******************************************************************************/
 int SaveToBinFile(student *my_student, char *title);
 
 /*******************************************************************************
 *Description: loads a student struct from a binary file
 *Return values: success - 0
-		fail    - non-zero
+*				failure - 1
 *******************************************************************************/
 int LoadFromBinFile(student *my_student, char *title);
 

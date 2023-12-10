@@ -5,11 +5,14 @@
 *******************************************************************************/
 #include <stdio.h>  /*printf        */
 #include <assert.h> /*assert        */
-#include <stddef.h> /*size_t, sizeof*/
+#include <stddef.h> /*size_t 		*/
 #include <ctype.h>  /*tolower       */
-#include <string.h> /*strlen, strcpy*/
 
 #include "ws3.h"
+
+#define ERROR -1
+#define TRUE 1
+#define FALSE 0
 
 int *MatrixRowSums(int **matrix, int *row_sums)
 {
@@ -33,26 +36,26 @@ int *MatrixRowSums(int **matrix, int *row_sums)
 size_t JosephusProblem(size_t *array, size_t array_size)
 {
 	size_t i = 0;
-	size_t kill_check = 0;
+	size_t is_alive = FALSE;
 	size_t survivors = array_size;
 	
-	while (survivors > 1)
+	while (1 < survivors)
 	{
-		if (array[i] == 1)
+		if (1 == array[i])
 		{
-		    if (kill_check == 1)
+		    if (TRUE == is_alive)
 		    {
 		        array[i] = 0; 
 		        survivors--;
-		        kill_check = 0;
+		        is_alive = FALSE;
 		    }
 		    else
 		    {
-		        kill_check = 1; 
+		        is_alive = TRUE; 
 		    }
 		}
         i = (i + 1) % array_size;
-		while (0 == array[i] && survivors > 1)
+		while (0 == array[i] && 1 < survivors)
 		{
 			i = (i + 1) % array_size;
 		}
@@ -60,53 +63,18 @@ size_t JosephusProblem(size_t *array, size_t array_size)
 	
     for (i = 0; i < array_size; i++) 
     {
-    	if (array[i] == 1) 
+    	if (1 == array[i]) 
     	{
             return (i);
         }
     }
     
-    return (-1);
+    return (ERROR);
 }
 
-void DataSize()
-{
-	size_t i = 0;
-	size_t num_types = 0;
-	
-	size_t sizes[] = {sizeof(int), sizeof(unsigned int), sizeof(int*),
-        			  sizeof(int**), sizeof(float), sizeof(double),
-        			  sizeof(double*), sizeof(double**), sizeof(char),
-        			  sizeof(unsigned char), sizeof(size_t)};
-        
-	const char *types[] = {"int", "unsigned int", "int*", "int**",
-        				   "float", "double", "double*", "double**",
-        				   "char", "unsigned char", "size_t"};
-	
-	num_types = sizeof(sizes) / sizeof(sizes[0]);
-		
-	for (i = 0; i < num_types; i++)
-	{
-		printf("The size of %s is %lu byts\n", types[i], sizes[i]);
-	}
-	printf("\n");
-}
-
-static char *StrDup(const char *str)
-{
-	char *duplicated = NULL;
-	
-	assert(NULL != str);
-	
-	duplicated = (char *)malloc(strlen(str) + 1);
-	if (!duplicated)
-	{
-		return (NULL);
-	}
-	
-	duplicated = strcpy(duplicated ,str);
-	
-	return (duplicated);
+void PrintDataSize(char *type, size_t size)
+{	
+	printf("The size of %s is %lu byts\n", type, size);
 }
 
 static char *ToLowerString(char *str)
@@ -129,43 +97,16 @@ static char *ToLowerString(char *str)
 	return (start);
 }
 
-void PrintEnvVariablesLowCase(char **env_var)
+void PrintEnvVariablesLowCase(char **buffer, size_t environ_size)
 {
-	char **buffer = NULL;
-	size_t size = 0;
 	size_t i = 0;
 	
-	assert(env_var);
-	
-	while (NULL != env_var[size])
-	{
-		size++;
-	}
-	
-	buffer = (char **)malloc(size * sizeof(char *));
-	if (!buffer)
-	{
-		printf("Memory allocation failed");
-		return;
-	}
-	
-	for (i = 0; i < size; i++)
-	{
-		buffer[i] = StrDup(environ[i]);
-	}
-
-	printf("Environment variables");
-	for (i = 0; i < size; i++)
+	assert(buffer);
+		
+	printf("Environment variables\n");
+	for (i = 0; i < environ_size; i++)
 	{
 		printf("%s\n", ToLowerString(buffer[i]));
 	}
 	printf("\n");
-	
-	/*Freeing memory*/
-	for (i = 0; i < size; i++)
-	{
-		free(buffer[i]);
-	}
-	free(buffer);
-	buffer = NULL;
 }

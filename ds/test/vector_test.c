@@ -65,5 +65,3 @@ static void TestVector()
 
 	VectorDestroy(test_vector);
 }
-
-

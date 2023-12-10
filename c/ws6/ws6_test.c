@@ -46,42 +46,66 @@ int main()
 	return (0);
 }
 
-static void TstResInt(int control, int func_res, int line)
+static void TestInt(int control, int test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
 		printf("\033[0m"); 
 	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }
 
-static void TstResUnInt(unsigned int control, unsigned int func_res, int line)
+static void TestUnsignedInt(unsigned int control, unsigned int test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
 		printf("\033[0m"); 
 	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }
 
-static void TstResUnChr(unsigned char ctrl, unsigned char res, int line)
+static void TestUnsignedChar(unsigned char ctrl, unsigned char test, int line)
 {
-	if (ctrl != res)
+	if (ctrl != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
 		printf("\033[0m"); 
 	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }
 
-static void TstResLong(long control, long func_res, int line)
+static void TestLong(long control, long test, int line)
 {
-	if (control != func_res)
+	if (control != test)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
 		printf("\033[0m"); 
 	}
 }
@@ -108,7 +132,7 @@ static void TestPow2()
 	unsigned int x = 4;
 	unsigned int y = 3;
 	
-	TstResLong((x * pow(2, y)), Pow2(x, y), __LINE__);
+	TestLong((x * pow(2, y)), Pow2(x, y), __LINE__);
 }
 
 static void TestIsPowOf2WithLoop()
@@ -119,7 +143,7 @@ static void TestIsPowOf2WithLoop()
 
 	for (i = 0; i < n; i++)
 	{
-		TstResUnInt(control[i], IsPowOf2WithLoop(i), __LINE__);
+		TestUnsignedInt(control[i], IsPowOf2WithLoop(i), __LINE__);
 	}
 }
 
@@ -131,7 +155,7 @@ static void TestIsPowOf2NoLoop()
 
 	for (i = 0; i < n; i++)
 	{
-		TstResUnInt(control[i], IsPowOf2NoLoop(i), __LINE__);
+		TestUnsignedInt(control[i], IsPowOf2NoLoop(i), __LINE__);
 	}
 }
 
@@ -139,7 +163,7 @@ static void TestAddOne()
 {
 	int n = 50;
 
-	TstResInt(51, AddOne(n), __LINE__);
+	TestInt(51, AddOne(n), __LINE__);
 }
 
 static void TestThreeBitsOn()
@@ -189,7 +213,7 @@ static void TestIsBitsTwoAndSix()
 	unsigned char num = 35;
 	int control = 1;
 
-	TstResInt(control, IsBitsTwoAndSix(num), __LINE__);
+	TestInt(control, IsBitsTwoAndSix(num), __LINE__);
 }
 
 static void TestIsBitsTwoOrSix()
@@ -197,7 +221,7 @@ static void TestIsBitsTwoOrSix()
 	unsigned char num = 32;
 	int control = 1;
 
-	TstResInt(control, IsBitsTwoOrSix(num), __LINE__);
+	TestInt(control, IsBitsTwoOrSix(num), __LINE__);
 }
 
 static void TestSwapBitsThreeAndFive()
@@ -205,7 +229,7 @@ static void TestSwapBitsThreeAndFive()
 	unsigned char num = 16;
 	unsigned char control = 4;
 	
-	TstResUnChr(control, SwapBitsThreeAndFive(num), __LINE__);
+	TestUnsignedChar(control, SwapBitsThreeAndFive(num), __LINE__);
 }
 
 static void TestClosestDivisibleBy16()
@@ -213,7 +237,7 @@ static void TestClosestDivisibleBy16()
 	unsigned int num = 40;
 	unsigned int control = 32;
 
-	TstResUnInt(control, ClosestDivisibleBy16(num), __LINE__);
+	TestUnsignedInt(control, ClosestDivisibleBy16(num), __LINE__);
 }
 
 static void TestSwapWithBits()
@@ -224,8 +248,8 @@ static void TestSwapWithBits()
 	int control_y = 5;
 	
 	SwapWithBits(&x, &y);
-	TstResInt(control_x, x, __LINE__);
-	TstResInt(control_y, y, __LINE__);
+	TestInt(control_x, x, __LINE__);
+	TestInt(control_y, y, __LINE__);
 }
 
 static void TestNumberOfBitsWithLoop()
@@ -233,7 +257,7 @@ static void TestNumberOfBitsWithLoop()
 	int num = 7;
 	int control = 3;
 	
-	TstResInt(control, NumberOfBitsWithLoop(num), __LINE__);
+	TestInt(control, NumberOfBitsWithLoop(num), __LINE__);
 }
 
 static void TestNumberOfBitsNoLoop()
@@ -241,7 +265,7 @@ static void TestNumberOfBitsNoLoop()
 	int num = 8;
 	int control = 1;
 
-	TstResInt(control, NumberOfBitsNoLoop(num), __LINE__);
+	TestInt(control, NumberOfBitsNoLoop(num), __LINE__);
 }
 
 static void TestFloatInBits()

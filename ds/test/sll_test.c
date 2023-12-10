@@ -22,7 +22,7 @@ int main()
 	return (0);
 }
 
-static void TstResInt(int control, int test, int line)
+static void TestInt(int control, int test, int line)
 {
 	if (control != test)
 	{
@@ -38,7 +38,7 @@ static void TstResInt(int control, int test, int line)
 	}
 }
 
-static void TstResSizeT(size_t control, size_t test, int line)
+static void TestSizeT(size_t control, size_t test, int line)
 {
 	if (control != test)
 	{
@@ -54,7 +54,7 @@ static void TstResSizeT(size_t control, size_t test, int line)
 	}
 }
 
-static void TstResIsEmpty(int control, int test)
+static void TestIsEmpty(int control, int test)
 {
 	if (control != test)
 	{
@@ -106,11 +106,11 @@ static void TestInsertAndRemove(list_t *test_list_1, int node_val_1[])
     }
 
 	get_data = SLLGetData(SLLBegin(test_list_1));
-	TstResInt(0, *(int *)get_data, __LINE__);
+	TestInt(0, *(int *)get_data, __LINE__);
     for (i = 0; i < size - 1; i++)
     {
         get_data = SLLGetData(node_array[i]);
-        TstResInt(i, *(int *)get_data, __LINE__);
+        TestInt(i, *(int *)get_data, __LINE__);
     }
     
     for (i = 0; i < remove_size; i++)
@@ -119,11 +119,11 @@ static void TestInsertAndRemove(list_t *test_list_1, int node_val_1[])
     }
     
 	get_data = SLLGetData(SLLBegin(test_list_1));
-	TstResInt(remove_size, *(int *)get_data, __LINE__);
+	TestInt(remove_size, *(int *)get_data, __LINE__);
     for (i = remove_size + 1; i < size; i++)
     {
         get_data = SLLGetData(node_array[i]);
-        TstResInt(i, *(int *)get_data, __LINE__);
+        TestInt(i, *(int *)get_data, __LINE__);
     }
 }
 
@@ -133,10 +133,10 @@ static void TestCountAndIsEmpty(list_t *test_list_1, size_t control_counter)
 	int status = 0;
 		
 	counter = SLLCount(test_list_1);
-	TstResSizeT(control_counter, counter, __LINE__);
+	TestSizeT(control_counter, counter, __LINE__);
 	
 	status = SLLIsEmpty(test_list_1);
-	TstResIsEmpty(status, TRUE);
+	TestIsEmpty(status, TRUE);
 }
 
 static void TestFind(list_t *test_list_1)
@@ -163,7 +163,7 @@ static void TestFind(list_t *test_list_1)
     }
     
     status = SLLIsEqual(test_control, test_iterator);
-    TstResInt(status, TRUE, __LINE__);
+    TestInt(status, TRUE, __LINE__);
 }
 
 static void TestSetData(list_t *test_list_1)
@@ -175,7 +175,7 @@ static void TestSetData(list_t *test_list_1)
 	
 	SLLSetData(SLLBegin(test_list_1), &data);
 	get_data = SLLGetData(SLLBegin(test_list_1));
-	TstResInt(SUCCESS, *(int *)get_data, __LINE__);
+	TestInt(SUCCESS, *(int *)get_data, __LINE__);
 }
 
 static void TestForEach(list_t *test_list_1)
@@ -189,7 +189,7 @@ static void TestForEach(list_t *test_list_1)
 	test_to = SLLEnd(test_list_1);
 	
 	status = SLLForEach(test_from, test_to, ActFuncInt, &test_params);
-	TstResInt(SUCCESS, status, __LINE__);
+	TestInt(SUCCESS, status, __LINE__);
 }
 
 

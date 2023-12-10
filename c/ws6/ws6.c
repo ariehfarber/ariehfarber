@@ -9,16 +9,12 @@
 
 long Pow2(unsigned int x, unsigned int y)
 {
-	long result = 0;
-
-	result = x << y;
-	
-	return (result);	 
+	return (x << y);	 
 }
 
 unsigned int IsPowOf2WithLoop(unsigned int n)
 {
-	if (n == 0)
+	if (0 == n)
 	{
 		return (0);		
 	}
@@ -28,12 +24,12 @@ unsigned int IsPowOf2WithLoop(unsigned int n)
 		n >>= 1;
 	}
 
-	return (n == 1);		
+	return (1 == n);		
 }
 
 unsigned int IsPowOf2NoLoop(unsigned int n)
 {
-	if (n == 0)
+	if (0 == n)
 	{
 		return (0);		
 	}
@@ -45,17 +41,13 @@ int AddOne(int n)
 {
 	int mask = 1;
 
-	/*Flip all the set bits until we find a 0*/
 	while (n & mask)
 	{
 		n ^= mask;
 		mask <<= 1;
 	}
 	
-	/*Flip the rightmost 0 bit*/
-	n ^= mask;
-	
-	return (n);
+	return (n ^= mask);
 }
 
 void ThreeBitsOn(unsigned int *arr, unsigned int size)
@@ -65,8 +57,7 @@ void ThreeBitsOn(unsigned int *arr, unsigned int size)
 	unsigned int count = 0;
 	unsigned int mask = 1;
 	
-	printf("ThreeBitsOn:\n");
-	
+	printf("\nThreeBitsOn:\n");
 	for (i = 0; i < size; i++)
 	{
 		num = arr[i];
@@ -80,11 +71,9 @@ void ThreeBitsOn(unsigned int *arr, unsigned int size)
 		if (3 == count)
 		{
 			printf("%d has exactly 3 bits on\n", arr[i]);
-		}
-		
+		}	
 		count = 0;
 	}
-	
 	printf("\n");
 }
 
@@ -113,36 +102,21 @@ unsigned char ByteMirrorNoLoop(unsigned char n)
 
 int IsBitsTwoAndSix(unsigned char n)
 {
-	int result = 0;
-	
-	result = n & 34;
-
-	return (result == 34);
+	return (34 == (n & 34));
 }
 
 int IsBitsTwoOrSix(unsigned char n)
 {
-	int result_two = 0;
-	int result_six = 0;
-	
-	result_two = n & 2;
-	result_six = n & 32;
-
-	return (result_two == 2 || result_six == 32);
+	return (2 == (n & 2) || 32 == (n & 32));
 }
 
 unsigned char SwapBitsThreeAndFive(unsigned char n)
 {
-	unsigned char result_three = 0;
-	unsigned char result_five = 0;
 	unsigned char result = 0;
+
+	result = (n & 4) + (n & 16);
 	
-	result_three = n & 4;
-	result_five = n & 16;
-	
-	result = result_three + result_five;
-	
-	if (result == 4 || result == 16)
+	if (4 == result || 16 == result)
 	{
 		n ^= 20;
 	}
@@ -151,10 +125,8 @@ unsigned char SwapBitsThreeAndFive(unsigned char n)
 }
 
 unsigned int ClosestDivisibleBy16(unsigned int n)
-{
-	n &= ~15;
-		
-	return (n);
+{	
+	return (n &= ~15);
 }
 
 void SwapWithBits(int *p1, int *p2)
@@ -171,7 +143,7 @@ int NumberOfBitsWithLoop(int n)
 {
 	int count = 0;
 
-	while (n != 0) 
+	while (0 != n) 
 	{
 		count += n & 1;
 		n >>= 1;
@@ -208,23 +180,18 @@ void FloatInBits(float f_num)
 	int binaryDigit = 0;
 	unsigned int number = 0;
 	
-	f_ptr = &f_num;
-	
+	f_ptr = &f_num;	
 	i_ptr = (unsigned int *) f_ptr;
-	
 	number = *i_ptr;
-	
 	size = sizeof(float) * 8 - 1;
 	
 	printf("FloatInBits:\n");
 	printf("Given number %f in binary\n", f_num);
-	
 	for (i = size; i >= 0; i--) 
 	{
 		binaryDigit = (number >> i) & 1;
 		printf("%d", binaryDigit);
 	}
-	
 	printf("\n");
 }
 
