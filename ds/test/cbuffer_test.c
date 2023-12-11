@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer:  
-*Date: 
+*Reviewer: Yael Argov
+*Date: 11/12/2023
 *******************************************************************************/
 #include <stdio.h>	/*printf	  */ 	  
 #include <stdlib.h> /*malloc, free*/ 
@@ -109,6 +109,8 @@ static void TestBuffer()
 	TestBufferStatus(buffer, capacity);
 	
 	TestBufferRead(dest, buffer, 2);
+	TestInt(FALSE, BufferIsEmpty(buffer), __LINE__);
+	TestBufferStatus(buffer, capacity);
 
 	BufferDestroy(buffer);
 	

@@ -118,7 +118,7 @@ slist_iter_t SLLRemove(slist_iter_t iterator)
 
 size_t SLLCount(const list_t *list)
 {
-	size_t counter = 0;
+	size_t count = 0;
 	slist_iter_t runner = NULL;
 	slist_iter_t end_node = NULL;
 
@@ -130,10 +130,10 @@ size_t SLLCount(const list_t *list)
 	while (TRUE != SLLIsEqual(runner, end_node)) 
 	{
 		runner = SLLNext(runner);
-		counter++;
+		count++;
 	}
 	
-	return (counter);
+	return (count);
 }
 
 slist_iter_t SLLFind(slist_iter_t from, slist_iter_t to,

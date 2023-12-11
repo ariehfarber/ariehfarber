@@ -1,16 +1,17 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer:  
-*Date: 
+*Reviewer: Yael Argov
+*Date: 11/12/2023
 *******************************************************************************/
-#include <stddef.h>    /*size_t, ofsetof*/
+#include <stddef.h>    /*size_t			*/
 #include <stdlib.h>    /*malloc, free	*/  
-#include <string.h>    /*memcpy		 	*/  
 #include <assert.h>    /*assert 	 	*/ 	
 
 #include "cbuffer.h"
 
-#define DUMMY 1
+#define MIN(a, b) (((a) > (b)) ? (b) : (a))
+
+#define OFFSET 1
 #define TRUE 1
 
 struct buffer
@@ -40,8 +41,6 @@ buffer_t *BufferCreate(size_t capacity)
 
 void BufferDestroy(buffer_t *buffer)
 {
-	assert(buffer);
-	
 	free(buffer);
 }
 
@@ -52,30 +51,17 @@ size_t BufferRead(void *dest, buffer_t *buffer, size_t n)
 	
 	assert(NULL != dest);
 	assert(NULL != buffer);
-	
-	if (TRUE == BufferIsEmpty(buffer))
-	{
-		return (0);
-	}
-	
-	if (n > BufferSize(buffer))
-	{
-		n = BufferSize(buffer);
-	}
-	
+
+	n = MIN(n, BufferSize(buffer));
 	read_elements = n;
 	dest_ptr = (char *)dest;
 
 	while (0 != n)
 	{
-		*dest_ptr = buffer->array[DUMMY + buffer->read];
+		*dest_ptr = buffer->array[buffer->read + OFFSET];
 		dest_ptr++;
-		buffer->read++;
+		buffer->read = (buffer->read + OFFSET) % (buffer->capacity + OFFSET);
 		n--;		
-		if (buffer->read > buffer->capacity)
-		{
-			buffer->read = 0;
-		}
 	}
 		
 	return (read_elements);
@@ -88,31 +74,17 @@ size_t BufferWrite(const void *src, buffer_t *buffer, size_t n)
     
 	assert(NULL != src);
 	assert(NULL != buffer);
-	
-	if (0 == BufferFreeSpace(buffer))
-	{
-		return (0);
-	}
-	
-	if (n > BufferFreeSpace(buffer))
-	{
-		n = BufferFreeSpace(buffer);
-	}
-	
+
+	n = MIN(n, BufferFreeSpace(buffer));
 	write_elements = n;
-	
 	src_ptr = (char *)src;
 
 	while (0 != n)
 	{
-		buffer->array[DUMMY + buffer->write] = *src_ptr;
+		buffer->array[OFFSET + buffer->write] = *src_ptr;
 		src_ptr++;
-		buffer->write++;
+		buffer->write = (buffer->write + 1) % (buffer->capacity + OFFSET);
 		n--;	
-		if (buffer->write > buffer->capacity)
-		{
-			buffer->write = 0;
-		}
 	}
 		
 	return (write_elements);
@@ -121,9 +93,11 @@ size_t BufferWrite(const void *src, buffer_t *buffer, size_t n)
 size_t BufferSize(const buffer_t *buffer)
 {
 	size_t array_size = 0;
+	size_t write = buffer->write;
+	size_t read = buffer->read;
+	size_t capacity = buffer->capacity; 
 	
-	array_size = ((buffer->write + buffer->capacity + DUMMY) - buffer->read)\
-				 % (buffer->capacity + DUMMY);
+	array_size = ((write + capacity + OFFSET) - read) % (capacity + OFFSET);
 	
 	return (array_size);
 }
