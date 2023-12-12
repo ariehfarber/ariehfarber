@@ -111,7 +111,6 @@ slist_iter_t SLLRemove(slist_iter_t iterator)
 	}
 	
 	free(temp_node);
-	temp_node = NULL;
 
 	return (iterator);
 }
@@ -141,7 +140,6 @@ slist_iter_t SLLFind(slist_iter_t from, slist_iter_t to,
 {
 	assert(NULL != from);
 	assert(NULL != to);
-
 	
 	while (TRUE != SLLIsEqual(from, to)) 
 	{

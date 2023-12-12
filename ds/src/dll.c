@@ -8,19 +8,21 @@
 
 #include "dll.h"
 
+#define ERROR -1
+#define SUCCESS 0
 #define TRUE 1
 
 struct node
 {
 	void *data;
-	struct node *next;
-	struct node *prev;
+	dll_iter_t *next;
+	dll_iter_t *prev;
 };
 
 struct dll
 {
-	struct node head;
-	struct node tail;
+	dll_iter_t head;
+	dll_iter_t tail;
 };
 
 dll_t *DLLCreate(void)
@@ -123,31 +125,53 @@ dll_iter_t *DLLRemove(dll_iter_t *iter)
 {
 	dll_iter_t *next_node = NULL;
 	
-    assert(NULL != iter);
+    assert(NULL != iter->next);
     
-    next_node = DLLNext(iter);
-    
-    free(iter);
+	next_node = iter->next;
+	    
+    iter->prev->next = iter->next;
+    iter->next->prev = iter->prev;
+	
+    free (iter);
     
     return (next_node);
 }
 
 dll_iter_t *DLLPushback(dll_t *dll, void *data)
 {
+	assert(NULL != dll);
+	
 	return (DLLInsert(DLLEnd(dll), data));
 }
 
 dll_iter_t *DLLPushfront(dll_t *dll, void *data)
 {
+	assert(NULL != dll);
+	
 	return (DLLInsert(DLLBegin(dll), data));
 }
 
-dll_iter_t *DLLPopback(dll_t *dll)
+void DLLPopback(dll_t *dll)
 {
-
+	dll_iter_t *last_node = NULL;
+	
+	assert(NULL != dll);
+	
+	last_node = DLLEnd(dll);
+	
+	DLLRemove(last_node->prev);
 }
 
-/*dll_iter_t *DLLPopfront(dll_t *dll);	*/
+void DLLPopfront(dll_t *dll)
+{
+	dll_iter_t *start_node = NULL;
+	
+	assert(NULL != dll);
+	
+	start_node = DLLBegin(dll);
+
+	DLLRemove(start_node->next);
+}
 
 dll_iter_t *DLLPrev(const dll_iter_t *iter)
 {
@@ -185,19 +209,39 @@ int DLLIsEqual(dll_iter_t *iter1, dll_iter_t *iter2)
 	return (iter1 == iter2);
 }
 
+int DLLForEach(dll_iter_t *from, dll_iter_t *to, action_t act_func,\
+			   void *params)
+{
+	assert(NULL != from);
+	assert(NULL != to);
+	assert(NULL != act_func);
+	
+	while (TRUE != DLLIsEqual(from, to)) 
+	{
+		if (SUCCESS != act_func(from->data, params))
+		{			
+			return (ERROR);
+		}
+		from = DLLNext(from);
+	}
 
+	return (SUCCESS);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+dll_iter_t *DLLFind(dll_iter_t *from, dll_iter_t *to, is_match_t match_func,\
+					void *params)
+{
+	assert(NULL != from);
+	assert(NULL != to);
+	
+	while (TRUE != DLLIsEqual(from, to)) 
+	{
+		if (TRUE == match_func(from->data, params))
+		{
+			return (from);
+		}
+		from = DLLNext(from);
+	}
+	
+	return (NULL);
+}

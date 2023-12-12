@@ -118,7 +118,7 @@ dll_iter_t *DLLPushfront(dll_t *dll, void *data);
 *Time Complexity: O(1)
 *Space Complexity: O(1)
 ******************************************************************************/
-dll_iter_t *DLLPopback(dll_t *dll);
+void DLLPopback(dll_t *dll);
 
 /******************************************************************************
 *Description: Removes the current head of the list.
@@ -127,7 +127,7 @@ dll_iter_t *DLLPopback(dll_t *dll);
 *Time Complexity: O(1)
 *Space Complexity: O(1)
 ******************************************************************************/
-dll_iter_t *DLLPopfront(dll_t *dll);
+void DLLPopfront(dll_t *dll);
 
 /******************************************************************************
 *Description: Advances the iterator to the next node.
