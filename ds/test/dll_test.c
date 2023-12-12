@@ -102,10 +102,7 @@ static void TestDLLInsert(dll_t *dll)
 	DLLPopback(dll);
 	insert_node = DLLPushfront(dll, &data[0]);
 	DLLPopfront(dll);
-	
-	
 }
-
 
 static void TestForEach(dll_t *dll)
 {
@@ -211,14 +208,3 @@ static void TestDLL()
 	
 	DLLDestroy(dll);
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -59,14 +59,12 @@ dll_t *DLLCreate(void)
 void DLLDestroy(dll_t *dll)
 {
 	dll_iter_t *runner = NULL;
-	dll_iter_t *end_node = NULL;
 	
 	assert(NULL != dll);
 	
 	runner = DLLBegin(dll);
-	end_node = DLLEnd(dll);
 	
-	while (TRUE != DLLIsEqual(runner, end_node))
+	while (TRUE != DLLIsEqual(runner, DLLEnd(dll)))
 	{
 		runner = DLLRemove(runner);
 	}
@@ -76,26 +74,17 @@ void DLLDestroy(dll_t *dll)
 
 int DLLIsEmpty(const dll_t *dll)
 {
-	return (dll->head.next == &dll->tail);
+	return (DLLIsEqual(DLLBegin(dll), DLLEnd(dll)));
 }
 
 
 size_t DLLSize(const dll_t *dll)
 {
 	int state = 0;
-	static size_t temp_count = 0;
 	size_t count = 0;
-	dll_iter_t *start_node = NULL;
-	dll_iter_t *end_node = NULL;
 	
-	start_node = DLLBegin(dll);
-	end_node = DLLEnd(dll);
-	
-	state = DLLForEach(start_node, end_node, ActCount, &temp_count);
+	state = DLLForEach(DLLBegin(dll), DLLEnd(dll), ActCount, &count);
 	assert(0 == state);
-	
-	count = temp_count;
-	temp_count = 0;
 	
 	return (count);
 }
@@ -169,28 +158,28 @@ dll_iter_t *DLLPushfront(dll_t *dll, void *data)
 
 void *DLLPopback(dll_t *dll)
 {
-	dll_iter_t *last_node = NULL;
+	void *temp_data = NULL;
 	
 	assert(NULL != dll);
 	
-	last_node = DLLEnd(dll);
+	temp_data = DLLGet(DLLPrev(DLLEnd(dll)));
 	
-	DLLRemove(DLLPrev(last_node)); 
+	DLLRemove(DLLPrev(DLLEnd(dll))); 
 	
-	return (DLLGet(DLLPrev(last_node)));
+	return (temp_data);
 }
 
 void *DLLPopfront(dll_t *dll)
 {
-	dll_iter_t *start_node = NULL;
+	void *temp_data = NULL;
 	
 	assert(NULL != dll);
 	
-	start_node = DLLBegin(dll);
+	temp_data = DLLGet(DLLBegin(dll));
 
-	DLLRemove(DLLNext(start_node)); 
+	DLLRemove(DLLNext(DLLBegin(dll))); 
 
-	return (DLLGet(start_node));
+	return (temp_data);
 }
 
 dll_iter_t *DLLPrev(const dll_iter_t *iter)
@@ -292,13 +281,11 @@ int DLLMultiFind(dll_iter_t *from, dll_iter_t *to, is_match_t is_match_func,\
 	assert(NULL != to);
 	assert(NULL != output);
 	
-	runner = DLLEnd(output);
-	
 	while (TRUE != DLLIsEqual(from, to)) 
 	{
 		if (TRUE == is_match_func(from->data, params))
 		{
-			runner = DLLInsert(output, runner, params);
+			runner = DLLInsert(output, DLLEnd(output), params);
 			if (NULL == runner)
 			{
 				return (ERROR);
