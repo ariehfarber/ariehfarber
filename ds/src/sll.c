@@ -52,18 +52,18 @@ list_t *SLLCreate(void)
 
 void SLLDestroy(list_t *list)
 {
-	slist_iter_t current = NULL;
+	slist_iter_t runner = NULL;
 
 	assert(NULL != list);
 
-	current = SLLBegin(list);
+	runner = SLLBegin(list);
 
-	while (current != SLLEnd(list)) 
+	while (TRUE != SLLIsEqual(runner, SLLEnd(list)))
 	{
-		current = SLLRemove(current);
+		runner = SLLRemove(runner);
 	}
 
-	free(current);
+	free(runner);
 	free(list);
 }
 
@@ -84,7 +84,6 @@ slist_iter_t SLLInsert(list_t *list, slist_iter_t iterator, void *value)
     new_node->next = iterator->next;
     iterator->data = value;
     iterator->next = new_node;    
-
     
 	if (SLLIsEqual(iterator, list->tail))
     {
@@ -150,7 +149,7 @@ slist_iter_t SLLFind(slist_iter_t from, slist_iter_t to,
 		from = SLLNext(from);
 	}
 	
-	return (NULL);
+	return (to);
 }
 
 int SLLIsEmpty(const list_t *list)
@@ -210,7 +209,7 @@ int SLLForEach(slist_iter_t from, slist_iter_t to, action_t act_func,
 		
 	while (TRUE != SLLIsEqual(from, to)) 
 	{
-		if (act_func(from->data, params) != SUCCESS)
+		if (SUCCESS != act_func(from->data, params))
 		{			
 			return (ERROR);
 		}

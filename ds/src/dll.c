@@ -25,6 +25,18 @@ struct dll
 	dll_iter_t tail;
 };
 
+static int ActCount(void *node_data, void *parametrs)
+{
+	*(size_t *)parametrs += 1;
+	
+	if (NULL == node_data)
+	{
+		return (ERROR);
+	}
+	
+	return (SUCCESS);
+}
+
 dll_t *DLLCreate(void)
 {
 	dll_t *dll = (dll_t *)malloc(sizeof(dll_t));
@@ -67,20 +79,19 @@ int DLLIsEmpty(const dll_t *dll)
 	return (dll->head.next == &dll->tail);
 }
 
+
 size_t DLLSize(const dll_t *dll)
 {
-	size_t count = 0;
-	dll_iter_t *runner = NULL;
+	int state = 0;
+	static size_t count = 0;
+	dll_iter_t *start_node = NULL;
 	dll_iter_t *end_node = NULL;
 	
-	runner = DLLBegin(dll);
+	start_node = DLLBegin(dll);
 	end_node = DLLEnd(dll);
 	
-	while (TRUE != DLLIsEqual(runner, end_node))
-	{
-		runner = DLLNext(runner);
-		count++;
-	}
+	state = DLLForEach(start_node, end_node, ActCount, &count);
+	assert(0 == state);
 	
 	return (count);
 }
@@ -99,10 +110,11 @@ void DLLSet(dll_iter_t *iter, void *data)
 	iter->data = data;
 }
 
-dll_iter_t *DLLInsert(dll_iter_t *iter, void *data)
-{
+dll_iter_t *DLLInsert(dll_t *dll, dll_iter_t *iter, void *data)
+{  
     dll_iter_t *new_node = NULL;
-
+	(void)dll;
+	
     assert(NULL != iter);
 
     new_node = (dll_iter_t *)malloc(sizeof(dll_iter_t));
@@ -141,36 +153,44 @@ dll_iter_t *DLLPushback(dll_t *dll, void *data)
 {
 	assert(NULL != dll);
 	
-	return (DLLInsert(DLLEnd(dll), data));
+	return (DLLInsert(dll, DLLEnd(dll), data));
 }
 
 dll_iter_t *DLLPushfront(dll_t *dll, void *data)
 {
 	assert(NULL != dll);
 	
-	return (DLLInsert(DLLBegin(dll), data));
+	return (DLLInsert(dll, DLLBegin(dll), data));
 }
 
-void DLLPopback(dll_t *dll)
+void *DLLPopback(dll_t *dll)
 {
 	dll_iter_t *last_node = NULL;
+	void *pop_data = NULL;
 	
 	assert(NULL != dll);
 	
 	last_node = DLLEnd(dll);
+	pop_data = last_node->prev->data;
 	
 	DLLRemove(last_node->prev);
+	
+	return (pop_data);
 }
 
-void DLLPopfront(dll_t *dll)
+void *DLLPopfront(dll_t *dll)
 {
 	dll_iter_t *start_node = NULL;
+	void *pop_data = NULL;
 	
 	assert(NULL != dll);
 	
 	start_node = DLLBegin(dll);
+	pop_data = start_node->data;
 
 	DLLRemove(start_node->next);
+
+	return (pop_data);
 }
 
 dll_iter_t *DLLPrev(const dll_iter_t *iter)
@@ -228,7 +248,7 @@ int DLLForEach(dll_iter_t *from, dll_iter_t *to, action_t act_func,\
 	return (SUCCESS);
 }
 
-dll_iter_t *DLLFind(dll_iter_t *from, dll_iter_t *to, is_match_t match_func,\
+dll_iter_t *DLLFind(dll_iter_t *from, dll_iter_t *to, is_match_t is_match_func,\
 					void *params)
 {
 	assert(NULL != from);
@@ -236,12 +256,79 @@ dll_iter_t *DLLFind(dll_iter_t *from, dll_iter_t *to, is_match_t match_func,\
 	
 	while (TRUE != DLLIsEqual(from, to)) 
 	{
-		if (TRUE == match_func(from->data, params))
+		if (TRUE == is_match_func(from->data, params))
 		{
 			return (from);
 		}
 		from = DLLNext(from);
 	}
 	
-	return (NULL);
+	return (to);
 }
+
+void DLLSplice(dll_iter_t *from, dll_iter_t *to, dll_iter_t* where)
+{
+	dll_iter_t *temp_node = NULL;
+	
+	assert(NULL != from);
+	assert(NULL != to);
+	assert(NULL != where);
+	
+	temp_node = where->prev;
+	where->prev->next = from;
+	to->prev->next = where;
+	where->prev = to->prev;
+	to->prev = from->prev;
+	from->prev->next = to;
+	from->prev = temp_node;
+}
+
+int DLLMultiFind(dll_iter_t *from, dll_iter_t *to, is_match_t is_match_func,\
+				 void *params, dll_t *output)
+{
+	dll_iter_t *runner = NULL;
+	
+	assert(NULL != from);
+	assert(NULL != to);
+	assert(NULL != output);
+	
+	runner = DLLEnd(output);
+	
+	while (TRUE != DLLIsEqual(from, to)) 
+	{
+		if (TRUE == is_match_func(from->data, params))
+		{
+			runner = DLLInsert(output, runner, params);
+			if (NULL == runner)
+			{
+				return (ERROR);
+			}
+		}
+		from = DLLNext(from);
+	}
+	
+	return (SUCCESS);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

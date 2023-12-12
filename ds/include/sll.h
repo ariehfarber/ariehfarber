@@ -73,7 +73,7 @@ size_t SLLCount(const list_t *list);
 *Return Value: Iterator pointing to the node with matching data.
 *Time Complexity: O(n)
 *Space Complexity: O(1)
-*Notes: Returns NULL if no match was found.
+*Notes: Returns iterator "to" if no match was found.
 * 		sending "to" that comes before "from" as parameters will result in 
 *		undefined behavior.
 ******************************************************************************/
