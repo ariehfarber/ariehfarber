@@ -83,23 +83,27 @@ static int IsMatchChar(void *node_data, void *parametrs)
 static void TestDLLInsert(dll_t *dll)
 {
 	dll_iter_t *insert_node = NULL;
-	static char data[] = "abcd";
-	size_t size = 0;
+	static char data[] = "mbcd";
+	static char letter = 'a';
+	size_t str_size = 0;
 	size_t i = 0;
 	
-	size = strlen(data);
+	str_size = strlen(data);
 	
 	insert_node = DLLEnd(dll);
 	
-	for (i = 0; i < size; i++)
+	for (i = 0; i < str_size; i++)
 	{
 		insert_node = DLLInsert(dll, insert_node, &data[i]);
 	}
+	DLLSet(DLLBegin(dll), &letter);
 		
 	insert_node = DLLPushback(dll, &data[0]);
 	DLLPopback(dll);
 	insert_node = DLLPushfront(dll, &data[0]);
 	DLLPopfront(dll);
+	
+	
 }
 
 
@@ -181,13 +185,21 @@ static void TestDLLSplice(dll_t *dll)
 	DLLDestroy(dll_splice);
 }
 
+static void TestState(dll_t *dll, size_t control_size, int control_state)
+{
+	TestInt(control_size, DLLSize(dll), __LINE__);
+	TestInt(control_state, DLLIsEmpty(dll), __LINE__);
+}
+
 static void TestDLL()
 {
 	dll_t *dll = NULL;
 	
 	dll = DLLCreate();
+	TestState(dll, 0, 1);
 
 	TestDLLInsert(dll);
+	TestState(dll, 4, 0);
 	
 	TestForEach(dll);
 	
