@@ -9,6 +9,8 @@
 #include "sorted_list.h"
 #include "dll.h"
 
+#include <stdio.h>  /*printf*/
+
 #define SUCCESS 0
 #define FAIL 1
 #define ERROR -1
@@ -77,7 +79,7 @@ static dll_iter_t InsertLocation(sorted_list_t *sorted_list, void *data)
 	to = DLLEnd(sorted_list->dll);
 	
 	while (TRUE != DLLIsEqual(from, to) && \
-	0 > sorted_list->compare(DLLGet(from), data)) 
+	0 >= sorted_list->compare(DLLGet(from), data)) 
 	{
 		from = DLLNext(from);
 	}
@@ -130,18 +132,19 @@ void SortedListMerge(sorted_list_t *dest, sorted_list_t *src)
 	assert(NULL != dest);
 	
 	from_src = DLLBegin(src->dll);
-	to_src = DLLBegin(src->dll);
+	to_src = DLLNext(from_src);
 	where_dest = DLLBegin(dest->dll);
 	
-	while (TRUE != DLLIsEqual(where_dest, DLLEnd(dest->dll)))
+	while (TRUE != DLLIsEqual(to_src, DLLEnd(src->dll)) && \
+	TRUE != DLLIsEqual(where_dest, DLLEnd(dest->dll)))
 	{
 		where_dest = InsertLocation(dest, DLLGet(from_src));
-		
-		to_src = InsertLocation(src, DLLGet(where_dest));
-		
+
+		to_src = InsertLocation(src, DLLGet(DLLPrev(where_dest)));
+
 		DLLSplice(from_src, to_src, where_dest);
 		
-		from_src = to_src;		
+		from_src = to_src;
 	}
 	
 }

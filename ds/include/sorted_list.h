@@ -117,7 +117,7 @@ void *SortedListPopBack(sorted_list_t *sorted_list);
 *Description: Merges two sorted lists (src and dest) into a single sorted list
 *			  held by dest. Src will be emptied.
 *Parameters: Pointers to 2 sorted lists: src and dest.
-*Return Value: void. 
+*Return Value: Void. 
 *Time Complexity: O(n)
 *Space Complexity: O(1)
 *Notes: Sending an empty src leads to undefined behavior. Sending in lists that

@@ -70,7 +70,7 @@ static void TestState(sorted_list_t *sorted_list, size_t control_size,\
 
 static size_t TestInsert(sorted_list_t *sorted_list)
 {
-	static int data_array_1[] = {126, 23, 58, 15, -16, -666};
+	static int data_array_1[] = {1, 3, 5};
 	size_t array_size = 0;
 	size_t i = 0;
 
@@ -87,7 +87,7 @@ static size_t TestInsert(sorted_list_t *sorted_list)
 static void TestMerge(sorted_list_t *sorted_list)
 {
 	sorted_list_t *merge_list;
-	static int data_array_2[] = {0, 2, 1, 15, -100, -101, -99};
+	static int data_array_2[] = {1, 3, 5, 7};
 	size_t array_size = 0;
 	size_t i = 0;
 	
@@ -116,7 +116,6 @@ static void TestSortedList()
 	
 	list_size = TestInsert(sorted_list);
 	TestState(sorted_list, list_size, FALSE);
-	PrintSortedList(sorted_list);
 	
 	TestMerge(sorted_list);
 
