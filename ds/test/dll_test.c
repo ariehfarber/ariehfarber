@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Omer Bruker
+*Date: 12/12/2023
 *******************************************************************************/
 #include <stdio.h>  /*printf*/
 #include <string.h> /*strlen*/
@@ -24,7 +24,7 @@ int main()
 
 /*static void PrintDLL(dll_t *dll)*/
 /*{*/
-/*	dll_iter_t *runner = NULL;*/
+/*	dll_iter_t runner = NULL;*/
 /*	void *data = NULL;*/
 /*	size_t i = 0;*/
 /*	size_t size = 0;*/
@@ -82,7 +82,7 @@ static int IsMatchChar(void *node_data, void *parametrs)
 
 static void TestDLLInsert(dll_t *dll)
 {
-	dll_iter_t *insert_node = NULL;
+	dll_iter_t insert_node = NULL;
 	static char data[] = "mbcd";
 	static char letter = 'a';
 	size_t str_size = 0;
@@ -95,6 +95,7 @@ static void TestDLLInsert(dll_t *dll)
 	for (i = 0; i < str_size; i++)
 	{
 		insert_node = DLLInsert(dll, insert_node, &data[i]);
+		insert_node = DLLNext(insert_node);
 	}
 	DLLSet(DLLBegin(dll), &letter);
 		
@@ -106,8 +107,8 @@ static void TestDLLInsert(dll_t *dll)
 
 static void TestForEach(dll_t *dll)
 {
-	dll_iter_t *test_from = NULL;
-	dll_iter_t *test_to = NULL;
+	dll_iter_t test_from = NULL;
+	dll_iter_t test_to = NULL;
 	char test_params = 'z';
 	int status = 0;
 	
@@ -120,9 +121,9 @@ static void TestForEach(dll_t *dll)
 
 static void TestFind(dll_t *dll)
 {
-	dll_iter_t *test_iterator = NULL;
-	dll_iter_t *test_from = NULL;
-	dll_iter_t *test_to = NULL;
+	dll_iter_t test_iterator = NULL;
+	dll_iter_t test_from = NULL;
+	dll_iter_t test_to = NULL;
 	char params = 'z';
 	int status = 0;
 	
@@ -139,8 +140,8 @@ static void TestDLLMultiFind(dll_t *dll)
 {
 	int status = 0;
 	dll_t *dll_output = NULL;
-	dll_iter_t *test_from = NULL;
-	dll_iter_t *test_to = NULL;
+	dll_iter_t test_from = NULL;
+	dll_iter_t test_to = NULL;
 	char params = 'm';
 	
 	dll_output = DLLCreate();
@@ -157,10 +158,10 @@ static void TestDLLMultiFind(dll_t *dll)
 static void TestDLLSplice(dll_t *dll)
 {
 	dll_t *dll_splice = NULL;
-	dll_iter_t *test_from = NULL;
-	dll_iter_t *test_to = NULL;
-	dll_iter_t *test_where = NULL;
-	dll_iter_t *insert_node = NULL;
+	dll_iter_t test_from = NULL;
+	dll_iter_t test_to = NULL;
+	dll_iter_t test_where = NULL;
+	dll_iter_t insert_node = NULL;
 	static char data[] = "abcd";
 	size_t size = 0;
 	size_t i = 0;
@@ -171,6 +172,7 @@ static void TestDLLSplice(dll_t *dll)
 	for (i = 0; i < size; i++)
 	{
 		insert_node = DLLInsert(dll_splice, insert_node, &data[i]);
+		insert_node = DLLNext(insert_node);
 	}
 	
 	test_from = DLLBegin(dll_splice);
@@ -193,17 +195,17 @@ static void TestDLL()
 	dll_t *dll = NULL;
 	
 	dll = DLLCreate();
-	TestState(dll, 0, 1);
+	TestState(dll, 0, TRUE);
 
 	TestDLLInsert(dll);
-	TestState(dll, 4, 0);
+	TestState(dll, 4, FALSE);
 	
 	TestForEach(dll);
 	
 	TestFind(dll);
 	
 	TestDLLSplice(dll);
-	
+			
 	TestDLLMultiFind(dll);
 	
 	DLLDestroy(dll);
