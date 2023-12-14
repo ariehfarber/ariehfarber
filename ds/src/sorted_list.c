@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Bar Gonen
+*Date: 14/12/2023
 *******************************************************************************/
 #include <stdlib.h> /*malloc, free*/
 #include <assert.h> /*assert	  */
@@ -22,6 +22,35 @@ struct sorted_list
 	compare_t compare;
 	dll_t *dll;
 };
+
+typedef struct find_params
+{
+	compare_t compare;
+	void *data;
+} find_params_t;
+
+static int IsMatchFindParams(void *data, void *params)
+{
+	return (0 == ((find_params_t *)params)->compare\
+		   (((find_params_t *)params)->data, data));
+}
+
+static dll_iter_t InsertLocation(sorted_list_t *sorted_list, void *data)
+{
+	dll_iter_t from = NULL;
+	dll_iter_t to = NULL;
+	
+	from = DLLBegin(sorted_list->dll);
+	to = DLLEnd(sorted_list->dll);
+	
+	while (TRUE != DLLIsEqual(from, to) && \
+	0 >= sorted_list->compare(DLLGet(from), data)) 
+	{
+		from = DLLNext(from);
+	}
+	
+	return (from);
+}
 
 sorted_list_t *SortedListCreate(compare_t comp_func)
 {
@@ -70,43 +99,27 @@ void *SortedListGetData(sorted_iter_t iter)
 	return (DLLGet(iter.iter)); 
 }
 
-static dll_iter_t InsertLocation(sorted_list_t *sorted_list, void *data)
-{
-	dll_iter_t from;
-	dll_iter_t to;
-	
-	from = DLLBegin(sorted_list->dll);
-	to = DLLEnd(sorted_list->dll);
-	
-	while (TRUE != DLLIsEqual(from, to) && \
-	0 >= sorted_list->compare(DLLGet(from), data)) 
-	{
-		from = DLLNext(from);
-	}
-	
-	return (from);
-}
-
 sorted_iter_t SortedListInsert(sorted_list_t *sorted_list, void *data)
 {
-	dll_iter_t where;
-	sorted_iter_t location;
+	dll_iter_t where = NULL;
+	sorted_iter_t location = {0};
 	
 	assert(NULL != sorted_list);
 	
 	where = InsertLocation(sorted_list, data);
 	location.iter = DLLInsert(sorted_list->dll, where, data);
-		
+	#ifndef NDEBUG
+	location.sorted_list = sorted_list;
+	#endif
+			
 	return (location);
 }
 
 sorted_iter_t SortedListRemove(sorted_iter_t iter)
 {
-	sorted_iter_t next_iter;
+	iter.iter = DLLRemove(iter.iter);
 	
-	next_iter.iter = DLLRemove(iter.iter);
-	
-	return (next_iter);
+	return (iter);
 }
 
 void *SortedListPopFront(sorted_list_t *sorted_list)
@@ -125,48 +138,53 @@ void *SortedListPopBack(sorted_list_t *sorted_list)
 
 void SortedListMerge(sorted_list_t *dest, sorted_list_t *src)
 {
-	dll_iter_t from_src;
-	dll_iter_t to_src;
-	dll_iter_t where_dest;
+	dll_iter_t to_src = NULL;
+	dll_iter_t where_dest = NULL;
 	
 	assert(NULL != dest);
 	
-	from_src = DLLBegin(src->dll);
-	to_src = DLLNext(from_src);
-	where_dest = DLLBegin(dest->dll);
-	
-	while (TRUE != DLLIsEqual(to_src, DLLEnd(src->dll)) && \
-	TRUE != DLLIsEqual(where_dest, DLLEnd(dest->dll)))
+	to_src = DLLBegin(src->dll);
+
+	while (TRUE != DLLIsEqual(to_src, DLLEnd(src->dll)))
 	{
-		where_dest = InsertLocation(dest, DLLGet(from_src));
-
-		to_src = InsertLocation(src, DLLGet(DLLPrev(where_dest)));
-
-		DLLSplice(from_src, to_src, where_dest);
-		
-		from_src = to_src;
+		where_dest = InsertLocation(dest, DLLGet(DLLBegin(src->dll)));
+		if (TRUE == DLLIsEqual(where_dest, DLLEnd(dest->dll)))
+		{
+			to_src = DLLEnd(src->dll);
+		}
+		else
+		{
+			to_src = InsertLocation(src, DLLGet(where_dest));
+		}	
+		DLLSplice(DLLBegin(src->dll), to_src, where_dest);
 	}
-	
 }
 
 sorted_iter_t SortedListBegin(const sorted_list_t *sorted_list)
 {
-	sorted_iter_t start_iter;
+	sorted_iter_t start_iter = {0};
 	
 	assert(NULL != sorted_list);
 	
 	start_iter.iter = DLLBegin(sorted_list->dll);
+	#ifndef NDEBUG
+	start_iter.sorted_list = (sorted_list_t *)sorted_list;
+	#endif
+	
 	
 	return (start_iter);	
 }
 
 sorted_iter_t SortedListEnd(const sorted_list_t *sorted_list)
 {
-	sorted_iter_t end_iter;
+	sorted_iter_t end_iter = {0};
 	
 	assert(NULL != sorted_list);
 	
 	end_iter.iter = DLLEnd(sorted_list->dll);
+	#ifndef NDEBUG
+	end_iter.sorted_list = (sorted_list_t *)sorted_list;
+	#endif
 	
 	return (end_iter);
 }
@@ -190,12 +208,36 @@ int SortedListIsEqual(sorted_iter_t iter1, sorted_iter_t iter2)
 	return (DLLIsEqual(iter1.iter, iter2.iter));
 }
 
-/*int SortedListForEach(sorted_iter_t from, sorted_iter_t to,\*/
-/*					  action_t act_func, void *params)*/
+int SortedListForEach(sorted_iter_t from, sorted_iter_t to,\
+					  action_t act_func, void *params)
+{
+	return (DLLForEach(from.iter, to.iter, act_func, params));
+}
 
-/*sorted_iter_t SortedListFind(sorted_iter_t from, sorted_iter_t to,\*/
-/*							 void *to_find, const sorted_list_t *sorted_list);*/
+sorted_iter_t SortedListFind(sorted_iter_t from, sorted_iter_t to,\
+							 void *to_find, const sorted_list_t *sorted_list)
+{
+	find_params_t params = {0};
+	sorted_iter_t location = {0};
+	
+	assert(NULL != sorted_list);
+	
+	params.compare = sorted_list->compare;
+	params.data = to_find;
+	
+	location = SortedListFindIf(from, to, IsMatchFindParams, &params);
+	
+	return (location);
+}
 
-/*sorted_iter_t SortedListFindIf(sorted_iter_t from, sorted_iter_t to, is_match_t is_match_func, void *params);*/
-
-
+sorted_iter_t SortedListFindIf(sorted_iter_t from, sorted_iter_t to,\
+ 								 is_match_t is_match_func, void *params)
+{
+	sorted_iter_t location = {0};
+	
+	assert(NULL != is_match_func);
+	
+	location.iter = DLLFind(from.iter, to.iter, is_match_func, params);
+	
+	return (location);
+}

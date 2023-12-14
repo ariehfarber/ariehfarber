@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Bar Gonen
+*Date: 14/12/2023
 *******************************************************************************/
 #include <stdio.h>  /*printf*/
 
@@ -10,6 +10,8 @@
 
 #define TRUE 1
 #define FALSE 0
+#define ERROR -1
+#define SUCCESS 0
 
 static void TestSortedList();
 
@@ -20,25 +22,25 @@ int main()
 	return (0);
 }
 
-static void PrintSortedList(sorted_list_t *sorted_list)
-{
-	sorted_iter_t runner;
-	size_t size = 0;
-	size_t i = 0;
-	void *data = NULL;
-	
-	size = SortedListSize(sorted_list);
-	
-	runner = SortedListBegin(sorted_list);
-		
-	for (i = 0; i < size; i++)
-	{		
-		data = SortedListGetData(runner);
-		printf("%d\n", *(int *)data);
-		runner = SortedListNext(runner);
-	}
-	printf("\n");
-}
+/*static void PrintSortedList(sorted_list_t *sorted_list)*/
+/*{*/
+/*	sorted_iter_t runner;*/
+/*	size_t size = 0;*/
+/*	size_t i = 0;*/
+/*	void *data = NULL;*/
+/*	*/
+/*	size = SortedListSize(sorted_list);*/
+/*	*/
+/*	runner = SortedListBegin(sorted_list);*/
+/*		*/
+/*	for (i = 0; i < size; i++)*/
+/*	{		*/
+/*		data = SortedListGetData(runner);*/
+/*		printf("%d\n", *(int *)data);*/
+/*		runner = SortedListNext(runner);*/
+/*	}*/
+/*	printf("\n");*/
+/*}*/
 
 static void TestInt(int control, int test, int line)
 {
@@ -56,9 +58,31 @@ static void TestInt(int control, int test, int line)
 	}
 }
 
-static int comp_func(void *node_data, void *parametr)
+static int CompFuncInt(void *node_data, void *parametr)
 {
 	return (*(int *)node_data - *(int *)parametr);
+}
+
+static int ActFuncInt(void *node_data, void *parametrs)
+{
+	*(int *)node_data = *(int *)parametrs;
+	
+	if (*(int *)node_data != *(int *)parametrs)
+	{
+		return (ERROR);
+	}
+	
+	return (SUCCESS);
+}
+
+static int IsMatchInt(void *node_data, void *parametrs)
+{
+	if (*(int *)node_data == *(int *)parametrs)
+	{
+		return (TRUE);
+	}
+	
+	return (FALSE);
 }
 
 static void TestState(sorted_list_t *sorted_list, size_t control_size,\
@@ -87,11 +111,11 @@ static size_t TestInsert(sorted_list_t *sorted_list)
 static void TestMerge(sorted_list_t *sorted_list)
 {
 	sorted_list_t *merge_list;
-	static int data_array_2[] = {1, 3, 5, 7};
+	static int data_array_2[] = {-12, -5, 1, 3, 9, 0};
 	size_t array_size = 0;
 	size_t i = 0;
 	
-	merge_list = SortedListCreate(comp_func);
+	merge_list = SortedListCreate(CompFuncInt);
 
 	array_size = sizeof(data_array_2) / sizeof(data_array_2[0]);
 	
@@ -101,9 +125,41 @@ static void TestMerge(sorted_list_t *sorted_list)
 	}
 	
 	SortedListMerge(sorted_list, merge_list);
-	PrintSortedList(sorted_list);
 	
 	SortedListDestroy(merge_list);
+}
+
+static void TestForEach(sorted_list_t *sorted_list)
+{
+	sorted_iter_t from;
+	sorted_iter_t to;
+	int state = 0;
+	int params = 0;
+	
+	from = SortedListBegin(sorted_list);
+	to = SortedListEnd(sorted_list);
+	
+	state = SortedListForEach(from, to, ActFuncInt, &params);
+	TestInt(SUCCESS, state, __LINE__);
+}
+	
+static void TestFind(sorted_list_t *sorted_list)
+{
+	sorted_iter_t from;
+	sorted_iter_t to;
+	int params = 3;
+	
+	from = SortedListBegin(sorted_list);
+	to = SortedListEnd(sorted_list);
+	
+	from = SortedListFindIf(from, to, IsMatchInt, &params);
+	TestInt(FALSE, SortedListIsEqual(from, to), __LINE__);
+	
+	from = SortedListBegin(sorted_list);
+	to = SortedListEnd(sorted_list);
+	
+	from = SortedListFind(from, to, &params, sorted_list);
+	TestInt(FALSE, SortedListIsEqual(from, to), __LINE__);
 }
 
 static void TestSortedList()
@@ -111,27 +167,17 @@ static void TestSortedList()
 	sorted_list_t *sorted_list;
 	size_t list_size = 0;
 	
-	sorted_list = SortedListCreate(comp_func);
+	sorted_list = SortedListCreate(CompFuncInt);
 	TestState(sorted_list, 0, TRUE);
 	
 	list_size = TestInsert(sorted_list);
 	TestState(sorted_list, list_size, FALSE);
 	
 	TestMerge(sorted_list);
-
+	
+	TestFind(sorted_list);
+	
+	TestForEach(sorted_list);
+	
 	SortedListDestroy(sorted_list);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

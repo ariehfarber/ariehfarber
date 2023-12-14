@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Bar Gonen
+*Date: 14/12/2023
 *******************************************************************************/
 #ifndef __SORTED_LIST_H__
 #define __SORTED_LIST_H__
@@ -11,7 +11,6 @@
 typedef struct sorted_list sorted_list_t;
 
 typedef int (*compare_t)(void *, void *);
-
 /* note: is_match_t and action_t are defined in dll.h */
 
 typedef struct sorted_iter
@@ -195,13 +194,14 @@ int SortedListForEach(sorted_iter_t from, sorted_iter_t to,\
 *			  Comparison is done according to the sorted list's comparison
 *			  function.
 *Parameters: 2 iterators that mark the range, the specified data to find, and
-*			 and a pointer to the sorted_list.
-*Return Value: Iterator pointing to the matching data.
+*			 a pointer to the sorted_list.
+*Return Value: Iterator pointing to the matching data. If no data was found
+			   retruns iterator "to".
 *Time Complexity: O(n)
 *Space Complexity: O(1)
 *Notes: Sending "to" that comes before "from" as parameters will lead to 
 * 		undefined behavior. Sending "to" and "from" that belong to different
-*		sorted lists leads to undefined behavior.
+*		sorted lists will lead to undefined behavior.
 ******************************************************************************/
 sorted_iter_t SortedListFind(sorted_iter_t from, sorted_iter_t to,\
 							 void *to_find, const sorted_list_t *sorted_list);
