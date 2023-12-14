@@ -29,6 +29,22 @@ typedef struct find_params
 	void *data;
 } find_params_t;
 
+static dll_t *FindTheDLL(sorted_list_t *sorted_list)
+{
+	assert(NULL != sorted_list);
+	
+	return (sorted_list->dll);
+}
+
+#ifndef NDEBUG
+static sorted_list_t *FindTheSortedList(sorted_iter_t *iter)
+{
+	assert(NULL != iter);
+	
+	return (iter->sorted_list);
+}
+#endif
+
 static int IsMatchFindParams(void *data, void *params)
 {
 	return (0 == ((find_params_t *)params)->compare\
@@ -40,8 +56,8 @@ static dll_iter_t InsertLocation(sorted_list_t *sorted_list, void *data)
 	dll_iter_t from = NULL;
 	dll_iter_t to = NULL;
 	
-	from = DLLBegin(sorted_list->dll);
-	to = DLLEnd(sorted_list->dll);
+	from = DLLBegin(FindTheDLL(sorted_list));
+	to = DLLEnd(FindTheDLL(sorted_list));
 	
 	while (TRUE != DLLIsEqual(from, to) && \
 	0 >= sorted_list->compare(DLLGet(from), data)) 
@@ -63,7 +79,7 @@ sorted_list_t *SortedListCreate(compare_t comp_func)
 	}
 	
 	sorted_list->dll = DLLCreate();
-	if (NULL == sorted_list->dll)
+	if (NULL == FindTheDLL(sorted_list))
 	{
 		return (NULL);
 	}
@@ -75,7 +91,7 @@ sorted_list_t *SortedListCreate(compare_t comp_func)
 
 void SortedListDestroy(sorted_list_t *sorted_list)
 {
-	DLLDestroy(sorted_list->dll);
+	DLLDestroy(FindTheDLL(sorted_list));
 	
 	free (sorted_list);
 }
@@ -107,7 +123,7 @@ sorted_iter_t SortedListInsert(sorted_list_t *sorted_list, void *data)
 	assert(NULL != sorted_list);
 	
 	where = InsertLocation(sorted_list, data);
-	location.iter = DLLInsert(sorted_list->dll, where, data);
+	location.iter = DLLInsert(FindTheDLL(sorted_list), where, data);
 	#ifndef NDEBUG
 	location.sorted_list = sorted_list;
 	#endif
@@ -126,14 +142,14 @@ void *SortedListPopFront(sorted_list_t *sorted_list)
 {
 	assert(NULL != sorted_list);
 	
-	return (DLLPopfront(sorted_list->dll));
+	return (DLLPopfront(FindTheDLL(sorted_list)));
 }
 
 void *SortedListPopBack(sorted_list_t *sorted_list)
 {
 	assert(NULL != sorted_list);
 	
-	return (DLLPopback(sorted_list->dll));
+	return (DLLPopback(FindTheDLL(sorted_list)));
 }
 
 void SortedListMerge(sorted_list_t *dest, sorted_list_t *src)
