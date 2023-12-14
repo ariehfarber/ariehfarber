@@ -48,7 +48,7 @@ $(DBG_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
 
 # Release target
-release: $(DIR)/$(PROJECT).out
+release: $(DIR)/$(PROJECT)_release.out
 
 $(DIR)/$(PROJECT)_release.out: $(REL_SRC_OBJ) $(REL_TEST_OBJ) $(REL_ADD_ON_OBJ)
 	@ $(CC) $(REL_FLAGS) $^ -o $@
@@ -63,7 +63,7 @@ $(REL_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 .PHONY: clean
 clean:
 	@  rm -f $(DBG_OBJ_DIR)/$(PROJECT)*.o $(REL_OBJ_DIR)/$(PROJECT)*.o\
-	   $(PROJECT).out
+	   $(PROJECT)*.out
 	
 open:
 	@ find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&

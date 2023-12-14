@@ -36,14 +36,14 @@ static dll_t *FindTheDLL(sorted_list_t *sorted_list)
 	return (sorted_list->dll);
 }
 
-#ifndef NDEBUG
-static sorted_list_t *FindTheSortedList(sorted_iter_t *iter)
-{
-	assert(NULL != iter);
-	
-	return (iter->sorted_list);
-}
-#endif
+/*#ifndef NDEBUG*/
+/*static sorted_list_t *FindTheSortedList(sorted_iter_t *iter)*/
+/*{*/
+/*	assert(NULL != iter);*/
+/*	*/
+/*	return (iter->sorted_list);*/
+/*}*/
+/*#endif*/
 
 static int IsMatchFindParams(void *data, void *params)
 {
