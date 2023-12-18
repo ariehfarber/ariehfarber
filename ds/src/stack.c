@@ -110,17 +110,3 @@ size_t StackCapacity(const stack_t *my_stack)
 	
 	return (my_stack->capacity);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

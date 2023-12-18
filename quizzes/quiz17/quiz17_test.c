@@ -3,7 +3,7 @@
 *******************************************************************************/
 #include <stdio.h>  /*printf*/
 
-#include "quiz16.h"
+#include "quiz17.h"
 
 static void TestFindNumInArr();
 

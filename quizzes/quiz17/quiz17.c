@@ -1,11 +1,16 @@
 /*******************************************************************************
 *Auther: Arieh Farber
 *******************************************************************************/
-#ifndef  __QUIZ16_H__
-#define __QUIZ16_H__
+#include "quiz17.h"
 
-
-int FindNumInArr(int arr[], int n, int size);
-
-#endif /*__QUIZ16_H__*/
-
+int FindNumInArr(int arr[], int n, int size)
+{
+	int i = 0;
+	
+	while (0 != (arr[i] - n) && size != i)
+	{
+		i++;
+	}
+	
+	return (i != size);
+}

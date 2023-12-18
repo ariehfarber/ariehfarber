@@ -85,14 +85,3 @@ static void TestStack()
 	
 	StackDestroy(test_stack);
 }
-
-
-
-
-
-
-
-
-
-
-
