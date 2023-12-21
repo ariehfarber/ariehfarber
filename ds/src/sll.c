@@ -24,6 +24,15 @@ struct list
 	slist_iter_t tail;
 };
 
+static int ActCount(void *node_data, void *parametrs)
+{
+	*(size_t *)parametrs += 1;
+	(void)node_data;
+	
+	return (SUCCESS);
+}
+
+
 list_t *SLLCreate(void)
 {
 	slist_iter_t dummy_node = NULL;
@@ -116,23 +125,34 @@ slist_iter_t SLLRemove(slist_iter_t iterator)
 
 size_t SLLCount(const list_t *list)
 {
+	int state = 0;
 	size_t count = 0;
-	slist_iter_t runner = NULL;
-	slist_iter_t end_node = NULL;
-
-	assert(NULL != list);
-
-	runner = SLLBegin(list);
-	end_node = SLLEnd(list);
-
-	while (TRUE != SLLIsEqual(runner, end_node)) 
-	{
-		runner = SLLNext(runner);
-		count++;
-	}
+	
+	state = SLLForEach(SLLBegin(list), SLLEnd(list), ActCount, &count);
+	assert(0 == state);
 	
 	return (count);
 }
+
+/*size_t SLLCount(const list_t *list)*/
+/*{*/
+/*	size_t count = 0;*/
+/*	slist_iter_t runner = NULL;*/
+/*	slist_iter_t end_node = NULL;*/
+
+/*	assert(NULL != list);*/
+
+/*	runner = SLLBegin(list);*/
+/*	end_node = SLLEnd(list);*/
+
+/*	while (TRUE != SLLIsEqual(runner, end_node)) */
+/*	{*/
+/*		runner = SLLNext(runner);*/
+/*		count++;*/
+/*	}*/
+/*	*/
+/*	return (count);*/
+/*}*/
 
 slist_iter_t SLLFind(slist_iter_t from, slist_iter_t to,
 		   			 is_match_t is_match_func, void *params)

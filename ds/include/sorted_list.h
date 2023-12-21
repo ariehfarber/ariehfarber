@@ -93,7 +93,7 @@ sorted_iter_t SortedListInsert(sorted_list_t *sorted_list, void *data);
 sorted_iter_t SortedListRemove(sorted_iter_t iter);
 
 /******************************************************************************
-*Description: Removes the current last node of the sorted list.
+*Description: Removes the current head node of the sorted list.
 *Parameters: Pointer to the list.
 *Return Value: The data of the removed node.
 *Time Complexity: O(1)
@@ -103,7 +103,7 @@ sorted_iter_t SortedListRemove(sorted_iter_t iter);
 void *SortedListPopFront(sorted_list_t *sorted_list);
 
 /******************************************************************************
-*Description: Removes the current head of the sorted list.
+*Description: Removes the current last node of the sorted list.
 *Parameters: Pointer to the list.
 *Return Value: The data of the removed node.
 *Time Complexity: O(1)

@@ -30,11 +30,6 @@ static int ActCount(void *node_data, void *parametrs)
 {
 	*(size_t *)parametrs += 1;
 	
-	if (NULL == node_data)
-	{
-		return (ERROR);
-	}
-	
 	return (SUCCESS);
 }
 

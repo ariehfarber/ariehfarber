@@ -9,8 +9,6 @@
 #include "sorted_list.h"
 #include "dll.h"
 
-#include <stdio.h>  /*printf*/
-
 #define SUCCESS 0
 #define FAIL 1
 #define ERROR -1
@@ -29,21 +27,21 @@ typedef struct find_params
 	void *data;
 } find_params_t;
 
-static dll_t *FindTheDLL(sorted_list_t *sorted_list)
+static dll_t *FetchDLL(sorted_list_t *sorted_list)
 {
 	assert(NULL != sorted_list);
 	
 	return (sorted_list->dll);
 }
 
-/*#ifndef NDEBUG*/
-/*static sorted_list_t *FindTheSortedList(sorted_iter_t *iter)*/
-/*{*/
-/*	assert(NULL != iter);*/
-/*	*/
-/*	return (iter->sorted_list);*/
-/*}*/
-/*#endif*/
+#ifndef NDEBUG
+static sorted_list_t *FindTheSortedList(sorted_iter_t *iter)
+{
+	assert(NULL != iter);
+	
+	return (iter->sorted_list);
+}
+#endif
 
 static int IsMatchFindParams(void *data, void *params)
 {
@@ -51,13 +49,13 @@ static int IsMatchFindParams(void *data, void *params)
 		   (((find_params_t *)params)->data, data));
 }
 
-static dll_iter_t InsertLocation(sorted_list_t *sorted_list, void *data)
+static dll_iter_t FindInsertLocation(sorted_list_t *sorted_list, void *data)
 {
 	dll_iter_t from = NULL;
 	dll_iter_t to = NULL;
 	
-	from = DLLBegin(FindTheDLL(sorted_list));
-	to = DLLEnd(FindTheDLL(sorted_list));
+	from = DLLBegin(FetchDLL(sorted_list));
+	to = DLLEnd(FetchDLL(sorted_list));
 	
 	while (TRUE != DLLIsEqual(from, to) && \
 	0 >= sorted_list->compare(DLLGet(from), data)) 
@@ -79,8 +77,9 @@ sorted_list_t *SortedListCreate(compare_t comp_func)
 	}
 	
 	sorted_list->dll = DLLCreate();
-	if (NULL == FindTheDLL(sorted_list))
+	if (NULL == FetchDLL(sorted_list))
 	{
+		free(sorted_list);
 		return (NULL);
 	}
 	
@@ -91,7 +90,7 @@ sorted_list_t *SortedListCreate(compare_t comp_func)
 
 void SortedListDestroy(sorted_list_t *sorted_list)
 {
-	DLLDestroy(FindTheDLL(sorted_list));
+	DLLDestroy(FetchDLL(sorted_list));
 	
 	free (sorted_list);
 }
@@ -100,14 +99,14 @@ int SortedListIsEmpty(const sorted_list_t *sorted_list)
 {
 	assert(NULL != sorted_list);
 	
-	return (DLLIsEmpty(sorted_list->dll)); 
+	return (DLLIsEmpty(FetchDLL((sorted_list_t *)sorted_list))); 
 }
 
 size_t SortedListSize(const sorted_list_t *sorted_list)
 {
 	assert(NULL != sorted_list);
 	
-	return (DLLSize(sorted_list->dll));
+	return (DLLSize(FetchDLL((sorted_list_t *)sorted_list)));
 }
 
 void *SortedListGetData(sorted_iter_t iter)
@@ -122,8 +121,8 @@ sorted_iter_t SortedListInsert(sorted_list_t *sorted_list, void *data)
 	
 	assert(NULL != sorted_list);
 	
-	where = InsertLocation(sorted_list, data);
-	location.iter = DLLInsert(FindTheDLL(sorted_list), where, data);
+	where = FindInsertLocation(sorted_list, data);
+	location.iter = DLLInsert(FetchDLL(sorted_list), where, data);
 	#ifndef NDEBUG
 	location.sorted_list = sorted_list;
 	#endif
@@ -142,14 +141,14 @@ void *SortedListPopFront(sorted_list_t *sorted_list)
 {
 	assert(NULL != sorted_list);
 	
-	return (DLLPopfront(FindTheDLL(sorted_list)));
+	return (DLLPopfront(FetchDLL(sorted_list)));
 }
 
 void *SortedListPopBack(sorted_list_t *sorted_list)
 {
 	assert(NULL != sorted_list);
 	
-	return (DLLPopback(FindTheDLL(sorted_list)));
+	return (DLLPopback(FetchDLL(sorted_list)));
 }
 
 void SortedListMerge(sorted_list_t *dest, sorted_list_t *src)
@@ -163,14 +162,14 @@ void SortedListMerge(sorted_list_t *dest, sorted_list_t *src)
 
 	while (TRUE != DLLIsEqual(to_src, DLLEnd(src->dll)))
 	{
-		where_dest = InsertLocation(dest, DLLGet(DLLBegin(src->dll)));
+		where_dest = FindInsertLocation(dest, DLLGet(DLLBegin(src->dll)));
 		if (TRUE == DLLIsEqual(where_dest, DLLEnd(dest->dll)))
 		{
 			to_src = DLLEnd(src->dll);
 		}
 		else
 		{
-			to_src = InsertLocation(src, DLLGet(where_dest));
+			to_src = FindInsertLocation(src, DLLGet(where_dest));
 		}	
 		DLLSplice(DLLBegin(src->dll), to_src, where_dest);
 	}
@@ -182,7 +181,7 @@ sorted_iter_t SortedListBegin(const sorted_list_t *sorted_list)
 	
 	assert(NULL != sorted_list);
 	
-	start_iter.iter = DLLBegin(sorted_list->dll);
+	start_iter.iter = DLLBegin(FetchDLL((sorted_list_t *)sorted_list));
 	#ifndef NDEBUG
 	start_iter.sorted_list = (sorted_list_t *)sorted_list;
 	#endif
@@ -197,7 +196,7 @@ sorted_iter_t SortedListEnd(const sorted_list_t *sorted_list)
 	
 	assert(NULL != sorted_list);
 	
-	end_iter.iter = DLLEnd(sorted_list->dll);
+	end_iter.iter = DLLEnd(FetchDLL((sorted_list_t *)sorted_list));
 	#ifndef NDEBUG
 	end_iter.sorted_list = (sorted_list_t *)sorted_list;
 	#endif

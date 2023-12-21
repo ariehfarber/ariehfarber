@@ -1,0 +1,76 @@
+# Project Name
+PROJECT = pq
+EXTRA_PROJ1 = sorted_list
+EXTRA_PROJ2 = dll
+
+# Directories
+DIR = /home/arieh/git/ds
+DBG_OBJ_DIR = $(DIR)/bin/debug
+REL_OBJ_DIR = $(DIR)/bin/release
+HDR_DIR = $(DIR)/include
+SRC_DIR =  $(DIR)/src
+TEST_DIR = $(DIR)/test
+
+# Compiler
+CC = gcc
+CFLAGS = -ansi -pedantic-errors -Wall -Wextra -I$(HDR_DIR)
+DBG_FLAGS = -g
+REL_FLAGS = -O3
+
+# Source files
+SRC_FILE = $(SRC_DIR)/$(PROJECT).c
+# Test files
+TEST_FILE = $(TEST_DIR)/$(PROJECT)_test.c
+# Header files
+HDR_FILES = $(HDR_DIR)/$(PROJECT).h
+
+# Object files for debug and release
+DBG_SRC_OBJ = $(DBG_OBJ_DIR)/$(PROJECT).o
+DBG_TEST_OBJ = $(DBG_OBJ_DIR)/$(PROJECT)_test.o
+REL_SRC_OBJ = $(REL_OBJ_DIR)/$(PROJECT).o
+REL_TEST_OBJ = $(REL_OBJ_DIR)/$(PROJECT)_test.o
+# Extra files for debug and release
+DBG_ADD_ON_OBJ1 = $(DBG_OBJ_DIR)/$(EXTRA_PROJ1).o
+REL_ADD_ON_OBJ1 = $(REL_OBJ_DIR)/$(EXTRA_PROJ1).o
+DBG_ADD_ON_OBJ2 = $(DBG_OBJ_DIR)/$(EXTRA_PROJ2).o
+REL_ADD_ON_OBJ2 = $(REL_OBJ_DIR)/$(EXTRA_PROJ2).o
+
+# Default target
+all: debug
+
+# Debug target
+debug: $(DIR)/$(PROJECT).out
+
+$(DIR)/$(PROJECT).out: $(DBG_SRC_OBJ) $(DBG_TEST_OBJ) $(DBG_ADD_ON_OBJ1) \
+					   $(DBG_ADD_ON_OBJ2)
+	@ $(CC) $(DBG_FLAGS) $^ -o $@
+
+# Rule to generate object file for project in debug
+$(DBG_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
+	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
+$(DBG_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
+	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
+
+# Release target
+release: $(DIR)/$(PROJECT)_release.out
+
+$(DIR)/$(PROJECT)_release.out: $(REL_SRC_OBJ) $(REL_TEST_OBJ) \
+ 							   $(REL_ADD_ON_OBJ1) $(REL_ADD_ON_OBJ2)
+	@ $(CC) $(REL_FLAGS) $^ -o $@
+
+# Rule to generate object file for project in release
+$(REL_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
+	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@
+$(REL_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
+	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@	
+
+# Clean
+.PHONY: clean
+clean:
+	@  rm -f $(DBG_OBJ_DIR)/$(PROJECT)*.o $(REL_OBJ_DIR)/$(PROJECT)*.o\
+	   $(PROJECT)*.out
+	
+open:
+	@ find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&
+	@ find . -type f -name "$(PROJECT)*.h" -exec gedit {} +&
+	
