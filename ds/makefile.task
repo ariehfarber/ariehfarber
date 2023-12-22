@@ -27,7 +27,7 @@ DBG_SRC_OBJ = $(DBG_OBJ_DIR)/$(PROJECT).o
 REL_SRC_OBJ = $(REL_OBJ_DIR)/$(PROJECT).o
 
 # Default target
-all: debug release
+all: debug 
 
 # Debug target
 debug: $(DBG_OBJ_DIR)/lib_$(PROJECT).a
@@ -50,7 +50,8 @@ $(REL_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 # Clean
 .PHONY: clean
 clean:
-	@ rm -f $(DBG_OBJ_DIR)/*$(PROJECT)* $(REL_OBJ_DIR)/*$(PROJECT)*
+	@  rm -f $(DBG_OBJ_DIR)/*$(PROJECT)* $(REL_OBJ_DIR)/*$(PROJECT)*\
+	   $(PROJECT)*.out 
 
 open:
 	@ find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&

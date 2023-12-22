@@ -33,6 +33,8 @@ REL_SRC_OBJ = $(REL_OBJ_DIR)/$(PROJECT).o
 REL_TEST_OBJ = $(REL_OBJ_DIR)/$(PROJECT)_test.o
 
 # Static library paths
+DBG_STATIC_LIB = $(DBG_OBJ_DIR)/lib_$(PROJECT).a
+REL_STATIC_LIB = $(REL_OBJ_DIR)/lib_$(PROJECT).a
 LIBS = -l_$(SORTED_LIST_PROJECT) -l_$(DLL_PROJECT)
 
 # Default target
@@ -41,7 +43,7 @@ all: debug
 # Debug target
 debug: $(DIR)/$(PROJECT).out
 
-$(DIR)/$(PROJECT).out: $(DBG_SRC_OBJ) $(DBG_TEST_OBJ)
+$(DIR)/$(PROJECT).out: $(DBG_SRC_OBJ) $(DBG_TEST_OBJ) $(DBG_STATIC_LIB)
 	@ $(CC) $(DBG_FLAGS) $(DBG_LDFLAGS) $^ -o $@ $(LIBS)
 
 $(DBG_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
@@ -50,10 +52,14 @@ $(DBG_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 $(DBG_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
 
+# Debug static library rule
+$(DBG_STATIC_LIB): $(DBG_SRC_OBJ)
+	@ ar rcs $@ $^
+
 # Release target
 release: $(DIR)/$(PROJECT)_release.out
 
-$(DIR)/$(PROJECT)_release.out: $(REL_SRC_OBJ) $(REL_TEST_OBJ)
+$(DIR)/$(PROJECT)_release.out: $(REL_SRC_OBJ) $(REL_TEST_OBJ) $(REL_STATIC_LIB)
 	@ $(CC) $(REL_FLAGS) $(REL_LDFLAGS) $^ -o $@ $(LIBS)
 
 $(REL_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
@@ -62,10 +68,15 @@ $(REL_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 $(REL_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@	
 
+# Release static library rule
+$(REL_STATIC_LIB): $(REL_SRC_OBJ)
+	@ ar rcs $@ $^
+
 # Clean
 .PHONY: clean
 clean:
-	@ rm -f $(DBG_OBJ_DIR)/* $(REL_OBJ_DIR)/* $(DIR)/*$(PROJECT)*.out 
+	@  rm -f $(DBG_OBJ_DIR)/*$(PROJECT)* $(REL_OBJ_DIR)/*$(PROJECT)*\
+	   $(PROJECT)*.out 
 
 open:
 	@ find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&

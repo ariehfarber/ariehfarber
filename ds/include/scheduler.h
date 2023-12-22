@@ -99,7 +99,7 @@ int SchedulerRun(scheduler_t *scheduler);
 *Time Complexity: O(1)
 *Space Complexity: O(1)
 *******************************************************************************/
-void SchedulerStop(const scheduler_t *scheduler);
+void SchedulerStop(scheduler_t *scheduler);
 
 /*******************************************************************************
 *Description: Clears the tasks of the scheduler.
