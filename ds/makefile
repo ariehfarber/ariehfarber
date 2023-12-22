@@ -32,13 +32,6 @@ release_all:
 		$(MAKE) --no-print-directory -f makefile.$$project $(RELEASE_FLAG); \
 	done
 
-# Target to build static libraries for all projects
-.PHONY: static_all
-static_all:
-	@ for project in $(PROJECTS); do \
-		$(MAKE) --no-print-directory -f makefile.$$project $(STATIC_FLAG); \
-	done
-
 # Cleanup target to clean all projects
 .PHONY: clean_all
 clean_all:

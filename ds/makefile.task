@@ -7,8 +7,7 @@ DBG_OBJ_DIR = $(DIR)/bin/debug
 REL_OBJ_DIR = $(DIR)/bin/release
 HDR_DIR = $(DIR)/include
 SRC_DIR =  $(DIR)/src
-TEST_DIR = $(DIR)/test
-# Extra Directories
+# UID project directories
 UID_DIR = /home/arieh/git/system_programing
 UID_HDR_DIR = $(UID_DIR)/include
 
@@ -22,35 +21,37 @@ REL_FLAGS = -O3
 SRC_FILE = $(SRC_DIR)/$(PROJECT).c
 # Header files
 HDR_FILES = $(HDR_DIR)/$(PROJECT).h
-# Extra Header files
-UID_HDR_FILES = $(HDR_DIR)/$(PROJECT).h
 
 # Object files for debug and release
 DBG_SRC_OBJ = $(DBG_OBJ_DIR)/$(PROJECT).o
 REL_SRC_OBJ = $(REL_OBJ_DIR)/$(PROJECT).o
 
 # Default target
-all: static dynamic
+all: debug release
 
-# Object file targets
+# Debug target
+debug: $(DBG_OBJ_DIR)/lib_$(PROJECT).a
+
+$(DBG_OBJ_DIR)/lib_$(PROJECT).a: $(DBG_SRC_OBJ)
+	@ ar rcs $@ $^
+
 $(DBG_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
 
-$(REL_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
-	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@
-
-# Static library target
-static: $(REL_OBJ_DIR)/lib_$(PROJECT).a
+# Release target
+release: $(REL_OBJ_DIR)/lib_$(PROJECT).a
 
 $(REL_OBJ_DIR)/lib_$(PROJECT).a: $(REL_SRC_OBJ)
 	@ ar rcs $@ $^
 
+$(REL_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
+	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@
+
 # Clean
 .PHONY: clean
 clean:
-	@  rm -f $(DBG_OBJ_DIR)/$(PROJECT)*.o $(REL_OBJ_DIR)/$(PROJECT)*.o\
-	   lib_$(PROJECT).*
-	
+	@ rm -f $(DBG_OBJ_DIR)/*$(PROJECT)* $(REL_OBJ_DIR)/*$(PROJECT)*
+
 open:
 	@ find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&
 	@ find . -type f -name "$(PROJECT)*.h" -exec gedit {} +&

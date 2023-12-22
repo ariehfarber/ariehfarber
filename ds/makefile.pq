@@ -1,7 +1,7 @@
 # Project Name
 PROJECT = pq
-EXTRA_PROJ1 = sorted_list
-EXTRA_PROJ2 = dll
+SORTED_LIST_PROJECT = sorted_list
+DLL_PROJECT = dll
 
 # Directories
 DIR = /home/arieh/git/ds
@@ -16,6 +16,8 @@ CC = gcc
 CFLAGS = -ansi -pedantic-errors -Wall -Wextra -I$(HDR_DIR)
 DBG_FLAGS = -g
 REL_FLAGS = -O3
+DBG_LDFLAGS = -L$(DBG_OBJ_DIR)
+REL_LDFLAGS = -L$(REL_OBJ_DIR)
 
 # Source files
 SRC_FILE = $(SRC_DIR)/$(PROJECT).c
@@ -29,54 +31,42 @@ DBG_SRC_OBJ = $(DBG_OBJ_DIR)/$(PROJECT).o
 DBG_TEST_OBJ = $(DBG_OBJ_DIR)/$(PROJECT)_test.o
 REL_SRC_OBJ = $(REL_OBJ_DIR)/$(PROJECT).o
 REL_TEST_OBJ = $(REL_OBJ_DIR)/$(PROJECT)_test.o
-# Extra files for debug and release
-DBG_ADD_ON_OBJ1 = $(DBG_OBJ_DIR)/$(EXTRA_PROJ1).o
-REL_ADD_ON_OBJ1 = $(REL_OBJ_DIR)/$(EXTRA_PROJ1).o
-DBG_ADD_ON_OBJ2 = $(DBG_OBJ_DIR)/$(EXTRA_PROJ2).o
-REL_ADD_ON_OBJ2 = $(REL_OBJ_DIR)/$(EXTRA_PROJ2).o
+
+# Static library paths
+LIBS = -l_$(SORTED_LIST_PROJECT) -l_$(DLL_PROJECT)
 
 # Default target
-all: debug
+all: debug 
 
 # Debug target
 debug: $(DIR)/$(PROJECT).out
 
-$(DIR)/$(PROJECT).out: $(DBG_SRC_OBJ) $(DBG_TEST_OBJ) $(DBG_ADD_ON_OBJ1) \
-					   $(DBG_ADD_ON_OBJ2)
-	@ $(CC) $(DBG_FLAGS) $^ -o $@
+$(DIR)/$(PROJECT).out: $(DBG_SRC_OBJ) $(DBG_TEST_OBJ)
+	@ $(CC) $(DBG_FLAGS) $(DBG_LDFLAGS) $^ -o $@ $(LIBS)
 
-# Rule to generate object file for project in debug
 $(DBG_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
+
 $(DBG_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
 
 # Release target
 release: $(DIR)/$(PROJECT)_release.out
 
-$(DIR)/$(PROJECT)_release.out: $(REL_SRC_OBJ) $(REL_TEST_OBJ) \
- 							   $(REL_ADD_ON_OBJ1) $(REL_ADD_ON_OBJ2)
-	@ $(CC) $(REL_FLAGS) $^ -o $@
+$(DIR)/$(PROJECT)_release.out: $(REL_SRC_OBJ) $(REL_TEST_OBJ)
+	@ $(CC) $(REL_FLAGS) $(REL_LDFLAGS) $^ -o $@ $(LIBS)
 
-# Rule to generate object file for project in release
 $(REL_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@
+
 $(REL_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@	
-
-# Static library target
-static: $(REL_OBJ_DIR)/lib_$(PROJECT).a
-
-$(REL_OBJ_DIR)/lib_$(PROJECT).a: $(REL_SRC_OBJ)
-	@ ar rcs $@ $^
 
 # Clean
 .PHONY: clean
 clean:
-	@  rm -f $(DBG_OBJ_DIR)/$(PROJECT)*.o $(REL_OBJ_DIR)/$(PROJECT)*.o\
-	   $(PROJECT)*.out lib_$(PROJECT).*
-	
+	@ rm -f $(DBG_OBJ_DIR)/* $(REL_OBJ_DIR)/* $(DIR)/*$(PROJECT)*.out 
+
 open:
 	@ find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&
 	@ find . -type f -name "$(PROJECT)*.h" -exec gedit {} +&
-	

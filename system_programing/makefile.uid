@@ -32,10 +32,13 @@ REL_TEST_OBJ = $(REL_OBJ_DIR)/$(PROJECT)_test.o
 all: debug
 
 # Debug target
-debug: $(DIR)/$(PROJECT).out
+debug: $(DIR)/$(PROJECT).out $(DBG_OBJ_DIR)/lib_$(PROJECT).a
 
 $(DIR)/$(PROJECT).out: $(DBG_SRC_OBJ) $(DBG_TEST_OBJ)
 	@ $(CC) $(DBG_FLAGS) $^ -o $@
+
+$(DBG_OBJ_DIR)/lib_$(PROJECT).a: $(DBG_SRC_OBJ)
+	@ ar rcs $@ $^
 
 $(DBG_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
@@ -43,21 +46,18 @@ $(DBG_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -c $< -o $@
 
 # Release target
-release: $(DIR)/$(PROJECT)_release.out
+release: $(DIR)/$(PROJECT)_release.out $(REL_OBJ_DIR)/lib_$(PROJECT).a
 
 $(DIR)/$(PROJECT)_release.out: $(REL_SRC_OBJ) $(REL_TEST_OBJ)
 	@ $(CC) $(REL_FLAGS) $^ -o $@
+
+$(REL_OBJ_DIR)/lib_$(PROJECT).a: $(REL_SRC_OBJ)
+	@ ar rcs $@ $^
 
 $(REL_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@
 $(REL_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@	
-
-# Static library target
-static: $(REL_OBJ_DIR)/lib_$(PROJECT).a
-
-$(REL_OBJ_DIR)/lib_$(PROJECT).a: $(REL_SRC_OBJ)
-	@ ar rcs $@ $^
 
 # Clean
 .PHONY: clean
