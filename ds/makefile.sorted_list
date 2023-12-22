@@ -59,11 +59,17 @@ $(REL_SRC_OBJ): $(SRC_FILE) $(HDR_FILES)
 $(REL_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 	@ $(CC) $(CFLAGS) $(REL_FLAGS) -c $< -o $@	
 
+# Static library target
+static: $(REL_OBJ_DIR)/lib_$(PROJECT).a
+
+$(REL_OBJ_DIR)/lib_$(PROJECT).a: $(REL_SRC_OBJ)
+	@ ar rcs $@ $^
+
 # Clean
 .PHONY: clean
 clean:
 	@  rm -f $(DBG_OBJ_DIR)/$(PROJECT)*.o $(REL_OBJ_DIR)/$(PROJECT)*.o\
-	   $(PROJECT)*.out
+	   $(PROJECT)*.out lib_$(PROJECT).*
 	
 open:
 	@ find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&

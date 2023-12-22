@@ -19,12 +19,7 @@ struct pq
 	sorted_list_t *sorted_list;
 };
 
-static sorted_list_t *FetchSortedList(pq_t *pq)
-{
-	assert(NULL != pq);
-	
-	return (pq->sorted_list);
-}
+static sorted_list_t *FetchSortedList(pq_t *pq);
 
 pq_t *PQCreate(pq_compare_t compare_func)
 {
@@ -132,4 +127,11 @@ void *PQErase(pq_t *pq, pq_is_match_t is_match_func, void *params)
 	SortedListRemove(temp_iter);				 			 
 	
 	return (data);
+}
+
+static sorted_list_t *FetchSortedList(pq_t *pq)
+{
+	assert(NULL != pq);
+	
+	return (pq->sorted_list);
 }

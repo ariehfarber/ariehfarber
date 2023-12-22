@@ -35,11 +35,9 @@ static dll_t *FetchDLL(sorted_list_t *sorted_list)
 }
 
 #ifndef NDEBUG
-static sorted_list_t *FindTheSortedList(sorted_iter_t *iter)
+static sorted_list_t *FetchSortedList(sorted_iter_t iter)
 {
-	assert(NULL != iter);
-	
-	return (iter->sorted_list);
+	return (iter.sorted_list);
 }
 #endif
 
@@ -157,6 +155,7 @@ void SortedListMerge(sorted_list_t *dest, sorted_list_t *src)
 	dll_iter_t where_dest = NULL;
 	
 	assert(NULL != dest);
+	assert(FetchDLL(dest) != FetchDLL(src));
 	
 	to_src = DLLBegin(src->dll);
 
@@ -226,6 +225,14 @@ int SortedListIsEqual(sorted_iter_t iter1, sorted_iter_t iter2)
 int SortedListForEach(sorted_iter_t from, sorted_iter_t to,\
 					  action_t act_func, void *params)
 {
+	assert(NULL != act_func);
+	#ifndef NDEBUG
+	if (FetchSortedList(from) != FetchSortedList(to))
+	{
+		return (ERROR);
+	}
+	#endif	
+	
 	return (DLLForEach(from.iter, to.iter, act_func, params));
 }
 
@@ -236,6 +243,12 @@ sorted_iter_t SortedListFind(sorted_iter_t from, sorted_iter_t to,\
 	sorted_iter_t location = {0};
 	
 	assert(NULL != sorted_list);
+	#ifndef NDEBUG
+	if (FetchSortedList(from) != FetchSortedList(to))
+	{
+		return (to);
+	}
+	#endif	
 	
 	params.compare = sorted_list->compare;
 	params.data = to_find;
@@ -251,6 +264,12 @@ sorted_iter_t SortedListFindIf(sorted_iter_t from, sorted_iter_t to,\
 	sorted_iter_t location = {0};
 	
 	assert(NULL != is_match_func);
+	#ifndef NDEBUG
+	if (FetchSortedList(from) != FetchSortedList(to))
+	{
+		return (to);
+	}
+	#endif	
 	
 	location.iter = DLLFind(from.iter, to.iter, is_match_func, params);
 	

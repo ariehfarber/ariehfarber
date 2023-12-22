@@ -108,7 +108,7 @@ static size_t TestEnqueue(pq_t *pq)
 	return (array_size);
 }
 
-static void TestDequeue(pq_t *pq)
+static size_t TestDequeue(pq_t *pq)
 {
 	void *data_test_1 = NULL;
 	void *data_test_2 = NULL;
@@ -116,6 +116,8 @@ static void TestDequeue(pq_t *pq)
 	data_test_1 = PQPeek(pq);
 	data_test_2 = PQDequeue(pq);
 	TestData(data_test_1, data_test_2, __LINE__);
+	
+	return (PQSize(pq));
 }
 
 static void TestErase(pq_t* pq)
@@ -124,10 +126,9 @@ static void TestErase(pq_t* pq)
 	int params = 5;
 	size_t size = 0;
 	
-	size = PQSize(pq);
-	
 	data = PQErase(pq, IsMatchInt, &params);
 	TestInt(params, *(int *)data, __LINE__);
+	size = PQSize(pq);
 	TestState(pq, size, FALSE);
 }
 
@@ -139,15 +140,12 @@ static void TestPQ()
 	pq = PQCreate(CompFuncInt);
 	TestState(pq, size, TRUE);
 	
-	TestEnqueue(pq);
+	size = TestEnqueue(pq);
 	TestState(pq, size, FALSE);
 	
 	TestErase(pq);
 	
-	TestDequeue(pq);
-	TestState(pq, size, FALSE);
-	
-	TestEnqueue(pq);
+	size = TestDequeue(pq);
 	TestState(pq, size, FALSE);
 	
 	PQClear(pq);

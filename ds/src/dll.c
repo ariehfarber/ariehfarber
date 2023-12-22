@@ -29,6 +29,7 @@ struct dll
 static int ActCount(void *node_data, void *parametrs)
 {
 	*(size_t *)parametrs += 1;
+	(void)node_data;
 	
 	return (SUCCESS);
 }

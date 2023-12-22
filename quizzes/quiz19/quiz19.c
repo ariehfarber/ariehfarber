@@ -6,7 +6,7 @@
 #include <assert.h> /*assert	  */
 #include <stdlib.h> /*malloc, free*/
 
-#include "sll.h"
+#include "quiz19.h"
 
 #define ERROR -1
 #define SUCCESS 0
@@ -244,3 +244,13 @@ void SLLAppend(list_t *dest, list_t *src)
 	dest->tail->data = dest;
 	src->tail->data = src;
 }
+
+
+
+
+
+
+
+
+
+
