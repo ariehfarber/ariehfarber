@@ -6,7 +6,10 @@
 #ifndef __SCHEDULER_H__
 #define __SCHEDULER_H__
 
-#include "task.h"
+#include <time.h> /*time_t, size_t*/
+
+#include "uid.h"  /*ilrd_uid_t    */
+#include "task.h" 
 
 typedef struct scheduler scheduler_t;
 
@@ -70,10 +73,10 @@ size_t SchedulerSize(const scheduler_t *scheduler);
 ilrd_uid_t SchedulerAdd(scheduler_t *scheduler, 
 							op_func_t op_func, 
 							void* params, 
-							time_t time_to_run, 
-							size_t intervals, 
 							clean_up_t clean_up_func, 
-							void *clean_up_params);
+							void *clean_up_params,
+							time_t time_to_run, 
+							size_t intervals);
 
 /*******************************************************************************
 *Description: Remove task that matches the given UID.
@@ -104,7 +107,6 @@ void SchedulerStop(scheduler_t *scheduler);
 /*******************************************************************************
 *Description: Clears the tasks of the scheduler.
 *Parameters: Pointer to the Scheduler.
-*Return Value: None
 *Time Complexity: O(1)
 *Space Complexity: O(1)
 *******************************************************************************/
