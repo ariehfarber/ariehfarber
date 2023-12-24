@@ -2,7 +2,7 @@
 PROJECT = uid
 
 # Directories
-DIR = /home/arieh/git/system_programing
+DIR = /home/arieh/git/ds
 DBG_OBJ_DIR = $(DIR)/bin/debug
 REL_OBJ_DIR = $(DIR)/bin/release
 HDR_DIR = $(DIR)/include

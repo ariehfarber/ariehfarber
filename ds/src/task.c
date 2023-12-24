@@ -1,16 +1,17 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Alon Sitman 
+*Date: 24/12/2023
 *******************************************************************************/
-#include <stdlib.h> /*malloc, free  */
-#include <assert.h> /*assert	    */
-#include <time.h>   /*time_t, size_t*/
+#include <stdlib.h> /*malloc, free, size_t  */
+#include <assert.h> /*assert	    		*/
+#include <time.h>   /*time_t				*/
 
-#include "uid.h"	/*ilrd_uid_t    */
+#include "uid.h"	/*ilrd_uid_t    		*/
 #include "task.h"
 
 #define ZERO 0
+#define TRUE 1
 
 struct task
 {
@@ -38,6 +39,13 @@ task_t *TaskCreate(op_func_t op_func, void* params,
 	}
 	
 	task->uid = UIDCreate();
+	if (TRUE == UIDIsEqual(TaskGetUid((task_t *)task), bad_uid))
+	{
+		free(task);
+		
+		return (NULL);
+	}
+	
 	task->op_func = op_func;
 	task->params = params;
 	task->time_to_run = time_to_run;

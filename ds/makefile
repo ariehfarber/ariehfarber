@@ -1,6 +1,6 @@
 # List of projects
-PROJECTS = bitarray stack vector sll sll_ext queue cbuffer dll. sorted_list pq \
-		   task scheduler
+PROJECTS = bitarray stack vector sll sll_ext queue cbuffer dll. sorted_list \
+		   uid pq task scheduler
 
 # Binaries for each project
 BINS = $(addsuffix .out, $(PROJECTS))

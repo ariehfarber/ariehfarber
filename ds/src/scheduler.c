@@ -1,17 +1,17 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Alon Sitman 
+*Date: 24/12/2023
 *******************************************************************************/
-#include <stdlib.h> 	/*malloc, free  */
-#include <assert.h> 	/*assert	    */
-#include <unistd.h> 	/*sleep		    */
-#include <time.h>   	/*time_t, size_t*/
+#include <stdlib.h> 	/*malloc, free, size_t  */
+#include <assert.h> 	/*assert	    		*/
+#include <unistd.h> 	/*sleep		    		*/
+#include <time.h>   	/*time, time_t			*/
 
 #include "scheduler.h"
 #include "pq.h"
-#include "task.h"		/*task_t	    */
-#include "uid.h"		/*ilrd_uid_t    */
+#include "task.h"		/*task_t	    		*/
+#include "uid.h"		/*ilrd_uid_t    		*/
 
 #define TRUE 1
 #define FALSE 0
@@ -21,7 +21,6 @@
 #define NEGATIVE -1
 #define RUNNING 1
 #define NOT_RUNNING 0
-
 
 struct scheduler
 {
@@ -35,7 +34,7 @@ static int WrapperTaskIsMatch(void *task, void *task_uid);
 
 scheduler_t *SchedulerCreate(void)
 {
-	scheduler_t *scheduler = {0};
+	scheduler_t *scheduler = NULL;
 	
 	scheduler = (scheduler_t *)malloc(sizeof(scheduler_t));
 	if (NULL == scheduler)
@@ -44,7 +43,7 @@ scheduler_t *SchedulerCreate(void)
 	}
 
 	scheduler->pq = PQCreate(CompFunc);
-	if (NULL == scheduler->pq)
+	if (NULL == FetchPQ(scheduler))
 	{
 		free(scheduler);
 		return (NULL);
@@ -82,12 +81,12 @@ size_t SchedulerSize(const scheduler_t *scheduler)
 }
 
 ilrd_uid_t SchedulerAdd(scheduler_t *scheduler, 
-							op_func_t op_func, 
-							void* params, 
-							time_t time_to_run, 
-							size_t intervals, 
-							clean_up_t clean_up_func, 
-							void *clean_up_params)
+						op_func_t op_func, 
+						void* params, 
+						time_t time_to_run, 
+						size_t intervals, 
+						clean_up_t clean_up_func, 
+						void *clean_up_params)
 {
 	task_t *new_task = NULL;
 	int state = SUCCESS;
@@ -135,7 +134,6 @@ int SchedulerRemove(scheduler_t *scheduler, ilrd_uid_t uid)
 int SchedulerRun(scheduler_t *scheduler)
 {
 	void *task_holder = NULL;
-	time_t time_to_run;
 	int repeat_state = NO_REPEAT;
 	int enqueue_state = SUCCESS;
 	
@@ -144,7 +142,7 @@ int SchedulerRun(scheduler_t *scheduler)
 	scheduler->is_running = RUNNING;
 	
 	while (RUNNING == scheduler->is_running && \
-		   TRUE != PQIsEmpty(FetchPQ(scheduler)))
+		   FALSE == PQIsEmpty(FetchPQ(scheduler)))
 	{
 		task_holder = PQPeek(FetchPQ(scheduler));
 		if (NULL == task_holder)
@@ -152,14 +150,12 @@ int SchedulerRun(scheduler_t *scheduler)
 			return (FAIL);
 		}
 		
-		time_to_run = TaskGetTimeToRun((task_t *)task_holder);
-		
-		while (time(NULL) < time_to_run)
+		while (time(NULL) < TaskGetTimeToRun((task_t *)task_holder))
 		{
 			sleep(ONE_SECOND);
 		}
 		
-		task_holder = PQDequeue(FetchPQ(scheduler));
+		PQDequeue(FetchPQ(scheduler));
 		
 		repeat_state = TaskRun((task_t *)task_holder);
 		if (REPEAT == repeat_state)
@@ -201,7 +197,7 @@ void SchedulerClear(scheduler_t *scheduler)
 	
 	assert(NULL != scheduler);	
 	
-	while (TRUE != SchedulerIsEmpty(scheduler))
+	while (FALSE == SchedulerIsEmpty(scheduler))
 	{
 		head_task = (task_t *)PQPeek(FetchPQ(scheduler));
 		SchedulerRemove(scheduler, TaskGetUid(head_task));

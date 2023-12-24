@@ -1,5 +1,5 @@
 # List of projects
-PROJECTS = uid
+PROJECTS = fsa
 
 # Binaries for each project
 BINS = $(addsuffix .out, $(PROJECTS))
