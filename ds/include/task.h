@@ -6,10 +6,10 @@
 #ifndef __TASK_H__
 #define __TASK_H__
 
-#include <stddef.h>	/*size_t 		*/
-#include <time.h>   /*time_t, size_t*/
+#include <stddef.h>	/*size_t	*/
+#include <time.h>   /*time_t	*/
 
-#include "uid.h"	/*ilrd_uid_t    */
+#include "uid.h"	/*ilrd_uid_t*/
 
 typedef struct task task_t;
 
@@ -35,9 +35,9 @@ enum repeat_values
 *Space Complexity: O(1)
 *Notes: Returns NULL if memory allocation fails.
 *******************************************************************************/
-task_t *TaskCreate(op_func_t op_func, void* params,
-				   clean_up_t clean_up_func, void *clean_up_params,
-				   time_t time_to_run, size_t intervals);
+task_t *TaskCreate(op_func_t op_func, void* params, 
+                   time_t time_to_run, size_t intervals, 
+				   clean_up_t clean_up_func, void *clean_up_params);
 
 /*******************************************************************************
 *Description: Deletes the given task.
@@ -82,7 +82,7 @@ time_t TaskGetTimeToRun(const task_t *task);
 *Time Complexity: O(1)
 *Space Complexity: O(1)
 *******************************************************************************/
-int TaskIsBefore(const task_t *task1,const task_t *task2);
+int TaskIsBefore(const task_t *task1, const task_t *task2);
 
 /*******************************************************************************
 *Description: Checks whether the UID represent the given task.
@@ -92,10 +92,10 @@ int TaskIsBefore(const task_t *task1,const task_t *task2);
 *Time Complexity: O(1)
 *Space Complexity: O(1)
 *******************************************************************************/
-int TaskIsMatch(const task_t *task,const ilrd_uid_t uid);
+int TaskIsMatch(const task_t *task, const ilrd_uid_t uid);
 
 /*******************************************************************************
-*Description: Updates the time to run according to the interval value.
+*Description: Updates the time to run according to the intervals value.
 *Parameters: Pointers to the task.
 *Time Complexity: O(1)
 *Space Complexity: O(1)

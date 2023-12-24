@@ -73,10 +73,10 @@ size_t SchedulerSize(const scheduler_t *scheduler);
 ilrd_uid_t SchedulerAdd(scheduler_t *scheduler, 
 							op_func_t op_func, 
 							void* params, 
-							clean_up_t clean_up_func, 
-							void *clean_up_params,
 							time_t time_to_run, 
-							size_t intervals);
+							size_t intervals, 
+							clean_up_t clean_up_func, 
+							void *clean_up_params);
 
 /*******************************************************************************
 *Description: Remove task that matches the given UID.
