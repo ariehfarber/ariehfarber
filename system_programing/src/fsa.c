@@ -3,8 +3,8 @@
 *Reviewer: 
 *Date: 
 *******************************************************************************/
-#include <stddef.h> /*size_t, offsetof*/
-#include <assert.h> /*assert		  */
+#include <stddef.h> /*size_t*/
+#include <assert.h> /*assert*/
 
 #include "fsa.h"
 
@@ -20,10 +20,7 @@ size_t FSASuggestSize(size_t num_of_blocks, size_t block_size)
 {
 	size_t suggested_size = 0;
 	
-	if (ZERO != (block_size % WORD_SIZE))
-	{
-		block_size += (WORD_SIZE - block_size % WORD_SIZE);
-	}
+	block_size += (WORD_SIZE - block_size % WORD_SIZE) % WORD_SIZE;
 	
 	suggested_size = (block_size * num_of_blocks) + sizeof(fsa_t);
 	
@@ -39,9 +36,8 @@ fsa_t *FSAInit(void *pool, size_t block_size, size_t pool_size)
 	assert (NULL != pool);
 	
 	fsa = pool;
-	runner = (char *)fsa + WORD_SIZE;
-	
 	fsa->next_available = sizeof(fsa_t);
+	runner = (char *)fsa + fsa->next_available;
 	
 	for (i = fsa->next_available; i < (pool_size - block_size); i += block_size)
 	{
@@ -55,7 +51,7 @@ fsa_t *FSAInit(void *pool, size_t block_size, size_t pool_size)
 
 void *FSAAlloc(fsa_t *fsa)
 {
-	char *fsa_pointer = NULL;
+	char *block_pointer = NULL;
 	
 	assert (NULL != fsa);
 	
@@ -64,21 +60,18 @@ void *FSAAlloc(fsa_t *fsa)
 		return (NULL);
 	}
 	
-	fsa_pointer = (char *)fsa + fsa->next_available;
-	fsa->next_available = *(size_t *)fsa_pointer;
+	block_pointer = (char *)fsa + fsa->next_available;
+	fsa->next_available = *(size_t *)block_pointer;
 	
-	return ((void *)fsa_pointer);
+	return ((void *)block_pointer);
 }
 
 void FSAFree(fsa_t *fsa, void *to_free)
 {
-	size_t temp = 0;
-	
 	assert (NULL != fsa);
 	
-	temp = fsa->next_available;
+	*(size_t *)to_free = fsa->next_available;
 	fsa->next_available = (char *)to_free - (char *)fsa;
-	*(size_t *)to_free = temp;
 }
 
 size_t FSACountFree(fsa_t *fsa)
@@ -97,20 +90,3 @@ size_t FSACountFree(fsa_t *fsa)
 	
 	return (counter);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

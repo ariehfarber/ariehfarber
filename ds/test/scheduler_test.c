@@ -164,8 +164,15 @@ int CowsayOperation(void *params)
 {
 	char *message = (char *)params;
 	char command[256];
+	int ret_val = 0;
+	
 	sprintf(command, "cowsay \"%s\"", message);
-	system(command);
+	ret_val = system(command);
+	if (0 != ret_val)
+	{
+		printf("Command failed with return value: %d\n", ret_val);
+	}
+	
 	return NO_REPEAT;
 }
 
@@ -173,8 +180,14 @@ int RepeatCowsayOperation(void *params)
 {
 	char *message = (char *)params;
 	char command[256];
+	int ret_val = 0;
+	
 	sprintf(command, "cowsay -f tux  \"%s\"", message);
-	system(command);
+	ret_val = system(command);
+	if (0 != ret_val)
+	{
+		printf("Command failed with return value: %d\n", ret_val);
+	}
 	return REPEAT;
 }
 

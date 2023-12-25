@@ -62,8 +62,8 @@ $(REL_TEST_OBJ): $(TEST_FILE) $(HDR_FILES)
 # Clean
 .PHONY: clean
 clean:
-	@  rm -f $(DBG_OBJ_DIR)/$(PROJECT)*.o $(REL_OBJ_DIR)/$(PROJECT)*.o\
-	   $(PROJECT)*.out lib_$(PROJECT).a
+	@  rm -f $(DBG_OBJ_DIR)/*$(PROJECT)* $(REL_OBJ_DIR)/*$(PROJECT)*\
+	   $(PROJECT)*.out 
 	
 open:
 	@ find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&
