@@ -1,5 +1,5 @@
 # List of projects
-PROJECTS = fsa
+PROJECTS = fsa vsa
 
 # Binaries for each project
 BINS = $(addsuffix .out, $(PROJECTS))
