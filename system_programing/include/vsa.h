@@ -18,6 +18,8 @@ typedef struct vsa vsa_t;
 *              If pool_size isn't large enogh returns NULL.
 *Time Complexity: O(1)
 *Space Complexity: O(1)
+*Notes: Pool should be aligned to wordsize, otherwise it will lead to undefined 
+*		behavior. 
 *******************************************************************************/
 vsa_t *VSAInit(void *pool, size_t pool_size);
 

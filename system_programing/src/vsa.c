@@ -12,7 +12,8 @@
 #define WORD_SIZE sizeof(size_t)
 #define END_OF_POOL 0
 #define MIN_POOL_SIZE ((2 * sizeof(vsa_t)) + WORD_SIZE)
-#define OFFSET 1
+#define VSA_OFFSET 1
+#define MAGIC_NUMBER 0XBADCAFFE
  
 struct vsa 
 {
@@ -26,6 +27,9 @@ static size_t AlignUpToWord(size_t n);
 static size_t AlignDownToWord(size_t n);
 static vsa_t *NextVsa(vsa_t *vsa);
 static void Defrag(vsa_t *vsa);
+#ifndef NDEBUG
+static void AssignMagicNumber(vsa_t *vsa);
+#endif
 
 vsa_t *VSAInit(void *pool, size_t pool_size)
 {
@@ -33,6 +37,7 @@ vsa_t *VSAInit(void *pool, size_t pool_size)
 	vsa_t *end_of_vsa = NULL;
 	
 	assert(NULL != pool);
+	assert(0 == ((size_t)pool & (WORD_SIZE - 1)));
 	
 	if (pool_size < MIN_POOL_SIZE)
 	{
@@ -40,16 +45,15 @@ vsa_t *VSAInit(void *pool, size_t pool_size)
 	}
 	
 	pool_size = AlignDownToWord(pool_size) - sizeof(vsa_t);
-	
-	vsa->block_size = pool_size - sizeof(vsa_t);
-	#ifndef NDEBUG
-	vsa->magic_number = 0XBADCAFFE;
-	#endif
+
+	vsa->block_size = (long)(pool_size - sizeof(vsa_t));
 	
 	end_of_vsa = (vsa_t *)((char *)vsa + pool_size);
 	end_of_vsa->block_size = END_OF_POOL;
+
 	#ifndef NDEBUG
-	end_of_vsa->magic_number = 0XBADCAFFE;
+	AssignMagicNumber(vsa);
+	AssignMagicNumber(end_of_vsa);
 	#endif
 	
 	return (vsa);
@@ -62,7 +66,7 @@ void *VSAAlloc(vsa_t *vsa, size_t size_to_alloc)
 	long diff = 0;
 	
 	assert(NULL != vsa);
-	assert(vsa->magic_number == 0XBADCAFFE);
+	assert(vsa->magic_number == MAGIC_NUMBER);
 	
 	if (0 == size_to_alloc)
 	{
@@ -72,7 +76,7 @@ void *VSAAlloc(vsa_t *vsa, size_t size_to_alloc)
 	size_to_alloc = AlignUpToWord(size_to_alloc);
 	
 	Defrag(vsa);
-
+	
 	while (vsa_runner->block_size < (long)size_to_alloc &&\
 		   END_OF_POOL != vsa_runner->block_size)
 	{
@@ -95,7 +99,7 @@ void *VSAAlloc(vsa_t *vsa, size_t size_to_alloc)
 		vsa_runner = NextVsa(vsa_runner);
 		vsa_runner->block_size = diff;
 		#ifndef NDEBUG
-		vsa_runner->magic_number = 0XBADCAFFE;
+		AssignMagicNumber(vsa_runner);
 		#endif
 	}
 	else
@@ -103,7 +107,7 @@ void *VSAAlloc(vsa_t *vsa, size_t size_to_alloc)
 		vsa_runner->block_size = -vsa_runner->block_size;
 	}
 
-	return ((void *)(place_holder_vsa + OFFSET));
+	return ((void *)(place_holder_vsa + VSA_OFFSET));
 }
 
 void VSAFree(void *to_free)
@@ -115,8 +119,8 @@ void VSAFree(void *to_free)
 		return;
 	}
 
-	free_vsa = (vsa_t *)((vsa_t *)to_free - OFFSET);
-	assert(free_vsa->magic_number == 0XBADCAFFE);
+	free_vsa = (vsa_t *)((vsa_t *)to_free - VSA_OFFSET);
+	assert(free_vsa->magic_number == MAGIC_NUMBER);
 	
 	free_vsa->block_size = labs(free_vsa->block_size);
 }
@@ -126,7 +130,7 @@ size_t VSALargestBlockAvailable(vsa_t *vsa)
 	long largest_block = 0;
 	
 	assert(NULL != vsa);
-	assert(vsa->magic_number == 0XBADCAFFE);
+	assert(vsa->magic_number == MAGIC_NUMBER);
 	
 	while (END_OF_POOL != vsa->block_size)
 	{
@@ -180,3 +184,12 @@ static void Defrag(vsa_t *vsa)
 	
 	vsa->block_size = combined_blocks;
 }
+
+#ifndef NDEBUG
+static void AssignMagicNumber(vsa_t *vsa)
+{
+	assert(NULL != vsa);
+	
+	vsa->magic_number = MAGIC_NUMBER;
+}
+#endif
