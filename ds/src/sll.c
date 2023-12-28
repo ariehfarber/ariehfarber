@@ -125,11 +125,9 @@ slist_iter_t SLLRemove(slist_iter_t iterator)
 
 size_t SLLCount(const list_t *list)
 {
-	int state = 0;
 	size_t count = 0;
 	
-	state = SLLForEach(SLLBegin(list), SLLEnd(list), ActCount, &count);
-	assert(0 == state);
+	SLLForEach(SLLBegin(list), SLLEnd(list), ActCount, &count);
 	
 	return (count);
 }

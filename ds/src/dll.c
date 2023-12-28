@@ -77,11 +77,9 @@ int DLLIsEmpty(const dll_t *dll)
 
 size_t DLLSize(const dll_t *dll)
 {
-	int state = 0;
 	size_t count = 0;
 	
-	state = DLLForEach(DLLBegin(dll), DLLEnd(dll), ActCount, &count);
-	assert(0 == state);
+	DLLForEach(DLLBegin(dll), DLLEnd(dll), ActCount, &count);
 	
 	return (count);
 }
