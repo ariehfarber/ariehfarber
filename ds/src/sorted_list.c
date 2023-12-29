@@ -7,7 +7,6 @@
 #include <assert.h> /*assert	  */
 
 #include "sorted_list.h"
-#include "dll.h"
 
 #define SUCCESS 0
 #define FAIL 1

@@ -10,8 +10,7 @@
 
 #include "scheduler.h"
 #include "pq.h"
-#include "task.h"		/*task_t	    		*/
-#include "uid.h"		/*ilrd_uid_t    		*/
+#include "sorted_list.h"
 
 #define TRUE 1
 #define FALSE 0

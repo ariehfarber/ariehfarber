@@ -1,77 +1,76 @@
 # Projects
 PROJECTS = $(notdir $(basename $(SRC)))
 
-# Optionally specify a project name
-PROJECT_NAME ?= all
-
 # Directories
-DIR = /home/arieh/git/ds
-DEBUG_OBJ_DIR = $(DIR)/bin/debug
-REL_OBJ_DIR = $(DIR)/bin/release
+DIR = $(CURDIR)
+DEBUG_DIR = $(DIR)/bin/debug
+REL_DIR = $(DIR)/bin/release
 HDR_DIR = $(DIR)/include
 SRC_DIR =  $(DIR)/src
 TEST_DIR =  $(DIR)/test
 
 # Compiler flags
 CC = gcc
-CFLAGS = -ansi -pedantic-errors -Wall -Wextra -I$(HDR_DIR) 
-DBG_FLAGS = -g
+CFLAGS = -ansi -pedantic-errors -Wall -Wextra -I$(HDR_DIR)
 REL_FLAGS = -DNDEBUG -O3
-PIC_FLAGS = -fPIC
+DEPENDENCIES_FLAGS = -MMD -MP
 
 # Files
 SRC = $(wildcard $(SRC_DIR)/*.c)
+DEBUG_OBJS = $(SRC:$(SRC_DIR)/%.c=$(DEBUG_DIR)/%.o)
+DEBUG_LIBS = $(DEBUG_OBJS:$(DEBUG_DIR)/%.o=$(DEBUG_DIR)/lib_%.so)
+REL_OBJS = $(SRC:$(SRC_DIR)/%.c=$(REL_DIR)/%.o)
+REL_LIBS = $(REL_OBJS:$(REL_DIR)/%.o=$(REL_DIR)/lib_%.so)
+EXECUTABLES =  $(addprefix $(DIR)/, $(addsuffix .out, $(PROJECTS)))
+DEPENDENCIES = $(DEBUG_OBJS:.o=.d)
 
-# Paths
-DEBUG_LIB = $(patsubst %,$(DEBUG_OBJ_DIR)/lib_%.so,$(PROJECTS))
-REL_LIB =  $(patsubst %,$(REL_OBJ_DIR)/lib_%.so,$(PROJECTS))
-DEBUG_OBJS = $(patsubst %,$(DEBUG_OBJ_DIR)/%.o,$(PROJECTS))
-REL_OBJS = $(patsubst %,$(REL_OBJ_DIR)/%.o,$(PROJECTS))
-EXECUTABLES = $(patsubst %,$(DIR)/%.out,$(PROJECTS))
-TEST = $(patsubst %,$(TEST_DIR)/%_test.c,$(PROJECTS))
+# Include dependency files
+-include $(DEPENDENCIES)
 
-# Default #
-all: debug release 
+all: debug release
 
-# Debug objects and libraries #
-debug: $(DEBUG_LIB)
+# DEBUG #
+debug: $(DEBUG_OBJS) $(DEBUG_LIBS)
 
-# build the libraries
-$(DEBUG_LIB): $(DEBUG_OBJS)
-	@ $(CC) -shared $(CFLAGS) $(DBG_FLAGS) -o $@ $^
+# Build object files
+$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.c
+	@ $(CC) $(CFLAGS) -g -fPIC $(DEPENDENCIES_FLAGS) -c $< -o $@
 
-# build the object files
-$(DEBUG_OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@ $(CC) -c $(CFLAGS) $(DBG_FLAGS) $(PIC_FLAGS) -MM -MT $@ -o $@ $<
+# Build dynamic libraries
+$(DEBUG_DIR)/lib_%.so: $(REL_DIR)/%.o
+	 @ $(CC) -shared -o $@ $^ 
+	
+# RELEASE #
+release: $(REL_OBJS) $(REL_LIBS)
 
-# release objects and libraries #
-release: $(REL_LIB)
+# Build object files
+$(REL_DIR)/%.o: $(SRC_DIR)/%.c
+	@ $(CC) $(CFLAGS) $(REL_FLAGS) -fPIC $(DEPENDENCIES_FLAGS) -c $< -o $@
 
-# build the libraries
-$(REL_LIB): $(REL_OBJS)
-	@ $(CC) -shared $(CFLAGS) $(REL_FLAGS) -o $@ $^ 
+# Build dynamic libraries
+$(REL_DIR)/lib_%.so: $(REL_DIR)/%.o
+	 @ $(CC) -shared -o $@ $^ 
+	
+# TEST #
+test: $(EXECUTABLES)
 
-# build the object files
-$(REL_OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@ $(CC) -c $(CFLAGS) $(REL_FLAGS) $(PIC_FLAGS) -MM -MT $@ -o $@ $<
+# Function to generate library dependencies from .d files
+define generate_lib_dependencies
+$(shell cat $(DEBUG_DIR)/$1.d | \
+    tr ' ' '\n' | \
+    grep '\.h' | \
+    sed -e 's,^$(HDR_DIR)/,,;s,\.h$$,,;s,:$$,,;s,^,-l_,' | \
+    grep -v '\.h$$')
+endef
 
-test: $(EXECUTABLES) 
+# Build the executables
+$(DIR)/%.out: $(TEST_DIR)/%_test.c
+	$(eval LIB_DEPENDENCIES=$(call generate_lib_dependencies,$*))
+	@ $(CC) $(CFLAGS) -g -o $@ $< -Wl,-rpath,$(DEBUG_DIR) \
+	-L$(DEBUG_DIR) $(LIB_DEPENDENCIES)
 
-$(EXECUTABLES): $(DIR)/%_test.out : $(TEST_DIR)/%_test.c $(DEBUG_LIB)
-	@ $(CC) $(CFLAGS) $(DBG_FLAGS) -L$(DEBUG_OBJ_DIR) -o $@ $< -l_$*
-		
-# Clean
-.PHONY: clean release debug test
+# CLEAN #
 clean:
-	@  rm -f $(DEBUG_OBJ_DIR)/* $(REL_OBJ_DIR)/* $(DIR)/*.out
-	   	
-open:
-	@  find . -type f -name "$(PROJECT)*.c" -exec gedit {} +&
-	@  find . -type f -name "$(PROJECT)*.h" -exec gedit {} +&
+	@ rm -r $(DEBUG_DIR)/* $(REL_DIR)/* $(DIR)/*.out
 
-# Filter out the specific project if PROJECT_NAME is set
-ifeq ($(PROJECT_NAME),all)
-    TARGET_PROJECTS = $(PROJECTS)
-else
-    TARGET_PROJECTS = $(filter $(PROJECT_NAME), $(PROJECTS))
-endif
+.PHONY: clean debug release test

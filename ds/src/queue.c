@@ -6,8 +6,8 @@
 #include <stdlib.h> /*malloc, free*/
 #include <assert.h> /*assert*/
 
-#include "sll.h"
 #include "queue.h"
+#include "sll.h"
 
 #define SUCCESS 0
 #define ERROR -1

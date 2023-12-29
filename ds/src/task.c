@@ -7,7 +7,6 @@
 #include <assert.h> /*assert	    		*/
 #include <time.h>   /*time_t				*/
 
-#include "uid.h"	/*ilrd_uid_t    		*/
 #include "task.h"
 
 #define ZERO 0
