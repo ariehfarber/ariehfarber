@@ -21,68 +21,11 @@ int main()
 	return (0);
 }
 
-static void TestInt(int control, int test, int line)
-{
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-void TestSizeT(size_t control, size_t test, int line)
-{
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestQueueEnqueueAndDequeue(queue_t *queue, int data[], int size)
-{
-	int status = 1;
-	int i = 0;
-	void *value = NULL;
-	
-	for (i = 0; i < size; i++)
-	{
-		status = QueueEnqueue(queue, &data[i]);
-		value = QueuePeek(queue);
-		TestInt(SUCCESS, status, __LINE__);
-	}
-	
-	for (i = 0; i < (size / 2); i++)
-	{
-		QueueDequeue(queue);
-		value = QueuePeek(queue);
-		TestInt(i + 1, *(int *)value, __LINE__);
-	}
-}
-
-static void TestQueueSize(queue_t *queue, int control_size)
-{
-	TestSizeT(control_size, QueueSize(queue), __LINE__);
-}
-
-static void TestQueueStatus(queue_t *queue, int control)
-{
-	TestInt(control, QueueIsEmpty(queue), __LINE__);
-}
+static void TestQueueEnqueueAndDequeue(queue_t *queue, int data[], int size);
+static void TestQueueSize(queue_t *queue, int want_size);
+static void TestQueueStatus(queue_t *queue, int want);
+static void TestInt(int want, int got, int line);
+void TestSizeT(size_t want, size_t got, int line);
 
 static void TestQueue()
 {
@@ -109,4 +52,67 @@ static void TestQueue()
 	
 	QueueDestroy(queue_1);
 	QueueDestroy(queue_2);
+}
+
+static void TestQueueEnqueueAndDequeue(queue_t *queue, int data[], int size)
+{
+	int status = 1;
+	int i = 0;
+	void *value = NULL;
+	
+	for (i = 0; i < size; i++)
+	{
+		status = QueueEnqueue(queue, &data[i]);
+		value = QueuePeek(queue);
+		TestInt(SUCCESS, status, __LINE__);
+	}
+	
+	for (i = 0; i < (size / 2); i++)
+	{
+		QueueDequeue(queue);
+		value = QueuePeek(queue);
+		TestInt(i + 1, *(int *)value, __LINE__);
+	}
+}
+
+static void TestQueueSize(queue_t *queue, int want_size)
+{
+	TestSizeT(want_size, QueueSize(queue), __LINE__);
+}
+
+static void TestQueueStatus(queue_t *queue, int want)
+{
+	TestInt(want, QueueIsEmpty(queue), __LINE__);
+}
+
+static void TestInt(int want, int got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+void TestSizeT(size_t want, size_t got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }

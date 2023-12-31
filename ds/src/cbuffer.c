@@ -3,9 +3,9 @@
 *Reviewer: Yael Argov
 *Date: 11/12/2023
 *******************************************************************************/
-#include <stddef.h>    /*size_t			*/
-#include <stdlib.h>    /*malloc, free	*/  
-#include <assert.h>    /*assert 	 	*/ 	
+#include <stddef.h> /*size_t	  */
+#include <stdlib.h> /*malloc, free*/  
+#include <assert.h> /*assert 	  */ 	
 
 #include "cbuffer.h"
 
@@ -81,7 +81,7 @@ size_t BufferWrite(const void *src, buffer_t *buffer, size_t n)
 
 	while (0 != n)
 	{
-		buffer->array[OFFSET + buffer->write] = *src_ptr;
+		buffer->array[buffer->write + OFFSET] = *src_ptr;
 		src_ptr++;
 		buffer->write = (buffer->write + 1) % (buffer->capacity + OFFSET);
 		n--;	

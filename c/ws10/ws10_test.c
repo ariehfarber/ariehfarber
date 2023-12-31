@@ -22,11 +22,83 @@ int main()
 	return (0);
 }
 
-static void TestNChar(char *control, char *test, size_t n, int line)
+static void TestNChar(char *want, char *got, size_t n, int line);
+
+static void TestMemSet()
+{
+	char original_string[] = "12345678_12345678";
+	char got_string[20];
+	char want_string[20];
+	int character = 300;
+	size_t number_of_bytes = 10;
+	
+	memset(got_string, 0, sizeof(got_string));  
+    memset(want_string, 0, sizeof(want_string));  
+    
+    strcpy(got_string, original_string);
+	MemSet(got_string, character, number_of_bytes);
+	
+	strcpy(want_string, original_string);
+	memset(want_string, character, number_of_bytes);
+	
+	TestNChar(want_string, got_string, number_of_bytes, __LINE__);
+	
+	memset(got_string, 0, sizeof(got_string));  
+    memset(want_string, 0, sizeof(want_string));  
+    
+    strcpy(got_string, original_string);
+	MemSet(got_string + 1, character, number_of_bytes);
+	
+	strcpy(want_string, original_string);
+	memset(want_string + 1, character, number_of_bytes);
+	
+	TestNChar(want_string, got_string, number_of_bytes, __LINE__);
+}
+
+static void TestMemCpy()
+{
+	char original_string[] = "12345678_12345678";
+	char got_string[30];
+	char want_string[30];
+	size_t number_of_bytes = 10;
+	
+	memset(got_string, 0, sizeof(got_string));  
+    memset(want_string, 0, sizeof(want_string));  
+
+	MemCpy(got_string, original_string, number_of_bytes);
+	
+	memcpy(want_string, original_string, number_of_bytes);
+		
+	TestNChar(want_string, got_string, number_of_bytes, __LINE__);
+	
+	memset(got_string, 0, sizeof(got_string));  
+    memset(want_string, 0, sizeof(want_string));  
+
+	MemCpy(got_string + 1, original_string, number_of_bytes);
+	
+	memcpy(want_string + 1, original_string, number_of_bytes);
+		
+	TestNChar(want_string, got_string, number_of_bytes, __LINE__);
+}
+
+static void TestMemMove()
+{
+	char got_string[10] = "123456789";
+	char want_string[10] = "123456789";
+	size_t number_of_bytes = 4;
+
+	MemMove(got_string + 2, got_string, number_of_bytes);
+	
+	memmove(want_string + 2, want_string, number_of_bytes);
+		
+	TestNChar(want_string, got_string, number_of_bytes, __LINE__);
+}
+
+static void TestNChar(char *want, char *got, size_t n, int line)
 {
 	while (0 < n)
 	{
-		if(control[n - 1] != test[n - 1])
+		if(want[n - 1] != got[n - 1])
 		{
 			printf("\033[0;31m");
 			printf("Error. failed at line %d\n", line);
@@ -41,74 +113,4 @@ static void TestNChar(char *control, char *test, size_t n, int line)
 		printf("Success!\n");
 		printf("\033[0m"); 
 	}
-}
-
-static void TestMemSet()
-{
-	char original_string[] = "12345678_12345678";
-	char test_string[20];
-	char control_string[20];
-	int character = 300;
-	size_t number_of_bytes = 10;
-	
-	memset(test_string, 0, sizeof(test_string));  
-    memset(control_string, 0, sizeof(control_string));  
-    
-    strcpy(test_string, original_string);
-	MemSet(test_string, character, number_of_bytes);
-	
-	strcpy(control_string, original_string);
-	memset(control_string, character, number_of_bytes);
-	
-	TestNChar(control_string, test_string, number_of_bytes, __LINE__);
-	
-	memset(test_string, 0, sizeof(test_string));  
-    memset(control_string, 0, sizeof(control_string));  
-    
-    strcpy(test_string, original_string);
-	MemSet(test_string + 1, character, number_of_bytes);
-	
-	strcpy(control_string, original_string);
-	memset(control_string + 1, character, number_of_bytes);
-	
-	TestNChar(control_string, test_string, number_of_bytes, __LINE__);
-}
-
-static void TestMemCpy()
-{
-	char original_string[] = "12345678_12345678";
-	char test_string[30];
-	char control_string[30];
-	size_t number_of_bytes = 10;
-	
-	memset(test_string, 0, sizeof(test_string));  
-    memset(control_string, 0, sizeof(control_string));  
-
-	MemCpy(test_string, original_string, number_of_bytes);
-	
-	memcpy(control_string, original_string, number_of_bytes);
-		
-	TestNChar(control_string, test_string, number_of_bytes, __LINE__);
-	
-	memset(test_string, 0, sizeof(test_string));  
-    memset(control_string, 0, sizeof(control_string));  
-
-	MemCpy(test_string + 1, original_string, number_of_bytes);
-	
-	memcpy(control_string + 1, original_string, number_of_bytes);
-		
-	TestNChar(control_string, test_string, number_of_bytes, __LINE__);
-}
-
-static void TestMemMove()
-{
-	char test_string[10] = "123456789";
-	char control_string[10] = "123456789";
-	size_t number_of_bytes = 4;
-
-	MemMove(test_string + 2, test_string, number_of_bytes);
-	
-	memmove(control_string + 2, control_string, number_of_bytes);
-		
-	TestNChar(control_string, test_string, number_of_bytes, __LINE__);
 }

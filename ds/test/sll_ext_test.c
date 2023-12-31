@@ -23,21 +23,7 @@ int main()
 	return (0);
 }
 
-static void TestStatusHasLoop(int control, int test)
-{
-	if (control != test)
-	{
-		printf("\033[0;32m");
-		printf("No loop!\n");
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[0;32m");
-		printf("Has loop!\n");
-		printf("\033[0m"); 
-	}
-}
+static void TestStatusHasLoop(int want, int got);
 
 static void TestFlip()
 {
@@ -91,4 +77,20 @@ static void TestFindIntersection()
 	PrintList(intersection_node);
 	
 	DestroyLinkedList(original_head);
+}
+
+static void TestStatusHasLoop(int want, int got)
+{
+	if (want != got)
+	{
+		printf("\033[0;32m");
+		printf("No loop!\n");
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[0;32m");
+		printf("Has loop!\n");
+		printf("\033[0m"); 
+	}
 }

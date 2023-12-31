@@ -26,13 +26,7 @@ struct dll
 	struct node tail;
 };
 
-static int ActCount(void *node_data, void *parametrs)
-{
-	*(size_t *)parametrs += 1;
-	(void)node_data;
-	
-	return (SUCCESS);
-}
+static int ActCount(void *node_data, void *parametrs);
 
 dll_t *DLLCreate(void)
 {
@@ -287,6 +281,14 @@ int DLLMultiFind(dll_iter_t from, dll_iter_t to, is_match_t is_match_func,\
 		}
 		from = DLLNext(from);
 	}
+	
+	return (SUCCESS);
+}
+
+static int ActCount(void *node_data, void *parametrs)
+{
+	*(size_t *)parametrs += 1;
+	(void)node_data;
 	
 	return (SUCCESS);
 }

@@ -26,28 +26,14 @@ int main()
 	return (0);
 }
 
-static void TestInt(int control, int test, int line)
-{
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
+static void TestInt(int want, int got, int line);
 
 static void TestMatrixRowSums() 
 {
 	int **array = NULL;
 	int *sum_of_rows = NULL;
 	int i = 0, j =0; 
-	int control[COLS] = {3 , 12, 21};
+	int want[COLS] = {3 , 12, 21};
 
 	array = (int **)malloc(ROWS * sizeof(int *));
 	if (NULL == array)
@@ -89,7 +75,7 @@ static void TestMatrixRowSums()
 	
 	for (i = 0; i < COLS; i++)
 	{
-			TestInt(control[i], sum_of_rows[i], __LINE__);
+			TestInt(want[i], sum_of_rows[i], __LINE__);
 	}
 	
 	for (i = 0; i < ROWS; i++) 
@@ -172,4 +158,20 @@ static void TestPrintEnvVariablesLowCase()
 		free(buffer[i]);
 	}
 	free(buffer);
+}
+
+static void TestInt(int want, int got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }

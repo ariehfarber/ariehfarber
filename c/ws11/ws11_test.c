@@ -30,73 +30,44 @@ int main()
 	return (0);
 }
 
-static void TestInt(int control, int test, int line)
-{
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestChar(char *control, char *test, int line)
-{
-	if (0 != strcmp(control, test))
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
+static void TestInt(int want, int got, int line);
+static void TestChar(char *want, char *got, int line);
 
 static void TestAtoi()
 {
-	int test_num = 0;
-	int control_num = 0;
-	char *test_string = " 	-223";
+	int got_num = 0;
+	int want_num = 0;
+	char *got_string = " 	-223";
 	
-	test_num = Atoi(test_string);
-	control_num = atoi(test_string);
+	got_num = Atoi(got_string);
+	want_num = atoi(got_string);
 	
-	TestInt(control_num, test_num, __LINE__);
+	TestInt(want_num, got_num, __LINE__);
 }
 
 static void	TestAtoiAnyBase()
 {
-	int test_num = 0;
-	int control_num = 10;
-	char *test_string = "10";
+	int got_num = 0;
+	int want_num = 10;
+	char *got_string = "10";
 	int base = 10;
 	
-	test_num = AtoiAnyBase(test_string, base);
+	got_num = AtoiAnyBase(got_string, base);
 	
-	TestInt(control_num, test_num, __LINE__);
+	TestInt(want_num, got_num, __LINE__);
 }
 
 static void TestItoa()
 {
 	int num = 0;
-	char *control_str = "0";
+	char *want_str = "0";
 	char *str_buffer = NULL;
 	
-	str_buffer = (char *)malloc(strlen(control_str) + 1);
+	str_buffer = (char *)malloc(strlen(want_str) + 1);
 	
 	Itoa(num, str_buffer);
 	
-	TestChar(control_str, str_buffer, __LINE__);
+	TestChar(want_str, str_buffer, __LINE__);
 	
 	free(str_buffer);
 	str_buffer = NULL;
@@ -104,16 +75,16 @@ static void TestItoa()
 
 static void	TestItoaAnyBase()
 {
-	int test_num = -1000;
+	int got_num = -1000;
 	char *str_buffer = NULL;
-	char *control_str = "-RS";
+	char *want_str = "-RS";
 	int base = 36;
 	
-	str_buffer = (char *)malloc(strlen(control_str) + 1);
+	str_buffer = (char *)malloc(strlen(want_str) + 1);
 	
-	ItoaAnyBase(test_num, str_buffer, base);
+	ItoaAnyBase(got_num, str_buffer, base);
 	
-	TestChar(control_str, str_buffer, __LINE__);
+	TestChar(want_str, str_buffer, __LINE__);
 	
 	free(str_buffer);
 	str_buffer = NULL;
@@ -142,4 +113,34 @@ static void TestIsLittleEndian()
 	TestInt(TRUE, IS_LITTLE_ENDIAN, __LINE__);
 }
 
+static void TestInt(int want, int got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
 
+static void TestChar(char *want, char *got, int line)
+{
+	if (0 != strcmp(want, got))
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}

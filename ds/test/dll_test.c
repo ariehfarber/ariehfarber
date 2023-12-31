@@ -22,62 +22,35 @@ int main()
 	return (0);
 }
 
-/*static void PrintDLL(dll_t *dll)*/
-/*{*/
-/*	dll_iter_t runner = NULL;*/
-/*	void *data = NULL;*/
-/*	size_t i = 0;*/
-/*	size_t size = 0;*/
-/*	*/
-/*	size = DLLSize(dll);*/
-/*	*/
-/*	runner = DLLBegin(dll);*/
-/*	*/
-/*	for (i = 0; i < size; i++)*/
-/*	{*/
-/*		data = DLLGet(runner);*/
-/*		printf("%c\n", *(char *)data);*/
-/*		runner = DLLNext(runner);	*/
-/*	}*/
-/*	printf("\n");*/
-/*}*/
+static void TestDLLInsert(dll_t *dll);
+static void TestForEach(dll_t *dll);
+static void TestFind(dll_t *dll);
+static void TestDLLMultiFind(dll_t *dll);
+static void TestDLLSplice(dll_t *dll);
+static void TestState(dll_t *dll, size_t want_size, int want_state);
+static int ActFuncChar(void *node_data, void *parametrs);
+static int IsMatchChar(void *node_data, void *parametrs);
+static void TestInt(int want, int got, int line);
 
-static void TestInt(int control, int test, int line)
+static void TestDLL()
 {
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
+	dll_t *dll = NULL;
+	
+	dll = DLLCreate();
+	TestState(dll, 0, TRUE);
 
-static int ActFuncChar(void *node_data, void *parametrs)
-{
-	*(char *)node_data = *(char *)parametrs;
+	TestDLLInsert(dll);
+	TestState(dll, 4, FALSE);
 	
-	if (*(char *)node_data != *(char *)parametrs)
-	{
-		return (ERROR);
-	}
+	TestForEach(dll);
 	
-	return (SUCCESS);
-}
-
-static int IsMatchChar(void *node_data, void *parametrs)
-{
-	if (*(char *)node_data == *(char *)parametrs)
-	{
-		return (TRUE);
-	}
+	TestFind(dll);
 	
-	return (FALSE);
+	TestDLLSplice(dll);
+			
+	TestDLLMultiFind(dll);
+	
+	DLLDestroy(dll);
 }
 
 static void TestDLLInsert(dll_t *dll)
@@ -107,32 +80,32 @@ static void TestDLLInsert(dll_t *dll)
 
 static void TestForEach(dll_t *dll)
 {
-	dll_iter_t test_from = NULL;
-	dll_iter_t test_to = NULL;
-	char test_params = 'z';
+	dll_iter_t got_from = NULL;
+	dll_iter_t got_to = NULL;
+	char got_params = 'z';
 	int status = 0;
 	
-	test_from = DLLBegin(dll);
-	test_to = DLLNext(test_from);
+	got_from = DLLBegin(dll);
+	got_to = DLLNext(got_from);
 	
-	status = DLLForEach(test_from, test_to, ActFuncChar, &test_params);
+	status = DLLForEach(got_from, got_to, ActFuncChar, &got_params);
 	TestInt(SUCCESS, status, __LINE__);
 }
 
 static void TestFind(dll_t *dll)
 {
-	dll_iter_t test_iterator = NULL;
-	dll_iter_t test_from = NULL;
-	dll_iter_t test_to = NULL;
+	dll_iter_t got_iterator = NULL;
+	dll_iter_t got_from = NULL;
+	dll_iter_t got_to = NULL;
 	char params = 'z';
 	int status = 0;
 	
-	test_from = DLLBegin(dll);
-	test_to = DLLEnd(dll);
+	got_from = DLLBegin(dll);
+	got_to = DLLEnd(dll);
 	
-	test_iterator = DLLFind(test_from, test_to, IsMatchChar, &params);
+	got_iterator = DLLFind(got_from, got_to, IsMatchChar, &params);
    
-    status = DLLIsEqual(DLLBegin(dll), test_iterator);
+    status = DLLIsEqual(DLLBegin(dll), got_iterator);
     TestInt(status, TRUE, __LINE__);
 }
 
@@ -140,16 +113,16 @@ static void TestDLLMultiFind(dll_t *dll)
 {
 	int status = 0;
 	dll_t *dll_output = NULL;
-	dll_iter_t test_from = NULL;
-	dll_iter_t test_to = NULL;
+	dll_iter_t got_from = NULL;
+	dll_iter_t got_to = NULL;
 	char params = 'm';
 	
 	dll_output = DLLCreate();
 	
-	test_from = DLLBegin(dll);
-	test_to = DLLEnd(dll);
+	got_from = DLLBegin(dll);
+	got_to = DLLEnd(dll);
 
-	status = DLLMultiFind(test_from, test_to, IsMatchChar, &params, dll_output);
+	status = DLLMultiFind(got_from, got_to, IsMatchChar, &params, dll_output);
     TestInt(status, SUCCESS, __LINE__);
     					  
 	DLLDestroy(dll_output);
@@ -158,9 +131,9 @@ static void TestDLLMultiFind(dll_t *dll)
 static void TestDLLSplice(dll_t *dll)
 {
 	dll_t *dll_splice = NULL;
-	dll_iter_t test_from = NULL;
-	dll_iter_t test_to = NULL;
-	dll_iter_t test_where = NULL;
+	dll_iter_t got_from = NULL;
+	dll_iter_t got_to = NULL;
+	dll_iter_t got_where = NULL;
 	dll_iter_t insert_node = NULL;
 	static char data[] = "abcd";
 	size_t size = 0;
@@ -175,38 +148,55 @@ static void TestDLLSplice(dll_t *dll)
 		insert_node = DLLNext(insert_node);
 	}
 	
-	test_from = DLLBegin(dll_splice);
-	test_to = DLLEnd(dll_splice);
-	test_where = DLLBegin(dll);
+	got_from = DLLBegin(dll_splice);
+	got_to = DLLEnd(dll_splice);
+	got_where = DLLBegin(dll);
 
-	DLLSplice(test_from, test_to, test_where);
+	DLLSplice(got_from, got_to, got_where);
 	
 	DLLDestroy(dll_splice);
 }
 
-static void TestState(dll_t *dll, size_t control_size, int control_state)
+static void TestState(dll_t *dll, size_t want_size, int want_state)
 {
-	TestInt(control_size, DLLSize(dll), __LINE__);
-	TestInt(control_state, DLLIsEmpty(dll), __LINE__);
+	TestInt(want_size, DLLSize(dll), __LINE__);
+	TestInt(want_state, DLLIsEmpty(dll), __LINE__);
 }
 
-static void TestDLL()
+static int ActFuncChar(void *node_data, void *parametrs)
 {
-	dll_t *dll = NULL;
+	*(char *)node_data = *(char *)parametrs;
 	
-	dll = DLLCreate();
-	TestState(dll, 0, TRUE);
+	if (*(char *)node_data != *(char *)parametrs)
+	{
+		return (ERROR);
+	}
+	
+	return (SUCCESS);
+}
 
-	TestDLLInsert(dll);
-	TestState(dll, 4, FALSE);
+static int IsMatchChar(void *node_data, void *parametrs)
+{
+	if (*(char *)node_data == *(char *)parametrs)
+	{
+		return (TRUE);
+	}
 	
-	TestForEach(dll);
-	
-	TestFind(dll);
-	
-	TestDLLSplice(dll);
-			
-	TestDLLMultiFind(dll);
-	
-	DLLDestroy(dll);
+	return (FALSE);
+}
+
+static void TestInt(int want, int got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }

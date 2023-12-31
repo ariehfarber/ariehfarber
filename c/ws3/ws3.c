@@ -14,6 +14,8 @@
 #define TRUE 1
 #define FALSE 0
 
+static char *ToLowerString(char *str);
+
 int *MatrixRowSums(int **matrix, int *row_sums)
 {
 	int i = 0, j = 0;
@@ -77,6 +79,20 @@ void PrintDataSize(char *type, size_t size)
 	printf("The size of %s is %lu byts\n", type, size);
 }
 
+void PrintEnvVariablesLowCase(char **buffer, size_t environ_size)
+{
+	size_t i = 0;
+	
+	assert(buffer);
+		
+	printf("Environment variables\n");
+	for (i = 0; i < environ_size; i++)
+	{
+		printf("%s\n", ToLowerString(buffer[i]));
+	}
+	printf("\n");
+}
+
 static char *ToLowerString(char *str)
 {
 	char *start = NULL;
@@ -95,18 +111,4 @@ static char *ToLowerString(char *str)
 	}
 	
 	return (start);
-}
-
-void PrintEnvVariablesLowCase(char **buffer, size_t environ_size)
-{
-	size_t i = 0;
-	
-	assert(buffer);
-		
-	printf("Environment variables\n");
-	for (i = 0; i < environ_size; i++)
-	{
-		printf("%s\n", ToLowerString(buffer[i]));
-	}
-	printf("\n");
 }

@@ -23,22 +23,7 @@ struct vector
 	size_t capacity;
 };
 
-static int ResizeArray(vector_t *vector, size_t new_size)
-{
-	void *temp_buffer = NULL;
-	
-	temp_buffer = realloc(vector->array, BYTE_SIZE(new_size));
-	if (NULL == vector->array) 
-    {
-        return (ERROR); 
-    }
-    
-    vector->array = temp_buffer;
-    
-    vector->capacity = new_size;
-    
-    return (SUCCESS);
-}
+static int ResizeArray(vector_t *vector, size_t new_size);
 
 vector_t *VectorCreate(size_t element_size, size_t initial_capacity)
 {
@@ -144,4 +129,21 @@ int VectorReserve(vector_t *vector, size_t new_capacity)
 	assert(NULL != vector);
 
 	return (ResizeArray(vector, new_capacity));
+}
+
+static int ResizeArray(vector_t *vector, size_t new_size)
+{
+	void *temp_buffer = NULL;
+	
+	temp_buffer = realloc(vector->array, BYTE_SIZE(new_size));
+	if (NULL == vector->array) 
+    {
+        return (ERROR); 
+    }
+    
+    vector->array = temp_buffer;
+    
+    vector->capacity = new_size;
+    
+    return (SUCCESS);
 }

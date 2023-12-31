@@ -7,9 +7,9 @@
 
 #include "my_tests.h"
 
-void TestInt(int control, int test, int line)
+void TestInt(int want, int got, int line)
 {
-	if (control != test)
+	if (want != got)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -23,9 +23,9 @@ void TestInt(int control, int test, int line)
 	}
 }
 
-void TestUnsignedInt(unsigned int control, unsigned int test, int line)
+void TestUnsignedInt(unsigned int want, unsigned int got, int line)
 {
-	if (control != test)
+	if (want != got)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -39,9 +39,9 @@ void TestUnsignedInt(unsigned int control, unsigned int test, int line)
 	}
 }
 
-void TestDouble(double control, double test, int line)
+void TestDouble(double want, double got, int line)
 {
-	if (control < test)
+	if (want < got)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -55,9 +55,9 @@ void TestDouble(double control, double test, int line)
 	}
 }
 
-void TestLong(long control, long test, int line)
+void TestLong(long want, long got, int line)
 {
-	if (control != test)
+	if (want != got)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -71,9 +71,9 @@ void TestLong(long control, long test, int line)
 	}
 }
 
-void TestSizeT(size_t control, size_t test, int line)
+void TestSizeT(size_t want, size_t got, int line)
 {
-	if (control != test)
+	if (want != got)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -87,9 +87,9 @@ void TestSizeT(size_t control, size_t test, int line)
 	}
 }
 
-void TestPtr(void *control, void *test, int line)
+void TestPtr(void *want, void *got, int line)
 {
-	if (control != test)
+	if (want != got)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -103,9 +103,9 @@ void TestPtr(void *control, void *test, int line)
 	}
 }
 
-void TestChar(char *control, char *test, int line)
+void TestChar(char *want, char *got, int line)
 {
-	if (0 != strcmp(control, test))
+	if (0 != strcmp(want, got))
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -119,11 +119,11 @@ void TestChar(char *control, char *test, int line)
 	}
 }
 
-void TestNChar(char *control, char *test, size_t n, int line)
+void TestNChar(char *want, char *got, size_t n, int line)
 {
 	while (0 < n)
 	{
-		if(control[n - 1] != test[n - 1])
+		if(want[n - 1] != got[n - 1])
 		{
 			printf("\033[0;31m");
 			printf("Error. failed at line %d\n", line);
@@ -140,9 +140,9 @@ void TestNChar(char *control, char *test, size_t n, int line)
 	}
 }
 
-void TestUnsignedChar(unsigned char ctrl, unsigned char test, int line)
+void TestUnsignedChar(unsigned char want, unsigned char got, int line)
 {
-	if (ctrl != test)
+	if (want != got)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);

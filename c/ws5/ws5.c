@@ -42,6 +42,95 @@ typedef struct special_input
 	PFnOperation Operation;
 } special_input_t;
 
+static void Print(int n);
+static output_t RemoveCommand(const char *title);
+static output_t CountCommand(const char *title);
+static output_t ExitCommand();
+static output_t AddToStartCommand(const char *title);
+static output_t AddToEndCommand(const char *title);
+
+void PrintInt()
+{
+	int i = 0;
+	int size = 10;
+	print_me_t array[10];
+
+	for (i = 0; i < size; i++)
+	{
+		array[i].number = i * 5;
+		array[i].StrPrint = Print;
+		array[i].StrPrint(array[i].number);	
+	}
+}
+
+int FileEditor(const char *title)
+{
+	int i = 0;
+	int size = COMMANDS_NUM;
+	size_t n = 0;
+	output_t state = SUCCESS;
+
+	special_input_t cmnd_array[COMMANDS_NUM] = 
+	{
+		{"-remove\n", strncmp, RemoveCommand},
+		{"-count\n", strncmp, CountCommand},
+		{"-exit\n", strncmp, ExitCommand},
+		{"<", strncmp, AddToStartCommand},
+		{"", strncmp, AddToEndCommand}
+	};
+	
+	while (SUCCESS == state)
+	{	
+		printf("Enter string (up to 100 charecters):\n");
+		if (NULL == fgets(string, 100, stdin))
+		{
+			state = INPUT_ERROR;
+		}
+
+		n = strlen(string);
+		if ('<' == string[0])
+		{
+			n = 1;
+		}
+		
+		for (i = 0; i < size; i++)
+		{
+			if (!cmnd_array[i].Comparison(cmnd_array[i].str, string, n))
+			{
+				state = cmnd_array[i].Operation(title);
+				break;
+			}
+			else if (4 == i)
+			{
+				state = cmnd_array[i].Operation(title);
+			}
+		}
+		
+		switch (state)
+		{
+			case SUCCESS:
+				break;	
+			case REMOVE_ERROR:
+				printf("Error with a remove command\n");
+				break;		
+			case FILE_ERROR:
+				printf("Error with a file command\n");
+				break;	
+			case RENAME_ERROR:
+				printf("Error with a rename command\n");
+				break;	
+			case INPUT_ERROR:
+				printf("Error with a input command\n");
+				break;		
+			case EXIT:
+				return (SUCCESS);
+				break;
+		}			
+	}
+	
+	return (state);	
+}
+
 static void Print(int n)
 {
 	printf("%d\n", n);
@@ -163,86 +252,4 @@ static output_t AddToEndCommand(const char *title)
 	}
 	
 	return (SUCCESS);
-}
-
-void PrintInt()
-{
-	int i = 0;
-	int size = 10;
-	print_me_t array[10];
-
-	for (i = 0; i < size; i++)
-	{
-		array[i].number = i * 5;
-		array[i].StrPrint = Print;
-		array[i].StrPrint(array[i].number);	
-	}
-}
-
-int FileEditor(const char *title)
-{
-	int i = 0;
-	int size = COMMANDS_NUM;
-	size_t n = 0;
-	output_t state = SUCCESS;
-
-	special_input_t cmnd_array[COMMANDS_NUM] = 
-	{
-		{"-remove\n", strncmp, RemoveCommand},
-		{"-count\n", strncmp, CountCommand},
-		{"-exit\n", strncmp, ExitCommand},
-		{"<", strncmp, AddToStartCommand},
-		{"", strncmp, AddToEndCommand}
-	};
-	
-	while (SUCCESS == state)
-	{	
-		printf("Enter string (up to 100 charecters):\n");
-		if (NULL == fgets(string, 100, stdin))
-		{
-			state = INPUT_ERROR;
-		}
-
-		n = strlen(string);
-		if ('<' == string[0])
-		{
-			n = 1;
-		}
-		
-		for (i = 0; i < size; i++)
-		{
-			if (!cmnd_array[i].Comparison(cmnd_array[i].str, string, n))
-			{
-				state = cmnd_array[i].Operation(title);
-				break;
-			}
-			else if (4 == i)
-			{
-				state = cmnd_array[i].Operation(title);
-			}
-		}
-		
-		switch (state)
-		{
-			case SUCCESS:
-				break;	
-			case REMOVE_ERROR:
-				printf("Error with a remove command\n");
-				break;		
-			case FILE_ERROR:
-				printf("Error with a file command\n");
-				break;	
-			case RENAME_ERROR:
-				printf("Error with a rename command\n");
-				break;	
-			case INPUT_ERROR:
-				printf("Error with a input command\n");
-				break;		
-			case EXIT:
-				return (SUCCESS);
-				break;
-		}			
-	}
-	
-	return (state);	
 }

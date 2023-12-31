@@ -45,37 +45,8 @@ int main()
 	return (0);
 }
 
-static void TestInt(int control, int test, int line)
-{
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestChar(char *control, char *test, int line)
-{
-	if (0 != strcmp(control, test))
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
+static void TestInt(int want, int got, int line);
+static void TestChar(char *want, char *got, int line);
 
 static void TestStrLen()
 {
@@ -86,8 +57,8 @@ static void TestStrLen()
 
 static void TestStrCmp()
 {
-	const char *s1[] ={"check", "abc", "ab"};
-	const char *s2[] ={"check", "abcc", "Ab"};
+	const char *s1[] ={"check", "abc", "Ab"};
+	const char *s2[] ={"check", "abc", "Ab"};
 	int i = 0;
 	int size = 3;
 	
@@ -114,7 +85,7 @@ static void TestStrNCmp()
 static void TestStrCaseCmp()
 {
 	const char *s1[] ={"NEW", "abc", "abcd"};
-	const char *s2[] ={"check", "ABC", "AbCd"};
+	const char *s2[] ={"nEw", "ABC", "AbCd"};
 	int i = 0;
 	int size = 3;
 
@@ -224,4 +195,36 @@ static void TestStrSpn()
 	const char str2[] = "abcd";
 	
 	TestInt(strspn(str1, str2), StrSpn(str1, str2), __LINE__);
+}
+
+static void TestInt(int want, int got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+static void TestChar(char *want, char *got, int line)
+{
+	if (0 != strcmp(want, got))
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }

@@ -15,9 +15,9 @@
 #define TRUE 1
 #define FALSE 0
 #define ONE_SECOND 1
-#define ZERO 0
-#define POSITIVE 1
-#define NEGATIVE -1
+#define EQUAL 0
+#define TASK_1_IS_BEFORE -1
+#define TASK_2_IS_BEFORE  1
 #define RUNNING 1
 #define NOT_RUNNING 0
 
@@ -207,14 +207,14 @@ static int CompFunc(void *task1, void *task2)
 {
 	if (TRUE == TaskIsBefore((task_t *)task1, (task_t *)task2))
 	{
-		return (NEGATIVE);
+		return (TASK_1_IS_BEFORE);
 	}
 	else if (TRUE == TaskIsBefore((task_t *)task2, (task_t *)task1))
 	{
-		return (POSITIVE);
+		return (TASK_2_IS_BEFORE);
 	}
 
-	return (ZERO);
+	return (EQUAL);
 }
 
 static pq_t *FetchPQ(scheduler_t *scheduler)

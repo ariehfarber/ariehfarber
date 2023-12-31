@@ -17,18 +17,8 @@ int main()
 	return (0);
 }
 
-static void PrintStatus(vector_t *vector, int status)
-{	
-	printf("Vector size is %lu, ", VectorSize(vector));
-	printf("Vector capacity is %lu, ", VectorCapacity(vector));
-	printf("Vector status is %d\n", status);
-}
-
-static void PrintPointer(vector_t *vector, size_t index)
-{	
-	printf("Vector pointer is %p, ", VectorGetAccess(vector, index));
-	printf("Pointer value is %d\n\n", *(int *)VectorGetAccess(vector, index));
-}
+static void PrintStatus(vector_t *vector, int status);
+static void PrintPointer(vector_t *vector, size_t index);
 
 static void TestVector()
 {
@@ -64,4 +54,18 @@ static void TestVector()
 	PrintStatus(test_vector, status);
 
 	VectorDestroy(test_vector);
+}
+
+
+static void PrintStatus(vector_t *vector, int status)
+{	
+	printf("Vector size is %lu, ", VectorSize(vector));
+	printf("Vector capacity is %lu, ", VectorCapacity(vector));
+	printf("Vector status is %d\n", status);
+}
+
+static void PrintPointer(vector_t *vector, size_t index)
+{	
+	printf("Vector pointer is %p, ", VectorGetAccess(vector, index));
+	printf("Pointer value is %d\n\n", *(int *)VectorGetAccess(vector, index));
 }

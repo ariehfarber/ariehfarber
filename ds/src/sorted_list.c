@@ -26,42 +26,12 @@ typedef struct find_params
 	void *data;
 } find_params_t;
 
-static dll_t *FetchDLL(sorted_list_t *sorted_list)
-{
-	assert(NULL != sorted_list);
-	
-	return (sorted_list->dll);
-}
-
+static dll_t *FetchDLL(sorted_list_t *sorted_list);
 #ifndef NDEBUG
-static sorted_list_t *FetchSortedList(sorted_iter_t iter)
-{
-	return (iter.sorted_list);
-}
+static sorted_list_t *FetchSortedList(sorted_iter_t iter);
 #endif
-
-static int IsMatchFindParams(void *data, void *params)
-{
-	return (0 == ((find_params_t *)params)->compare\
-		   (((find_params_t *)params)->data, data));
-}
-
-static dll_iter_t FindInsertLocation(sorted_list_t *sorted_list, void *data)
-{
-	dll_iter_t from = NULL;
-	dll_iter_t to = NULL;
-	
-	from = DLLBegin(FetchDLL(sorted_list));
-	to = DLLEnd(FetchDLL(sorted_list));
-	
-	while (TRUE != DLLIsEqual(from, to) && \
-	0 >= sorted_list->compare(DLLGet(from), data)) 
-	{
-		from = DLLNext(from);
-	}
-	
-	return (from);
-}
+static int IsMatchFindParams(void *data, void *params);
+static dll_iter_t FindInsertLocation(sorted_list_t *sorted_list, void *data);
 
 sorted_list_t *SortedListCreate(compare_t comp_func)
 {
@@ -273,4 +243,41 @@ sorted_iter_t SortedListFindIf(sorted_iter_t from, sorted_iter_t to,\
 	location.iter = DLLFind(from.iter, to.iter, is_match_func, params);
 	
 	return (location);
+}
+
+static dll_t *FetchDLL(sorted_list_t *sorted_list)
+{
+	assert(NULL != sorted_list);
+	
+	return (sorted_list->dll);
+}
+
+#ifndef NDEBUG
+static sorted_list_t *FetchSortedList(sorted_iter_t iter)
+{
+	return (iter.sorted_list);
+}
+#endif
+
+static int IsMatchFindParams(void *data, void *params)
+{
+	return (0 == ((find_params_t *)params)->compare\
+		   (((find_params_t *)params)->data, data));
+}
+
+static dll_iter_t FindInsertLocation(sorted_list_t *sorted_list, void *data)
+{
+	dll_iter_t from = NULL;
+	dll_iter_t to = NULL;
+	
+	from = DLLBegin(FetchDLL(sorted_list));
+	to = DLLEnd(FetchDLL(sorted_list));
+	
+	while (TRUE != DLLIsEqual(from, to) && \
+	0 >= sorted_list->compare(DLLGet(from), data)) 
+	{
+		from = DLLNext(from);
+	}
+	
+	return (from);
 }

@@ -19,45 +19,9 @@
 #define ASCII_SIZE 256
 #define TRUE_TRUE 2
 
-static int CharToInt(char c)
-{
-	if ('0' <= c && '9' >= c) 
-	{
-		return ((int)c - '0');
-	}
-	else
-	{
-		return ((int)c - 'A' + ASCII_LETTER_DIFF); 
-	}
-}
-
-static char IntToChar(int n)
-{
-	if (0 <= n && 9 >= n) 
-	{
-		return ((char)n + '0');
-	}
-	else
-	{
-		return ((char)n + 'A' - ASCII_LETTER_DIFF); 
-	}
-}
-
-static char *StrRev(char *str)
-{
-	char *p1, *p2;
-
-	assert(NULL != str);
-		
-	for (p1 = str, p2 = str + strlen(str) - 1; p2 > p1; p1++, p2--)
-	{
-		*p1 ^= *p2;
-		*p2 ^= *p1;
-		*p1 ^= *p2;
-	}
-	
-	return (str);
-}
+static int CharToInt(char c);
+static char IntToChar(int n);
+static char *StrRev(char *str);
 
 int Atoi(const char *str)
 {
@@ -198,16 +162,42 @@ int IsLittleEndian(void)
 	return (endian_res);
 }
 
+static int CharToInt(char c)
+{
+	if ('0' <= c && '9' >= c) 
+	{
+		return ((int)c - '0');
+	}
+	else
+	{
+		return ((int)c - 'A' + ASCII_LETTER_DIFF); 
+	}
+}
 
+static char IntToChar(int n)
+{
+	if (0 <= n && 9 >= n) 
+	{
+		return ((char)n + '0');
+	}
+	else
+	{
+		return ((char)n + 'A' - ASCII_LETTER_DIFF); 
+	}
+}
 
+static char *StrRev(char *str)
+{
+	char *p1, *p2;
 
-
-
-
-
-
-
-
-
-
-
+	assert(NULL != str);
+		
+	for (p1 = str, p2 = str + strlen(str) - 1; p2 > p1; p1++, p2--)
+	{
+		*p1 ^= *p2;
+		*p2 ^= *p1;
+		*p1 ^= *p2;
+	}
+	
+	return (str);
+}

@@ -17,32 +17,8 @@
 static int bit_look_up_table[OCTET_VALUES];
 static int mirror_look_up_table[OCTET_VALUES];
 
-static void BitArrayInitializeCountLUT()
-{
-	int i = 0;
-	
-	for (i = 0; i < OCTET_VALUES; i++)
-	{
-		bit_look_up_table[i] = (i & MASK_ONE) + bit_look_up_table[i / 2];
-	} 
-}
-
-static void BitArrayInitializeMirrorLUT()
-{
-	int number = 0;
-	int i = 0;
-	int mirror_num = 0;
-
-	for (number = 0; number < OCTET_VALUES; number++)
-	{
-		mirror_num = 0;
-		for (i = 0; i < BYTE_SIZE; i++)
-		{
-			mirror_num |= (((number >> i) & MASK_ONE) << (BYTE_SIZE - 1 - i));
-		}
-		mirror_look_up_table[number] = mirror_num;
-	}
-}
+static void BitArrayInitializeCountLUT();
+static void BitArrayInitializeMirrorLUT();
 
 int BitArrayGetVal(bitarray_t b_arr, size_t index)
 {
@@ -242,4 +218,31 @@ bitarray_t BitArrayMirrorLUT(bitarray_t b_arr)
 	}
 	
 	return (mirror_b_arr);
+}
+
+static void BitArrayInitializeCountLUT()
+{
+	int i = 0;
+	
+	for (i = 0; i < OCTET_VALUES; i++)
+	{
+		bit_look_up_table[i] = (i & MASK_ONE) + bit_look_up_table[i / 2];
+	} 
+}
+
+static void BitArrayInitializeMirrorLUT()
+{
+	int number = 0;
+	int i = 0;
+	int mirror_num = 0;
+
+	for (number = 0; number < OCTET_VALUES; number++)
+	{
+		mirror_num = 0;
+		for (i = 0; i < BYTE_SIZE; i++)
+		{
+			mirror_num |= (((number >> i) & MASK_ONE) << (BYTE_SIZE - 1 - i));
+		}
+		mirror_look_up_table[number] = mirror_num;
+	}
 }

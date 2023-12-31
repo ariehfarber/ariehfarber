@@ -8,24 +8,14 @@
 
 #include "ws4.h"
 
-#define ESC 27
+#define ESC_KEY 27
 #define SIZE_OF_ASCII 256
 
 typedef void (*PFnPrintFunctions[SIZE_OF_ASCII])(void);
 
-static void PrintA()
-{
-	printf("A-pressed\n");
-}
-
-static void PrintT()
-{
-	printf("T-pressed\n");
-}
-
-static void EmptyFunction()
-{
-}
+static void PrintA();
+static void PrintT();
+static void EmptyFunction();
 
 void SwitchKeyInputAT()
 {
@@ -38,9 +28,9 @@ void SwitchKeyInputAT()
 	}
 	
 	printf("Switch function:\n");
-	while (ESC != c)
+	while (ESC_KEY != c)
 	{
-		printf( "Press A or T keys to activate, Esc to exit:\n");
+		printf( "Press A or T keys to activate, and Esc key to exit:\n");
 		c = getchar( );
 		
 		switch (c)
@@ -75,9 +65,9 @@ void IfKeyInput()
 	}
 	
 	printf("if function:\n");
-	while (ESC != c)
+	while (ESC_KEY != c)
 	{
-		printf( "Press A or T keys to activate, Esc to exit:\n");
+		printf( "Press A or T keys to activate, and Esc key to exit:\n");
 		c = getchar( );
 				
 		if (c == 'A' || c == 'a')
@@ -122,9 +112,9 @@ void LUTKeyInput()
 	PrintLetter[(unsigned char)'t'] = PrintT;
 	
 	printf("LUT function:\n");
-	while (ESC != c)
+	while (ESC_KEY != c)
 	{
-		printf( "Press A or T keys to activate, Esc to exit:\n");
+		printf( "Press A or T keys to activate, and Esc key to exit:\n");
 
 		c = getchar( );
 		PrintLetter[(unsigned char)c]();
@@ -135,4 +125,18 @@ void LUTKeyInput()
 		printf("Issue with system command\n");
 		return;
 	}
+}
+
+static void PrintA()
+{
+	printf("A-pressed\n");
+}
+
+static void PrintT()
+{
+	printf("T-pressed\n");
+}
+
+static void EmptyFunction()
+{
 }

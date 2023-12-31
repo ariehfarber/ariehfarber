@@ -35,21 +35,7 @@ int main()
 	return (0);
 }
 
-static void TestInt(int control, int test, int line)
-{
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
+static void TestInt(int want, int got, int line);
 
 static void TestStructElements()
 {
@@ -82,12 +68,12 @@ static void TestMax2()
 	int array_a[ARRAY_NUM] = {10, 58, -6}; 
 	int array_b[ARRAY_NUM] = {89, 0, -50};
 	int array_res[ARRAY_NUM] = {0, 0, 0};
-	int array_control[ARRAY_NUM] = {89, 58, -6};
+	int array_want[ARRAY_NUM] = {89, 58, -6};
 	
 	for (i = 0; i < ARRAY_NUM; i++)
 	{
 		array_res[i] = MAX2(array_a[i], array_b[i]);
-		TestInt(array_control[i], array_res[i], __LINE__);	
+		TestInt(array_want[i], array_res[i], __LINE__);	
 	}
 }
 
@@ -98,12 +84,12 @@ static void TestMax3()
 	int array_b[ARRAY_NUM] = {89, 0, -50};
 	int array_c[ARRAY_NUM] = {365, -8, 3};
 	int array_res[ARRAY_NUM] = {0, 0, 0};
-	int array_control[ARRAY_NUM] = {365, 58, 3};
+	int array_want[ARRAY_NUM] = {365, 58, 3};
 	
 	for (i = 0; i < ARRAY_NUM; i++)
 	{
 		array_res[i] = MAX3(array_a[i], array_b[i], array_c[i]);
-		TestInt(array_control[i], array_res[i], __LINE__);	
+		TestInt(array_want[i], array_res[i], __LINE__);	
 	}
 }
 
@@ -120,4 +106,20 @@ static void TestSizeOfType()
 {
 	TestInt(sizeof(long), SIZEOF_TYPE(long), __LINE__);	
 	TestInt(sizeof(char), SIZEOF_TYPE(char), __LINE__);
+}
+
+static void TestInt(int want, int got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }

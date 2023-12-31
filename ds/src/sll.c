@@ -24,14 +24,7 @@ struct list
 	slist_iter_t tail;
 };
 
-static int ActCount(void *node_data, void *parametrs)
-{
-	*(size_t *)parametrs += 1;
-	(void)node_data;
-	
-	return (SUCCESS);
-}
-
+static int ActCount(void *node_data, void *parametrs);
 
 list_t *SLLCreate(void)
 {
@@ -241,4 +234,12 @@ void SLLAppend(list_t *dest, list_t *src)
 	
 	dest->tail->data = dest;
 	src->tail->data = src;
+}
+
+static int ActCount(void *node_data, void *parametrs)
+{
+	*(size_t *)parametrs += 1;
+	(void)node_data;
+	
+	return (SUCCESS);
 }

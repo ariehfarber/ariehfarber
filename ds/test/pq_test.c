@@ -12,7 +12,6 @@
 #define SUCCESS 0
 #define ERROR -1
 
-
 static void TestPQ();
 
 int main()
@@ -22,67 +21,41 @@ int main()
 	return (0);
 }
 
-/*static void PrintPQ(pq_t *pq)*/
-/*{*/
-/*	size_t size = 0;*/
-/*	size_t i = 0;*/
-/*	void *data = NULL;*/
-/*	*/
-/*	size = PQSize(pq);*/
-/*		*/
-/*	for (i = 0; i < size; i++)*/
-/*	{		*/
-/*		data = PQDequeue(pq);*/
-/*		printf("%d\n", *(int *)data);*/
-/*	}*/
-/*}*/
+static void TestState(pq_t *pq, size_t want_size, int want_state);
+static int CompFuncInt(void *node_data, void *parametr);
+static size_t TestEnqueue(pq_t *pq);
+static size_t TestDequeue(pq_t *pq);
+static void TestErase(pq_t* pq);
+static int IsMatchInt(void *node_data, void *parametrs);
+static void TestInt(int want, int got, int line);
+static void TestData(void *want, void *got, int line);
 
-static int IsMatchInt(void *node_data, void *parametrs)
+static void TestPQ()
 {
-	if (*(int *)node_data == *(int *)parametrs)
-	{
-		return (TRUE);
-	}
+	pq_t *pq = NULL;
+	size_t size = 0;
 	
-	return (FALSE);
+	pq = PQCreate(CompFuncInt);
+	TestState(pq, size, TRUE);
+	
+	size = TestEnqueue(pq);
+	TestState(pq, size, FALSE);
+	
+	TestErase(pq);
+	
+	size = TestDequeue(pq);
+	TestState(pq, size, FALSE);
+	
+	PQClear(pq);
+	TestState(pq, 0, TRUE);
+	
+	PQDestroy(pq);
 }
 
-static void TestInt(int control, int test, int line)
+static void TestState(pq_t *pq, size_t want_size, int want_state)
 {
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestData(void *control, void *test, int line)
-{
-	if (*(int *)control != *(int *)test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestState(pq_t *pq, size_t control_size, int control_state)
-{
-	TestInt(control_size, PQSize(pq), __LINE__);
-	TestInt(control_state, PQIsEmpty(pq), __LINE__);
+	TestInt(want_size, PQSize(pq), __LINE__);
+	TestInt(want_state, PQIsEmpty(pq), __LINE__);
 }
 
 static int CompFuncInt(void *node_data, void *parametr)
@@ -110,12 +83,12 @@ static size_t TestEnqueue(pq_t *pq)
 
 static size_t TestDequeue(pq_t *pq)
 {
-	void *data_test_1 = NULL;
-	void *data_test_2 = NULL;
+	void *data_got_1 = NULL;
+	void *data_got_2 = NULL;
 	
-	data_test_1 = PQPeek(pq);
-	data_test_2 = PQDequeue(pq);
-	TestData(data_test_1, data_test_2, __LINE__);
+	data_got_1 = PQPeek(pq);
+	data_got_2 = PQDequeue(pq);
+	TestData(data_got_1, data_got_2, __LINE__);
 	
 	return (PQSize(pq));
 }
@@ -132,24 +105,44 @@ static void TestErase(pq_t* pq)
 	TestState(pq, size, FALSE);
 }
 
-static void TestPQ()
+static int IsMatchInt(void *node_data, void *parametrs)
 {
-	pq_t *pq = NULL;
-	size_t size = 0;
+	if (*(int *)node_data == *(int *)parametrs)
+	{
+		return (TRUE);
+	}
 	
-	pq = PQCreate(CompFuncInt);
-	TestState(pq, size, TRUE);
-	
-	size = TestEnqueue(pq);
-	TestState(pq, size, FALSE);
-	
-	TestErase(pq);
-	
-	size = TestDequeue(pq);
-	TestState(pq, size, FALSE);
-	
-	PQClear(pq);
-	TestState(pq, 0, TRUE);
-	
-	PQDestroy(pq);
+	return (FALSE);
+}
+
+static void TestInt(int want, int got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+static void TestData(void *want, void *got, int line)
+{
+	if (*(int *)want != *(int *)got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
 }

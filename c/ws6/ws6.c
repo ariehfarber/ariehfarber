@@ -41,7 +41,7 @@ int AddOne(int n)
 {
 	int mask = 1;
 
-	while (n & mask)
+	while (1 == (n & mask))
 	{
 		n ^= mask;
 		mask <<= 1;

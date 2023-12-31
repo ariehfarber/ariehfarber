@@ -11,8 +11,6 @@
 
 #include "bitarray.h"
 
-#define BYTE_SIZE CHAR_BIT
-
 static void TestBitArrayGetVal();
 static void TestBitArraySetBit();
 static void TestBitArrayResetAll();
@@ -46,9 +44,163 @@ int main()
 	return (0);
 }
 
-static void TestInt(int control, int test, int line)
+static void TestInt(int want, int got, int line);
+static void TestSizeT(size_t want, size_t got, int line);
+static void TestBitArray(bitarray_t want, bitarray_t got, int line);
+static void PrintInBinary64Bits(bitarray_t number);
+
+
+static void TestBitArrayGetVal()
 {
-	if (control != test)
+	bitarray_t got_bit_array = 16;
+	size_t got_index = 5;
+	int got_val = 0;
+	int want_val = 1;
+	
+	got_val = BitArrayGetVal(got_bit_array, got_index);
+	
+	TestInt(want_val, got_val, __LINE__);
+}
+
+static void TestBitArraySetBit()
+{
+	bitarray_t got_bit_array = 7;
+	size_t got_index = 4;
+	int bool_val = 1;
+	bitarray_t want_bit_array = 15;
+	
+	got_bit_array = BitArraySetBit(got_bit_array, got_index, bool_val);
+	
+	TestBitArray(want_bit_array, got_bit_array, __LINE__);
+}
+
+static void TestBitArrayResetAll()
+{
+	bitarray_t got_bit_array = 568976;
+	bitarray_t want_bit_array = 0;
+	
+	got_bit_array = BitArrayResetAll(got_bit_array);
+	
+	TestBitArray(want_bit_array, got_bit_array, __LINE__);
+}
+
+static void TestBitArraySetAll()
+{
+	bitarray_t got_bit_array = 1;
+	bitarray_t want_bit_array = SIZE_MAX;
+	
+	got_bit_array = BitArraySetAll(got_bit_array);
+	
+	TestBitArray(want_bit_array, got_bit_array, __LINE__);
+}
+
+static void TestBitArrayFlip()
+{
+	bitarray_t got_bit_array = 7;
+	size_t got_index = 4;
+	bitarray_t want_bit_array = 15;
+
+	got_bit_array = BitArrayFlip(got_bit_array, got_index);
+	
+	TestBitArray(want_bit_array, got_bit_array, __LINE__);
+}
+
+static void TestBitArrayCountOn()
+{
+	bitarray_t got_bit_array = 7;
+	size_t got_count = 0;
+	size_t want_count = 3;
+	
+	got_count = BitArrayCountOn(got_bit_array);
+
+	TestSizeT(want_count, got_count, __LINE__);
+}
+
+static void TestBitArrayCountOff()
+{
+	bitarray_t got_bit_array = 7;
+	size_t got_count = 0;
+	size_t want_count = 61;
+	
+	got_count = BitArrayCountOff(got_bit_array);
+
+	TestSizeT(want_count, got_count, __LINE__);
+}
+
+static void TestBitArrayToString()
+{
+	bitarray_t got_bit_array = 4685427;
+	char *buffer = NULL;
+	
+	buffer = (char *)malloc(sizeof(size_t) * CHAR_BIT + 1);
+	
+	buffer = BitArrayToString(got_bit_array, buffer);
+
+	PrintInBinary64Bits(got_bit_array);
+	printf("Got  %s\n", buffer);
+	
+	free(buffer);
+	buffer = NULL;
+}
+
+static void TestBitArrayRotateLeft()
+{
+	bitarray_t got_bit_array = ((bitarray_t)1 << 63);
+	size_t offset = 127;
+	bitarray_t want_bit_array = ((bitarray_t)1 << 62);
+
+	got_bit_array = BitArrayRotateLeft(got_bit_array, offset);
+	
+	TestBitArray(want_bit_array, got_bit_array, __LINE__);
+}
+
+static void TestBitArrayRotateRight()
+{
+	bitarray_t got_bit_array = 16;
+	size_t offset = 1;
+	bitarray_t want_bit_array = 8;
+
+	got_bit_array = BitArrayRotateRight(got_bit_array, offset);
+	
+	TestBitArray(want_bit_array, got_bit_array, __LINE__);
+}
+
+static void TestBitArrayMirror()
+{
+	bitarray_t got_bit_array = 7;
+	size_t offset = 3;
+	bitarray_t want_bit_array = BitArrayRotateRight(got_bit_array, offset);
+		
+	got_bit_array = BitArrayMirror(got_bit_array);
+
+	TestBitArray(want_bit_array, got_bit_array, __LINE__);
+}
+
+static void TestBitArrayCountOnLUT()
+{
+	bitarray_t got_bit_array = 255;
+	size_t got_count = 0;
+	size_t want_count = 8;
+	
+	got_count = BitArrayCountOnLUT(got_bit_array);
+	
+	TestSizeT(want_count, got_count, __LINE__);
+}
+
+static void TestBitArrayMirrorLUT()
+{
+	bitarray_t got_bit_array = 7;
+	size_t offset = 3;
+	bitarray_t want_bit_array = BitArrayRotateRight(got_bit_array, offset);
+		
+	got_bit_array = BitArrayMirrorLUT(got_bit_array);
+
+	TestBitArray(want_bit_array, got_bit_array, __LINE__);
+}
+
+static void TestInt(int want, int got, int line)
+{
+	if (want != got)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -62,9 +214,9 @@ static void TestInt(int control, int test, int line)
 	}
 }
 
-static void TestSizeT(size_t control, size_t test, int line)
+static void TestSizeT(size_t want, size_t got, int line)
 {
-	if (control != test)
+	if (want != got)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -78,9 +230,9 @@ static void TestSizeT(size_t control, size_t test, int line)
 	}
 }
 
-static void TestBitArray(bitarray_t control, bitarray_t test, int line)
+static void TestBitArray(bitarray_t want, bitarray_t got, int line)
 {
-	if (control != test)
+	if (want != got)
 	{
 		printf("\033[0;31m");
 		printf("Error. Failed at line %d\n", line);
@@ -100,162 +252,13 @@ static void PrintInBinary64Bits(bitarray_t number)
 	char size = 0;
 	char binaryDigit = 0;
 	
-	size = sizeof(size_t) * BYTE_SIZE - 1;
+	size = sizeof(size_t) * CHAR_BIT - 1;
 	
-	printf("Control ");
+	printf("want ");
 	for (i = size; i >= 0; i--) 
 	{
 		binaryDigit = (number >> i) & 1;
 		printf("%d", binaryDigit);
 	}
 	printf("\n");
-}
-
-static void TestBitArrayGetVal()
-{
-	bitarray_t test_bit_array = 16;
-	size_t test_index = 5;
-	int test_val = 0;
-	int control_val = 1;
-	
-	test_val = BitArrayGetVal(test_bit_array, test_index);
-	
-	TestInt(control_val, test_val, __LINE__);
-}
-
-static void TestBitArraySetBit()
-{
-	bitarray_t test_bit_array = 7;
-	size_t test_index = 4;
-	int bool_val = 1;
-	bitarray_t control_bit_array = 15;
-	
-	test_bit_array = BitArraySetBit(test_bit_array, test_index, bool_val);
-	
-	TestBitArray(control_bit_array, test_bit_array, __LINE__);
-}
-
-static void TestBitArrayResetAll()
-{
-	bitarray_t test_bit_array = 568976;
-	bitarray_t control_bit_array = 0;
-	
-	test_bit_array = BitArrayResetAll(test_bit_array);
-	
-	TestBitArray(control_bit_array, test_bit_array, __LINE__);
-}
-
-static void TestBitArraySetAll()
-{
-	bitarray_t test_bit_array = 1;
-	bitarray_t control_bit_array = SIZE_MAX;
-	
-	test_bit_array = BitArraySetAll(test_bit_array);
-	
-	TestBitArray(control_bit_array, test_bit_array, __LINE__);
-}
-
-static void TestBitArrayFlip()
-{
-	bitarray_t test_bit_array = 7;
-	size_t test_index = 4;
-	bitarray_t control_bit_array = 15;
-
-	test_bit_array = BitArrayFlip(test_bit_array, test_index);
-	
-	TestBitArray(control_bit_array, test_bit_array, __LINE__);
-}
-
-static void TestBitArrayCountOn()
-{
-	bitarray_t test_bit_array = 7;
-	size_t test_count = 0;
-	size_t control_count = 3;
-	
-	test_count = BitArrayCountOn(test_bit_array);
-
-	TestSizeT(control_count, test_count, __LINE__);
-}
-
-static void TestBitArrayCountOff()
-{
-	bitarray_t test_bit_array = 7;
-	size_t test_count = 0;
-	size_t control_count = 61;
-	
-	test_count = BitArrayCountOff(test_bit_array);
-
-	TestSizeT(control_count, test_count, __LINE__);
-}
-
-static void TestBitArrayToString()
-{
-	bitarray_t test_bit_array = 4685427;
-	char *buffer = NULL;
-	
-	buffer = (char *)malloc(sizeof(size_t) * BYTE_SIZE + 1);
-	
-	buffer = BitArrayToString(test_bit_array, buffer);
-			
-	printf("Test BitArrayToString:\n");
-	PrintInBinary64Bits(test_bit_array);
-	printf("Test    %s\n", buffer);
-	
-	free(buffer);
-	buffer = NULL;
-}
-
-static void TestBitArrayRotateLeft()
-{
-	bitarray_t test_bit_array = ((bitarray_t)1 << 63);
-	size_t offset = 127;
-	bitarray_t control_bit_array = ((bitarray_t)1 << 62);
-
-	test_bit_array = BitArrayRotateLeft(test_bit_array, offset);
-	
-	TestBitArray(control_bit_array, test_bit_array, __LINE__);
-}
-
-static void TestBitArrayRotateRight()
-{
-	bitarray_t test_bit_array = 16;
-	size_t offset = 1;
-	bitarray_t control_bit_array = 8;
-
-	test_bit_array = BitArrayRotateRight(test_bit_array, offset);
-	
-	TestBitArray(control_bit_array, test_bit_array, __LINE__);
-}
-
-static void TestBitArrayMirror()
-{
-	bitarray_t test_bit_array = 7;
-	size_t offset = 3;
-	bitarray_t control_bit_array = BitArrayRotateRight(test_bit_array, offset);
-		
-	test_bit_array = BitArrayMirror(test_bit_array);
-
-	TestBitArray(control_bit_array, test_bit_array, __LINE__);
-}
-
-static void TestBitArrayCountOnLUT()
-{
-	bitarray_t test_bit_array = 255;
-	size_t test_count = 0;
-	size_t control_count = 8;
-	
-	test_count = BitArrayCountOnLUT(test_bit_array);
-	
-	TestSizeT(control_count, test_count, __LINE__);
-}
-
-static void TestBitArrayMirrorLUT()
-{
-	bitarray_t test_bit_array = 7;
-	size_t offset = 3;
-	bitarray_t control_bit_array = BitArrayRotateRight(test_bit_array, offset);
-		
-	test_bit_array = BitArrayMirrorLUT(test_bit_array);
-
-	TestBitArray(control_bit_array, test_bit_array, __LINE__);
 }

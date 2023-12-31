@@ -9,70 +9,70 @@
 
 /******************************************************************************
 *Description: Compares 2 int variables
-*Parameters: A control variable, test variable and the __LINE__ macro.
+*Parameters: A want variable, got variable and the __LINE__ macro.
 *Notes: Prints an error message with the line number if the values differ.
 ******************************************************************************/
-void TestInt(int control, int test, int line);
+void TestInt(int want, int got, int line);
 
 /******************************************************************************
 *Description: Compares two unsigned int variables.
-*Parameters: A control variable, test variable, and the __LINE__ macro.
+*Parameters: A want variable, got variable, and the __LINE__ macro.
 *Notes: Prints an error message with the line number if the values differ.
 ******************************************************************************/
-void TestUnsignedInt(unsigned int control, unsigned int test, int line);
+void TestUnsignedInt(unsigned int want, unsigned int got, int line);
 
 /******************************************************************************
-*Description: Compares between the size of test variable and the size
-*			  of the control variable. If the test variable is bigger
+*Description: Compares between the size of got variable and the size
+*			  of the want variable. If the got variable is bigger
 *			  it prints an error message with the line number.
-*Parameters: A control variable, test variable, and the __LINE__ macro.
+*Parameters: A want variable, got variable, and the __LINE__ macro.
 *Notes: Prints an error message with the line number if the values differ.
 ******************************************************************************/
-void TestDouble(double control, double test, int line);
+void TestDouble(double want, double got, int line);
 
 /******************************************************************************
 *Description: Compares two long variables.
-*Parameters: A control variable, test variable, and the __LINE__ macro.
+*Parameters: A want variable, got variable, and the __LINE__ macro.
 *Notes: Prints an error message with the line number if the values differ.
 ******************************************************************************/
-void TestLong(long control, long test, int line);
+void TestLong(long want, long got, int line);
 
 /******************************************************************************
 *Description: Compares two size_t variables.
-*Parameters: A control variable, test variable, and the __LINE__ macro.
+*Parameters: A want variable, got variable, and the __LINE__ macro.
 *Notes: Prints an error message with the line number if the values differ.
 ******************************************************************************/
-void TestSizeT(size_t control, size_t test, int line);
+void TestSizeT(size_t want, size_t got, int line);
 
 /******************************************************************************
 *Description: Compares two pointer variables.
-*Parameters: A control pointer, test pointer, and the __LINE__ macro.
+*Parameters: A want pointer, got pointer, and the __LINE__ macro.
 *Return Value: None.
 *Notes:Prints an error message with the line number if the pointers differ.
 ******************************************************************************/
-void TestPtr(void *control, void *test, int line);
+void TestPtr(void *want, void *got, int line);
 
 /******************************************************************************
 *Description: Compares two null-terminated char arrays (strings).
-*Parameters: A control string, test string, and the __LINE__ macro.
+*Parameters: A want string, got string, and the __LINE__ macro.
 *Notes: Prints an error message with the line number if the values differ.
 ******************************************************************************/
-void TestChar(char *control, char *test, int line);
+void TestChar(char *want, char *got, int line);
 
 /******************************************************************************
 *Description: Compares two char arrays (strings) up to n characters.
-*Parameters: A control string, test string, number of characters to 
+*Parameters: A want string, got string, number of characters to 
 *			 compare (n), and the __LINE__ macro. 
 *Notes: Compares each character up to n; 
 *		prints an error message with the line number if any character differs.
 ******************************************************************************/
-void TestNChar(char *control, char *test, size_t n, int line);
+void TestNChar(char *want, char *got, size_t n, int line);
 
 /******************************************************************************
 *Description: Compares two unsigned char variables.
-*Parameters: A control char, test char, and the __LINE__ macro.
+*Parameters: A want char, got char, and the __LINE__ macro.
 *Notes: Prints an error message with the line number if the values differ.
 ******************************************************************************/
-void TestUnsignedChar(unsigned char ctrl, unsigned char test, int line);
+void TestUnsignedChar(unsigned char want, unsigned char got, int line);
 
 #endif	/*__MY_TESTS_H__*/

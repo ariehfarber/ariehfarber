@@ -21,11 +21,18 @@ DEBUG_OBJS = $(SRC:$(SRC_DIR)/%.c=$(DEBUG_DIR)/%.o)
 DEBUG_LIBS = $(DEBUG_OBJS:$(DEBUG_DIR)/%.o=$(DEBUG_DIR)/lib_%.so)
 REL_OBJS = $(SRC:$(SRC_DIR)/%.c=$(REL_DIR)/%.o)
 REL_LIBS = $(REL_OBJS:$(REL_DIR)/%.o=$(REL_DIR)/lib_%.so)
-EXECUTABLES =  $(addprefix $(DIR)/, $(addsuffix .out, $(PROJECTS)))
-DEPENDENCIES = $(DEBUG_OBJS:.o=.d)
+DEBUG_EXECUTABLES =  $(addprefix $(DIR)/, $(addsuffix .out, $(PROJECTS)))
+REL_EXECUTABLES =  $(addprefix $(DIR)/, $(addsuffix _release.out, $(PROJECTS)))
+DEPENDENCIES = $(DEBUG_OBJS:.o=.d) $(REL_OBJS:.o=.d)
 
-# Include dependency files
--include $(DEPENDENCIES)
+# Function to generate linker flags
+define GenerateLinkerFlags
+$(shell cat $(DEBUG_DIR)/$1.d | \
+    tr ' ' '\n' | \
+    grep '\.h' | \
+    sed -e 's,^$(HDR_DIR)/,,;s,\.h$$,,;s,:$$,,;s,^,-l_,' | \
+    grep -v '\.h$$')
+endef
 
 all: debug release
 
@@ -33,11 +40,11 @@ all: debug release
 debug: $(DEBUG_OBJS) $(DEBUG_LIBS)
 
 # Build object files
-$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.c
+$(DEBUG_DIR)/%.o: $(SRC_DIR)/%.c 
 	@ $(CC) $(CFLAGS) -g -fPIC $(DEPENDENCIES_FLAGS) -c $< -o $@
 
 # Build dynamic libraries
-$(DEBUG_DIR)/lib_%.so: $(REL_DIR)/%.o
+$(DEBUG_DIR)/lib_%.so: $(DEBUG_DIR)/%.o
 	 @ $(CC) -shared -o $@ $^ 
 	
 # RELEASE #
@@ -51,26 +58,40 @@ $(REL_DIR)/%.o: $(SRC_DIR)/%.c
 $(REL_DIR)/lib_%.so: $(REL_DIR)/%.o
 	 @ $(CC) -shared -o $@ $^ 
 	
-# TEST #
-test: $(EXECUTABLES)
-
-# Function to generate library dependencies from .d files
-define generate_lib_dependencies
-$(shell cat $(DEBUG_DIR)/$1.d | \
-    tr ' ' '\n' | \
-    grep '\.h' | \
-    sed -e 's,^$(HDR_DIR)/,,;s,\.h$$,,;s,:$$,,;s,^,-l_,' | \
-    grep -v '\.h$$')
-endef
+# TEST DEBUG#
+test: $(DEBUG_EXECUTABLES)
 
 # Build the executables
-$(DIR)/%.out: $(TEST_DIR)/%_test.c
-	$(eval LIB_DEPENDENCIES=$(call generate_lib_dependencies,$*))
+$(DIR)/%.out: $(TEST_DIR)/%_test.c $(DEBUG_DIR)/%.d
+	$(eval LINKER_FLAGS=$(call GenerateLinkerFlags,$*))
 	@ $(CC) $(CFLAGS) -g -o $@ $< -Wl,-rpath,$(DEBUG_DIR) \
-	-L$(DEBUG_DIR) $(LIB_DEPENDENCIES)
+	-L$(DEBUG_DIR) $(LINKER_FLAGS)
+	
+# TEST RELEASE #
+final: $(REL_EXECUTABLES)
+
+# Build the executables
+$(DIR)/%_release.out: $(TEST_DIR)/%_test.c $(REL_DIR)/%.d
+	$(eval LINKER_FLAGS=$(call GenerateLinkerFlags,$*))
+	@ $(CC) $(CFLAGS) -g -o $@ $< -Wl,-rpath,$(REL_DIR) \
+	-L$(REL_DIR) $(LINKER_FLAGS)
 
 # CLEAN #
 clean:
 	@ rm -r $(DEBUG_DIR)/* $(REL_DIR)/* $(DIR)/*.out
+	
+# Include dependency files
+-include $(DEPENDENCIES)
 
-.PHONY: clean debug release test
+# Open a Spacific project #
+open:
+	@ $(eval PROJECT := $(filter-out $@,$(MAKECMDGOALS)))
+	@ if echo "$(PROJECTS)" | grep -wq "$(PROJECT)"; then \
+		 gedit $(TEST_DIR)/$(PROJECT)_t*.c $(SRC_DIR)/$(PROJECT).c \
+		 $(HDR_DIR)/$(PROJECT).h & \
+    fi
+# Disable Implicit Rule Search
+%:
+	@:
+	
+.PHONY: clean debug release test open final

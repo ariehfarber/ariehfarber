@@ -46,86 +46,11 @@ int main()
 	return (0);
 }
 
-static void TestInt(int control, int test, int line)
-{
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestUnsignedInt(unsigned int control, unsigned int test, int line)
-{
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestUnsignedChar(unsigned char ctrl, unsigned char test, int line)
-{
-	if (ctrl != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestLong(long control, long test, int line)
-{
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void PrintInBinary8Bits(char number) 
-{
-	int i = 0;
-	char size = 0;
-	char binaryDigit = 0;
-	
-	size = sizeof(unsigned char) * 8 - 1;
-	
-	printf("In binary ");
-	for (i = size; i >= 0; i--) 
-	{
-		binaryDigit = (number >> i) & 1;
-		printf("%d", binaryDigit);
-	}
-	printf("\n");
-}
+static void TestInt(int want, int got, int line);
+static void TestUnsignedInt(unsigned int want, unsigned int got, int line);
+static void TestUnsignedChar(unsigned char ctrl, unsigned char got, int line);
+static void TestLong(long want, long got, int line);
+static void PrintInBinary8Bits(char number);
 
 static void TestPow2()
 {
@@ -139,11 +64,11 @@ static void TestIsPowOf2WithLoop()
 {
 	unsigned int n = 5;
 	unsigned int i = 0;
-	unsigned int control[5] = {0, 1, 1, 0, 1};
+	unsigned int want[5] = {0, 1, 1, 0, 1};
 
 	for (i = 0; i < n; i++)
 	{
-		TestUnsignedInt(control[i], IsPowOf2WithLoop(i), __LINE__);
+		TestUnsignedInt(want[i], IsPowOf2WithLoop(i), __LINE__);
 	}
 }
 
@@ -151,11 +76,11 @@ static void TestIsPowOf2NoLoop()
 {
 	unsigned int n = 5;
 	unsigned int i = 0;
-	unsigned int control[5] = {0, 1, 1, 0, 1};
+	unsigned int want[5] = {0, 1, 1, 0, 1};
 
 	for (i = 0; i < n; i++)
 	{
-		TestUnsignedInt(control[i], IsPowOf2NoLoop(i), __LINE__);
+		TestUnsignedInt(want[i], IsPowOf2NoLoop(i), __LINE__);
 	}
 }
 
@@ -211,61 +136,61 @@ static void TestByteMirrorNoLoop()
 static void TestIsBitsTwoAndSix()
 {
 	unsigned char num = 35;
-	int control = 1;
+	int want = 1;
 
-	TestInt(control, IsBitsTwoAndSix(num), __LINE__);
+	TestInt(want, IsBitsTwoAndSix(num), __LINE__);
 }
 
 static void TestIsBitsTwoOrSix()
 {
 	unsigned char num = 32;
-	int control = 1;
+	int want = 1;
 
-	TestInt(control, IsBitsTwoOrSix(num), __LINE__);
+	TestInt(want, IsBitsTwoOrSix(num), __LINE__);
 }
 
 static void TestSwapBitsThreeAndFive()
 {	
 	unsigned char num = 16;
-	unsigned char control = 4;
+	unsigned char want = 4;
 	
-	TestUnsignedChar(control, SwapBitsThreeAndFive(num), __LINE__);
+	TestUnsignedChar(want, SwapBitsThreeAndFive(num), __LINE__);
 }
 
 static void TestClosestDivisibleBy16()
 {
 	unsigned int num = 40;
-	unsigned int control = 32;
+	unsigned int want = 32;
 
-	TestUnsignedInt(control, ClosestDivisibleBy16(num), __LINE__);
+	TestUnsignedInt(want, ClosestDivisibleBy16(num), __LINE__);
 }
 
 static void TestSwapWithBits()
 {
 	int x = 5;
 	int y = 123;
-	int control_x = 123;
-	int control_y = 5;
+	int want_x = 123;
+	int want_y = 5;
 	
 	SwapWithBits(&x, &y);
-	TestInt(control_x, x, __LINE__);
-	TestInt(control_y, y, __LINE__);
+	TestInt(want_x, x, __LINE__);
+	TestInt(want_y, y, __LINE__);
 }
 
 static void TestNumberOfBitsWithLoop()
 {
 	int num = 7;
-	int control = 3;
+	int want = 3;
 	
-	TestInt(control, NumberOfBitsWithLoop(num), __LINE__);
+	TestInt(want, NumberOfBitsWithLoop(num), __LINE__);
 }
 
 static void TestNumberOfBitsNoLoop()
 {
 	int num = 8;
-	int control = 1;
+	int want = 1;
 
-	TestInt(control, NumberOfBitsNoLoop(num), __LINE__);
+	TestInt(want, NumberOfBitsNoLoop(num), __LINE__);
 }
 
 static void TestFloatInBits()
@@ -273,4 +198,85 @@ static void TestFloatInBits()
 	float num = 1.1;
 	
 	FloatInBits(num);
+}
+
+static void TestInt(int want, int got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+static void TestUnsignedInt(unsigned int want, unsigned int got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+static void TestUnsignedChar(unsigned char ctrl, unsigned char got, int line)
+{
+	if (ctrl != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+static void TestLong(long want, long got, int line)
+{
+	if (want != got)
+	{
+		printf("\033[0;31m");
+		printf("Error. failed at line %d\n", line);
+		printf("\033[0m"); 
+	}
+	else
+	{
+		printf("\033[1;32m");
+		printf("Success!\n");
+		printf("\033[0m"); 
+	}
+}
+
+static void PrintInBinary8Bits(char number) 
+{
+	int i = 0;
+	char size = 0;
+	char binaryDigit = 0;
+	
+	size = sizeof(unsigned char) * 8 - 1;
+	
+	printf("In binary ");
+	for (i = size; i >= 0; i--) 
+	{
+		binaryDigit = (number >> i) & 1;
+		printf("%d", binaryDigit);
+	}
+	printf("\n");
 }

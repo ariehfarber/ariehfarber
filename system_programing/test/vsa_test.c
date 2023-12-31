@@ -13,11 +13,9 @@ typedef enum code
 	SUCCESS=0
 } code_t;
 
-
 void TestFuncs(void);
 code_t TestAlloc(vsa_t *vsa, int **res, size_t size);
 code_t TestFreeSize(vsa_t *vsa, size_t expected);
-
 
 int main(void)
 {

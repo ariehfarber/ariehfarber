@@ -35,7 +35,7 @@ static void PrintIfStackIsEmpty(int boolean_value)
 
 static void TestStack()
 {
-	stack_t *test_stack;
+	stack_t *got_stack;
 	size_t capacity = 0;
 	size_t element_size = 0;
 	void *peek = NULL;
@@ -48,22 +48,22 @@ static void TestStack()
 	element_size = sizeof(char);
 	capacity = sizeof(values) / sizeof(values[0]);
 	
-	test_stack = StackCreate(capacity, element_size);
+	got_stack = StackCreate(capacity, element_size);
 	
-	is_empty = StackIsEmpty(test_stack);
+	is_empty = StackIsEmpty(got_stack);
 	PrintIfStackIsEmpty(is_empty);
 	
-	current_size_of_stack = StackSize(test_stack);
+	current_size_of_stack = StackSize(got_stack);
 	printf("Current size of stack: %lu\n\n", current_size_of_stack);
 	
-	capacity_of_stack = StackCapacity(test_stack);
+	capacity_of_stack = StackCapacity(got_stack);
 	printf("Capacity of stack: %lu\n\n", capacity_of_stack);
 	
 	printf("Pushing the stack - \n");
 	for (i = 0; i < capacity; i++)
 	{
-		StackPush(test_stack, &values[i]);
-		peek = StackPeek(test_stack);
+		StackPush(got_stack, &values[i]);
+		peek = StackPeek(got_stack);
 		printf("peek %lu: %c\n", i, *(char *)peek);	
 	}
 	printf("\n");
@@ -71,17 +71,17 @@ static void TestStack()
 	printf("Popping the stack - \n");
 	for (i = capacity; 1 < i; i--)
 	{
-		peek = StackPeek(test_stack);
+		peek = StackPeek(got_stack);
 		printf("peek %lu: %c\n", i, *(char *)peek);	
-		StackPop(test_stack);
+		StackPop(got_stack);
 	}
 	printf("\n");
 	
-	current_size_of_stack = StackSize(test_stack);
+	current_size_of_stack = StackSize(got_stack);
 	printf("Current size of stack: %lu\n\n", current_size_of_stack);
 
-	is_empty = StackIsEmpty(test_stack);
+	is_empty = StackIsEmpty(got_stack);
 	PrintIfStackIsEmpty(is_empty);
 	
-	StackDestroy(test_stack);
+	StackDestroy(got_stack);
 }

@@ -20,6 +20,124 @@ static node_t node2;
 static node_t node3;
 static node_t node4;
 
+static void DestroyLoop(node_t slow, node_t fast, node_t head);
+static void DestroyIntersection(node_t head, node_t runner);
+node_t CreateLinkedList(void);
+node_t CreateLoopedLinkedList(void);
+node_t CreateIntersectionLinkedList(void);
+void DestroyLinkedList(node_t head);
+void PrintList(node_t head);
+
+node_t Flip(node_t head)
+{
+    node_t prev = NULL;
+    node_t current = NULL;
+    node_t next = NULL;
+    
+	assert(NULL != head);
+    
+    current = head;
+    
+    while (NULL != current) 
+    {
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
+    }
+    
+    head = prev;
+    
+    return (head);
+}
+
+int HasLoop(const node_t head)
+{
+    node_t slow = NULL;
+    node_t fast = NULL;
+    int status = 0;
+
+	assert(NULL != head);
+	
+	slow = head;
+	fast = head;
+	
+    while (slow != NULL) 
+    {
+		slow = slow->next;
+		fast = fast->next->next;
+		if (slow == fast)
+		{
+			status = 1;
+			DestroyLoop(slow, fast, head);
+			break;
+		}
+    }
+    
+    return (status);
+}
+
+node_t FindIntersection(node_t head_1, node_t head_2)
+{
+	node_t runner_1 = NULL;
+	size_t counter_1 = 0;
+    node_t runner_2 = NULL;
+    size_t counter_2 = 0;
+    size_t diff = 0;
+    
+    assert(NULL != head_1);
+    assert(NULL != head_2);
+    
+    runner_1 = head_1;
+    runner_2 = head_2;
+    
+    while (NULL != runner_1)
+    {
+    	runner_1 = runner_1->next;
+    	counter_1++;
+    }
+    
+    while (NULL != runner_2)
+    {
+    	runner_2 = runner_2->next;
+    	counter_2++;
+    }
+    
+    runner_1 = head_1;
+    runner_2 = head_2;
+    diff = counter_2 - counter_1;
+    
+    if (0 < diff)
+    {
+    	while (0 != diff)
+    	{
+    		runner_2 = runner_2->next;
+    		diff--;
+    	}
+    }
+    else
+    {
+    	while (0 != diff)
+    	{
+    		runner_1 = runner_1->next;
+    		diff--;
+    	}
+    }
+    
+    while (NULL != runner_1)
+	{
+		if (runner_1 == runner_2)
+		{
+			DestroyIntersection(head_2, runner_2);
+			return (runner_1);
+		}
+		runner_1 = runner_1->next;
+		runner_2 = runner_2->next;
+	}
+    
+    return (NULL);    
+}
+
 node_t CreateLinkedList(void)
 {
     static int head_val = 0;
@@ -130,32 +248,9 @@ void PrintList(node_t head)
     printf("\n");
 }
 
-node_t Flip(node_t head)
+void DestroyLoop(node_t slow, node_t fast, node_t head)
 {
-    node_t prev = NULL;
-    node_t current = NULL;
-    node_t next = NULL;
-    
-	assert(NULL != head);
-    
-    current = head;
-    
-    while (current != NULL) 
-    {
-		next = current->next;
-		current->next = prev;
-		prev = current;
-		current = next;
-    }
-    
-    head = prev;
-    
-    return (head);
-}
-
-static void DestroyLoop(node_t slow, node_t fast, node_t head)
-{
-    assert(NULL != slow);
+    assert(NULL != slow); 
     assert(NULL != fast);
     assert(NULL != head);
     
@@ -177,33 +272,7 @@ static void DestroyLoop(node_t slow, node_t fast, node_t head)
 	DestroyLinkedList(head);
 }
 
-int HasLoop(const node_t head)
-{
-    node_t slow = NULL;
-    node_t fast = NULL;
-    int status = 0;
-
-	assert(NULL != head);
-	
-	slow = head;
-	fast = head;
-	
-    while (slow != NULL) 
-    {
-		slow = slow->next;
-		fast = fast->next->next;
-		if (slow == fast)
-		{
-			status = 1;
-			DestroyLoop(slow, fast, head);
-			break;
-		}
-    }
-    
-    return (status);
-}
-
-static void DestroyIntersection(node_t head, node_t runner)
+void DestroyIntersection(node_t head, node_t runner)
 {
 	node_t temp = NULL;
 
@@ -218,77 +287,3 @@ static void DestroyIntersection(node_t head, node_t runner)
 		free(temp);       
 	}
 }
-
-node_t FindIntersection(node_t head_1, node_t head_2)
-{
-	node_t runner_1 = NULL;
-	size_t counter_1 = 0;
-    node_t runner_2 = NULL;
-    size_t counter_2 = 0;
-    size_t diff = 0;
-    
-    assert(NULL != head_1);
-    assert(NULL != head_2);
-    
-    runner_1 = head_1;
-    runner_2 = head_2;
-    
-    while (NULL != runner_1)
-    {
-    	runner_1 = runner_1->next;
-    	counter_1++;
-    }
-    
-    while (NULL != runner_2)
-    {
-    	runner_2 = runner_2->next;
-    	counter_2++;
-    }
-    
-    runner_1 = head_1;
-    runner_2 = head_2;
-    diff = counter_2 - counter_1;
-    
-    if (0 < diff)
-    {
-    	while (0 != diff)
-    	{
-    		runner_2 = runner_2->next;
-    		diff--;
-    	}
-    }
-    else
-    {
-    	while (0 != diff)
-    	{
-    		runner_1 = runner_1->next;
-    		diff--;
-    	}
-    }
-    
-    while (NULL != runner_1)
-	{
-		if (runner_1 == runner_2)
-		{
-			DestroyIntersection(head_2, runner_2);
-			return (runner_1);
-		}
-		runner_1 = runner_1->next;
-		runner_2 = runner_2->next;
-	}
-    
-    return (NULL);    
-}
-
-
-
-
-
-
-
-
-
-
-
-
-

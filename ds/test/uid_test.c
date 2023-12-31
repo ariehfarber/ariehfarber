@@ -19,9 +19,33 @@ int main()
 	return (0);
 }
 
-static void TestInt(int control, int test, int line)
+static void TestInt(int want, int got, int line);
+
+static void TestUID()
+{	
+	ilrd_uid_t got_uid_1 = {0};
+	ilrd_uid_t got_uid_2 = {0};
+	int state = TRUE;
+		
+	got_uid_1 = UIDCreate();
+	got_uid_2 = UIDCreate();
+	
+	printf("Counter: %lu\n", got_uid_2.counter);
+	printf("PID: %lu\n", (size_t)got_uid_2.pid);
+	printf("Time: %s", ctime(&got_uid_2.time));
+	printf("IP: %s\n", got_uid_2.ip);
+	
+	state = UIDIsEqual(got_uid_1, got_uid_1);
+	TestInt(TRUE, state, __LINE__);
+	state = UIDIsEqual(got_uid_1, bad_uid);
+	TestInt(FALSE, state, __LINE__);
+	state = UIDIsEqual(got_uid_1, got_uid_2);
+	TestInt(FALSE, state, __LINE__);
+}
+
+static void TestInt(int want, int got, int line)
 {
-	if (control != test)
+	if (want != got)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
@@ -33,26 +57,4 @@ static void TestInt(int control, int test, int line)
 		printf("Success!\n");
 		printf("\033[0m"); 
 	}
-}
-
-static void TestUID()
-{	
-	ilrd_uid_t test_uid_1 = {0};
-	ilrd_uid_t test_uid_2 = {0};
-	int state = TRUE;
-		
-	test_uid_1 = UIDCreate();
-	test_uid_2 = UIDCreate();
-	
-	printf("Counter: %lu\n", test_uid_2.counter);
-	printf("PID: %lu\n", (size_t)test_uid_2.pid);
-	printf("Time: %s", ctime(&test_uid_2.time));
-	printf("IP: %s\n", test_uid_2.ip);
-	
-	state = UIDIsEqual(test_uid_1, test_uid_1);
-	TestInt(TRUE, state, __LINE__);
-	state = UIDIsEqual(test_uid_1, bad_uid);
-	TestInt(FALSE, state, __LINE__);
-	state = UIDIsEqual(test_uid_1, test_uid_2);
-	TestInt(FALSE, state, __LINE__);
 }

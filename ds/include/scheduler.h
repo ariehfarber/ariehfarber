@@ -8,7 +8,6 @@
 
 #include <time.h> /*time_t, size_t*/
 
-
 #include "task.h" /*task_t		*/
 #include "uid.h"  /*ilrd_uid_t  */
 
