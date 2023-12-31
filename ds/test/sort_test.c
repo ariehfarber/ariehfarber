@@ -45,6 +45,8 @@ static void TestSort()
 	TestInsertionSort();
 	
 	TestCountingSort();
+	
+	TestRadixSort();
 }
 
 static void TestBubbleSort()
@@ -180,7 +182,7 @@ static void TestRadixSort()
 	end = clock();
 
 	time = ((double)(end - start) / CLOCKS_PER_SEC);
-	printf("Counting sort time: %f [SEC]\n", time);
+	printf("Radix sort time: %f [SEC]\n", time);
 	state = IsArraySorted(my_array, 5000);
 	TestInt(TRUE, state, __LINE__);
 	
@@ -220,7 +222,7 @@ static int *RandomArrayGenerator7Digits(void)
  
     for(i = 0; i < 5000; ++i)
     {
-        random_array[i] = 1000000 + rand()%999999;
+        random_array[i] = rand()%999999 + 1000000;
     }
     
     return (random_array);

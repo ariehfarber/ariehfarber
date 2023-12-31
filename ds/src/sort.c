@@ -12,6 +12,7 @@
 #define SUCCESS 0
 #define ERROR -1
 
+static int CountingSortForRadix(int *arr, size_t arr_size, int exp);
 static void SwapInt(int *x, int *y);
 static int FindMax(int *arr, size_t arr_size);
 int CountDigitsInt(int n);
@@ -119,18 +120,72 @@ int RadixSort(int *arr, size_t arr_size)
 {
 	int digits_num = 0;
 	int Exponent = 1;
+	int state = SUCCESS;
+	int i = 0;
 	
 	assert(NULL != arr);
 	
 	digits_num = CountDigitsInt(FindMax(arr, arr_size));
 	
-	while (Exponent <= digits_num)
+	for (i = 0; i < digits_num; ++i)
 	{
-		
-		++Exponent;
+		state = CountingSortForRadix(arr, arr_size, Exponent);
+		if (ERROR == state)
+		{
+			break;
+		}
+		Exponent *= 10;
 	}
 	  
+	return (state);
+}
 
+static int CountingSortForRadix(int *arr, size_t arr_size, int exp)
+{
+	int max = 10;
+	int i = 0;
+	int *count_arr = NULL;
+	int *output_array = NULL;
+	
+	assert(NULL != arr);
+	
+	count_arr = calloc(max, sizeof(int));
+	if (NULL == count_arr)
+	{
+		return (ERROR);
+	}
+	
+	output_array = malloc(arr_size * sizeof(int));
+	if (NULL == output_array)
+	{
+		return (ERROR);
+	}
+	
+	for (i = 0; i < (int)arr_size; ++i)
+	{
+		++count_arr[((arr[i] / exp) % 10)];
+	}
+	
+	for (i = 1; i < max; ++i)
+	{
+		count_arr[i] += count_arr[i - 1];
+	}
+	
+	for (i = (int)arr_size - 1; i >= 0; --i) 
+	{
+		output_array[count_arr[((arr[i] / exp) % 10)] - 1] = arr[i];
+		--count_arr[((arr[i] / exp) % 10)];
+	}
+	
+	for (i = 0; i < (int)arr_size; ++i) 
+	{
+		arr[i] = output_array[i];
+	}
+	
+	free(count_arr);
+	free(output_array);
+	
+	return (SUCCESS);
 }
 
 static void SwapInt(int *x, int *y)
