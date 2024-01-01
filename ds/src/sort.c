@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer:  
-*Date: 
+*Reviewer: Elinor Fuchs
+*Date: 01/01/2024
 *******************************************************************************/
 #include <assert.h> /*assert	  */
 #include <stdlib.h> /*calloc, free*/
@@ -69,8 +69,7 @@ void InsertionSort(int *arr, size_t arr_size)
 	for (i = 1; i < arr_size; ++i) 
 	{  
 		key = arr[i];
-		j = i - 1;
-		
+		j = i - 1;	
     	while (0 != j && key < arr[j])
     	{  
 			arr[j + 1] = arr[j];
@@ -82,15 +81,15 @@ void InsertionSort(int *arr, size_t arr_size)
 
 int CountingSort(int *arr, size_t arr_size)
 {
-	int max = 0;
+	int max_value = 0;
 	int i = 0, j = 0;
 	int *count_arr = NULL;
 	
 	assert(NULL != arr);
 	
-	max = FindMax(arr, arr_size) + 1;
+	max_value = FindMax(arr, arr_size) + 1;
 	
-	count_arr = calloc(max, sizeof(int));
+	count_arr = calloc(max_value, sizeof(int));
 	if (NULL == count_arr)
 	{
 		return (ERROR);
@@ -142,14 +141,14 @@ int RadixSort(int *arr, size_t arr_size)
 
 static int CountingSortForRadix(int *arr, size_t arr_size, int exp)
 {
-	int max = 10;
+	int max_digits = 10;
 	int i = 0;
 	int *count_arr = NULL;
 	int *output_array = NULL;
 	
 	assert(NULL != arr);
 	
-	count_arr = calloc(max, sizeof(int));
+	count_arr = calloc(max_digits, sizeof(int));
 	if (NULL == count_arr)
 	{
 		return (ERROR);
@@ -158,6 +157,8 @@ static int CountingSortForRadix(int *arr, size_t arr_size, int exp)
 	output_array = malloc(arr_size * sizeof(int));
 	if (NULL == output_array)
 	{
+		free (count_arr);
+		
 		return (ERROR);
 	}
 	
@@ -166,7 +167,7 @@ static int CountingSortForRadix(int *arr, size_t arr_size, int exp)
 		++count_arr[((arr[i] / exp) % 10)];
 	}
 	
-	for (i = 1; i < max; ++i)
+	for (i = 1; i < max_digits; ++i)
 	{
 		count_arr[i] += count_arr[i - 1];
 	}

@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer:  
-*Date: 
+*Reviewer: Elinor Fuchs
+*Date: 01/01/2024
 *******************************************************************************/
 #include <stdio.h>  /*printf							   */
 #include <stdlib.h> /*srand, rand, qsort				   */
@@ -13,7 +13,6 @@
 #define FALSE 0
 #define ERROR -1
 #define SUCCESS 0
-
 
 static void TestSort();
 
