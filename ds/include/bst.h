@@ -119,7 +119,7 @@ bst_iter_t BSTBegin(const bst_t *bst);
 *Description: Returns an iterator to the dummy at the end of the tree.
 *Arguments: The binary search tree.
 *Return Value: Iterator to the dummy node at the end of the tree.
-*Time Complexity: O(n)
+*Time Complexity: O(1)
 *Space Complexity: O(1)
 *******************************************************************************/
 bst_iter_t BSTEnd(const bst_t *bst);
