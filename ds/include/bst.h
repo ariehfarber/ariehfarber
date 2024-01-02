@@ -38,12 +38,11 @@ bst_t *BSTCreate(compare_t compare_func);
 void BSTDestroy(bst_t *bst);
 
 /******************************************************************************
-*Description: Inserts the data to the binary search tree.
+*Description: Inserts the data into the binary search tree.
 *Arguments: The binary search tree and the data to be inserted.
 *Return Value: An iterator to the data in the binary search tree.
 *Time Complexity: O(n)
 *Space Complexity: O(1)
-*Notes: 
 ******************************************************************************/
 bst_iter_t BSTInsert(bst_t *bst, const void *data);
 
@@ -53,7 +52,7 @@ bst_iter_t BSTInsert(bst_t *bst, const void *data);
 *Return Value: Iterator to the next value in the tree.
 *Time Complexity: O(n)
 *Space Complexity: O(1)
-*Notes: sending the end of the tree leads to undefined behavior
+*Notes: Sending the end of the tree will lead to undefined behavior.
 ******************************************************************************/
 bst_iter_t BSTRemove(bst_iter_t iter);
 
@@ -63,7 +62,7 @@ bst_iter_t BSTRemove(bst_iter_t iter);
 *Return Value: Iterator to the node in the tree.
 *Time Complexity: O(log n)
 *Space Complexity: O(1)
-*Notes: Returns NULL if can't find the data in the binary search tree.
+*Notes: Returns NULL if it can't find the data in the binary search tree.
 ******************************************************************************/
 bst_iter_t BSTFind(const bst_t *bst, const void *to_find);
 
@@ -73,7 +72,8 @@ bst_iter_t BSTFind(const bst_t *bst, const void *to_find);
 *Return Value: The data.
 *Time Complexity: O(1)
 *Space Complexity: O(1)
-*Notes: undefined behavior if sending the end of the binary search tree.
+*Notes: Sending the end of the binary search tree will lead to 
+*		undefined behavior.
 ******************************************************************************/
 void *BSTGetData(const bst_iter_t iter);
 
@@ -83,7 +83,6 @@ void *BSTGetData(const bst_iter_t iter);
 *Return Value: 1 if the binary search tree is empty, 0 otherwise.
 *Time Complexity: O(1)
 *Space Complexity: O(1)
-*Notes: 
 ******************************************************************************/
 int BSTIsEmpty(const bst_t *bst);
 
@@ -93,7 +92,6 @@ int BSTIsEmpty(const bst_t *bst);
 *Return Value: The size of the binary search tree.
 *Time Complexity: O(n)
 *Space Complexity: O(1)
-*Notes: 
 ******************************************************************************/
 size_t BSTSize(const bst_t *bst);
 
@@ -103,7 +101,6 @@ size_t BSTSize(const bst_t *bst);
 *Return Value: 1 if the iters are the same, 0 otherwise.
 *Time Complexity: O(n)
 *Space Complexity: O(1)
-*Notes: 
 ******************************************************************************/
 int BSTIsEqual(const bst_iter_t iter1, const bst_iter_t iter2);
 
@@ -123,18 +120,17 @@ bst_iter_t BSTBegin(const bst_t *bst);
 *Return Value: Iterator to the dummy node at the end of the tree.
 *Time Complexity: O(1)
 *Space Complexity: O(1)
-*Notes: 
 ******************************************************************************/
 bst_iter_t BSTEnd(const bst_t *bst);
 
 /******************************************************************************
 *Description: Returns the iterator whose data is the next according 
-              to the CmpFunc
+              to the CmpFunc.
 *Arguments: The binary search tree's iterator. 
 *Return Value: The next iterator.
 *Time Complexity: O(log n)
 *Space Complexity: O(1)
-*Notes: Returns NULL when given the end.
+*Notes: Returns NULL if given the end node.
 ******************************************************************************/
 bst_iter_t BSTNext(const bst_iter_t iter);
 
@@ -145,7 +141,7 @@ bst_iter_t BSTNext(const bst_iter_t iter);
 *Return Value: The prev iterator.
 *Time Complexity: O(log n)
 *Space Complexity: O(1)
-*Notes: Returns NULL when given the begin
+*Notes: Returns NULL if given the begin node.
 ******************************************************************************/
 bst_iter_t BSTPrev(const bst_iter_t iter);
 
@@ -162,6 +158,6 @@ bst_iter_t BSTPrev(const bst_iter_t iter);
 * 		undefined behavior.
 ******************************************************************************/
 int BSTForEach(bst_iter_t from, bst_iter_t to, 
-                        action_t action_func, void *params);
+               action_t action_func, void *params);
 
 #endif /* __BST_H__ */
