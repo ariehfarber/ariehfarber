@@ -19,12 +19,12 @@ typedef int (*action_t)(void *, void *);
 *Arguments: CmpFunc - the compare function to sort the tree.
 *			if comp(data1, data2) > 0: the data 1 will be in the right sub-tree. 
 *			if comp(data1, data2) == 0: order is irrelevant.
-*			if comp(data1, data2) < 0:  the data 1 will be in the left sub-tree.
+*			if comp(data1, data2) < 0: the data 1 will be in the left sub-tree.
 *Return Value: Pointer to the created binary search tree.
 *Time Complexity: O(1)
 *Space Complexity: O(1)
 *Notes: Returns NULL if memory allocation fails. 
-*				If CmpFunc is NULL it will lead to undefined behavior.
+*		If CmpFunc is NULL it will lead to undefined behavior.
 *******************************************************************************/
 bst_t *BSTCreate(compare_t compare_func);
 
@@ -34,7 +34,6 @@ bst_t *BSTCreate(compare_t compare_func);
 *Return Value: None.
 *Time Complexity: O(n)
 *Space Complexity: O(1)
-*Notes: None.
 *******************************************************************************/
 void BSTDestroy(bst_t *bst);
 
@@ -54,6 +53,8 @@ bst_iter_t BSTInsert(bst_t *bst, const void *data);
 *Return Value: Iterator to the next value in the tree.
 *Time Complexity: O(1)
 *Space Complexity: O(1)
+*Notes: Sending the end of the binary search tree will lead to 
+*		undefined behavior. 
 *******************************************************************************/
 bst_iter_t BSTRemove(bst_iter_t iter);
 
@@ -65,7 +66,7 @@ bst_iter_t BSTRemove(bst_iter_t iter);
 *Space Complexity: O(1)
 *Notes: Returns NULL if it can't find the data in the binary search tree.
 *******************************************************************************/
-bst_iter_t BSTFind(const bst_t *bst, const void *tofind);
+bst_iter_t BSTFind(const bst_t *bst, const void *to_find);
 
 /*******************************************************************************
 *Description: Returns the data pointed to by the iterator.
@@ -124,24 +125,26 @@ bst_iter_t BSTBegin(const bst_t *bst);
 *******************************************************************************/
 bst_iter_t BSTEnd(const bst_t *bst);
 
-/*******************************************************************************
-*Description: Returns the iterator whose data is next according 
+/******************************************************************************
+*Description: Returns the iterator whose data is the next according 
               to the CmpFunc.
 *Arguments: The binary search tree's iterator. 
 *Return Value: The next iterator.
-*Time Complexity: O(log(n))
+*Time Complexity: O(log n)
 *Space Complexity: O(1)
-*******************************************************************************/
+*Notes: Returns NULL when given the end node.
+******************************************************************************/
 bst_iter_t BSTNext(const bst_iter_t iter);
 
-/*******************************************************************************
+/******************************************************************************
 *Description: Returns the iterator whose data is the prev according 
               to the CmpFunc.
 *Arguments: The binary search tree's iterator.
 *Return Value: The prev iterator.
-*Time Complexity: O(log(n))
+*Time Complexity: O(log n)
 *Space Complexity: O(1)
-*******************************************************************************/
+*Notes: Returns NULL when given the begin node.
+******************************************************************************/
 bst_iter_t BSTPrev(const bst_iter_t iter);
 
 /*******************************************************************************

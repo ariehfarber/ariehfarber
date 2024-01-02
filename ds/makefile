@@ -77,7 +77,7 @@ $(DIR)/%.out: $(TEST_DIR)/%_test.c $(DEBUG_DIR)/lib_%.so
 
 # CLEAN #
 clean:
-	@ rm -r $(DEBUG_DIR)/* $(REL_DIR)/* $(DIR)/*.out
+	@ rm -f $(DEBUG_DIR)/* $(REL_DIR)/* $(DIR)/*.out 
 
 # Open a Spacific project #
 open:
