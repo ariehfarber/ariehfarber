@@ -29,12 +29,12 @@ struct bst
 };
 
 static int BSTIsLeaf(bst_iter_t iter);
-static int BSTIsOneChildParent(bst_iter_t iter);
 static void BSTRemoveLeaf(bst_iter_t iter);
-static void BSTRemoveOneChildParnet(bst_iter_t iter);
+static int BSTIsIterWithOneChild(bst_iter_t iter);
+static void BSTRemoveIterWithOnlyChild(bst_iter_t iter);
+static bst_iter_t BSTReturnTheOnlyChild(bst_iter_t iter);
 static void BSTCreateLeaf(bst_iter_t iter, bst_iter_t parent, void *data);
 static int BSTCountSize(void *data, void *params);
-static bst_iter_t BSTRootLeft(const bst_t *bst);
 static bst_iter_t BSTChooseSide(bst_t *bst, bst_iter_t iter, void *data);
 
 bst_t *BSTCreate(compare_t compare_func)
@@ -79,8 +79,8 @@ void BSTDestroy(bst_t *bst)
 
 bst_iter_t BSTInsert(bst_t *bst, const void *data)
 {
-	bst_iter_t parent = BSTEnd(bst);
-	bst_iter_t runner = BSTRootLeft(bst);
+	bst_iter_t parent = bst->root;
+	bst_iter_t runner = bst->root->left;
 	bst_iter_t iter = NULL;
 
 	assert (NULL != bst);
@@ -91,9 +91,9 @@ bst_iter_t BSTInsert(bst_t *bst, const void *data)
 		return (NULL);
 	}
 	
-	if (NULL == runner)
+	if (NULL == bst->root->left)
 	{
-		parent->left = iter;
+		bst->root->left = iter;
 		BSTCreateLeaf(iter, parent, (void *)data);
 		
 		return (iter);
@@ -133,11 +133,11 @@ bst_iter_t BSTRemove(bst_iter_t iter)
 		
 		BSTRemoveLeaf(iter);
 	}
-	else if (TRUE == BSTIsOneChildParent(iter))
+	else if (TRUE == BSTIsIterWithOneChild(iter))
 	{
 		successor = BSTNext(iter);
 		
-		BSTRemoveOneChildParnet(iter);
+		BSTRemoveIterWithOnlyChild(iter);
 	}
 	else
 	{
@@ -150,9 +150,9 @@ bst_iter_t BSTRemove(bst_iter_t iter)
 		{
 			BSTRemoveLeaf(iter);
 		}
-		else if (TRUE == BSTIsOneChildParent(iter))
+		else if (TRUE == BSTIsIterWithOneChild(iter))
 		{		
-			BSTRemoveOneChildParnet(iter);
+			BSTRemoveIterWithOnlyChild(iter);
 		}
 	}
 	
@@ -161,12 +161,12 @@ bst_iter_t BSTRemove(bst_iter_t iter)
 
 bst_iter_t BSTFind(const bst_t *bst, const void *to_find)
 {
-	bst_iter_t runner = BSTRootLeft(bst);
+	bst_iter_t runner = bst->root->left;
 	
 	assert (NULL != bst);
 	
-	while (IS_EQUAL != bst->compare_func(BSTGetData(runner), (void *)to_find) \
-		   && NULL != runner)
+	while (NULL != runner && \
+		   IS_EQUAL != bst->compare_func(BSTGetData(runner), (void *)to_find))
 	{
 		runner = BSTChooseSide((bst_t *)bst, runner, (void *)to_find);	
 	}
@@ -190,7 +190,7 @@ int BSTIsEmpty(const bst_t *bst)
 
 size_t BSTSize(const bst_t *bst)
 {
-	static size_t counter = 0;
+	size_t counter = 0;
 	
 	BSTForEach(BSTBegin(bst),BSTEnd(bst), BSTCountSize, &counter);
 	
@@ -247,7 +247,7 @@ bst_iter_t BSTNext(const bst_iter_t iter)
 		}
 		successor = runner;
 	}
-	else
+	else if (NULL == runner->right)
 	{
 		while (runner != runner->parent->left)
 		{
@@ -300,7 +300,7 @@ int BSTForEach(bst_iter_t from, bst_iter_t to,
 	assert (NULL != to);
 	assert (NULL != action_func);
 	
-	while (FALSE == BSTIsEqual(from, to) && SUCCESS == state)
+	while (FALSE == BSTIsEqual(from, to) && ERROR != state)
 	{
 		state = action_func(BSTGetData(from), params);
 
@@ -322,7 +322,23 @@ static int BSTIsLeaf(bst_iter_t iter)
 	 return (state);
 }
 
-static int BSTIsOneChildParent(bst_iter_t iter)
+static void BSTRemoveLeaf(bst_iter_t iter)
+{
+	bst_iter_t parent = iter->parent;
+	
+	if (iter == parent->right)
+	{
+		parent->right = NULL;
+	}
+	else if (iter == parent->left)
+	{
+		parent->left = NULL;
+	}
+			
+	free (iter);
+}
+
+static int BSTIsIterWithOneChild(bst_iter_t iter)
 {
 	int state = FALSE;
 	
@@ -335,46 +351,37 @@ static int BSTIsOneChildParent(bst_iter_t iter)
 	 return (state);
 }
 
-static void BSTRemoveLeaf(bst_iter_t iter)
+static void BSTRemoveIterWithOnlyChild(bst_iter_t iter)
 {
-	bst_iter_t parent = NULL;
+	bst_iter_t parent = iter->parent;
+	bst_iter_t only_child = BSTReturnTheOnlyChild(iter);
 	
-	parent = iter->parent;
+	only_child->parent = parent;
 	
 	if (iter == parent->right)
 	{
-		parent->right = NULL;
+		parent->right = only_child;
 	}
-	else
+	else if (iter == parent->left)
 	{
-		parent->left = NULL;
+		parent->left = only_child;
 	}
-			
+					
 	free (iter);
 }
 
-static void BSTRemoveOneChildParnet(bst_iter_t iter)
+static bst_iter_t BSTReturnTheOnlyChild(bst_iter_t iter)
 {
-	bst_iter_t child = NULL;
-	
-	if (NULL != iter->left)
-	{
-		child = iter->left;
-		
-		iter->data = child->data;
-		
-		iter->left = NULL;
-	}
-	else 
-	{
-		child = iter->right;
-		
-		iter->data = child->data;
-		
-		iter->right = NULL;
-	}
-					
-	free (child);
+	 if (NULL != iter->left)
+	 {
+	 	return (iter->left);
+	 }
+	 else if (NULL != iter->right)
+	 {
+	 	return (iter->right);
+	 }
+	 
+	 return (NULL);
 }
 
 static void BSTCreateLeaf(bst_iter_t iter, bst_iter_t parent, void *data)
@@ -393,13 +400,6 @@ static int BSTCountSize(void *data, void *params)
 	return (SUCCESS);
 }
 
-static bst_iter_t BSTRootLeft(const bst_t *bst)
-{
-	assert (NULL != bst);
-	
-	return (bst->root->left);
-}
-
 static bst_iter_t BSTChooseSide(bst_t *bst, bst_iter_t iter, void *data)
 {
 	if ((0 < bst->compare_func(data, BSTGetData(iter))))
@@ -413,4 +413,3 @@ static bst_iter_t BSTChooseSide(bst_t *bst, bst_iter_t iter, void *data)
 	
 	return (iter);
 }
-
