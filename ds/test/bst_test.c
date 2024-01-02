@@ -87,7 +87,7 @@ static void TestBSTFind(void)
 		assert(arr[i] == *(int*)BSTGetData(BSTFind(bst,&arr[i])));
 	}
 
-	assert(NULL == BSTFind(bst,&num_not_fount));
+	assert(BSTEnd(bst) == BSTFind(bst,&num_not_fount));
 
 	BSTDestroy(bst);
 	printf("BSTFind: success\n");

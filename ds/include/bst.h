@@ -26,7 +26,7 @@ typedef int (*action_t)(void *, void *);
 *Notes: Returns NULL if memory allocation fails. 
 * 		If CmpFunc is NULL it will lead to undefined behavior.
 ******************************************************************************/
-bst_t *BSTCreate(compare_t compare_func);
+bst_t *BSTCreate(compare_t compare);
 
 /******************************************************************************
 *Description: Destroys the binary search tree.
@@ -43,6 +43,7 @@ void BSTDestroy(bst_t *bst);
 *Return Value: An iterator to the data in the binary search tree.
 *Time Complexity: O(n)
 *Space Complexity: O(1)
+*Notes: Returns NULL if memory allocation fails. 
 ******************************************************************************/
 bst_iter_t BSTInsert(bst_t *bst, const void *data);
 
@@ -62,7 +63,7 @@ bst_iter_t BSTRemove(bst_iter_t iter);
 *Return Value: Iterator to the node in the tree.
 *Time Complexity: O(log n)
 *Space Complexity: O(1)
-*Notes: Returns NULL if it can't find the data in the binary search tree.
+*Notes: Returns the dummy if it can't find the data in the binary search tree.
 ******************************************************************************/
 bst_iter_t BSTFind(const bst_t *bst, const void *to_find);
 

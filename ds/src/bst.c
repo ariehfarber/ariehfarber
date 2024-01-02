@@ -6,42 +6,50 @@
 #include <stdlib.h> /*malloc, free*/
 #include <assert.h> /*assert	  */
 
+#include <stdio.h> 
+
 #include "bst.h"
 
 #define TRUE     1 
 #define FALSE    0
 #define ERROR   -1
 #define SUCCESS  0
-#define IS_EQUAL 0
+#define SAME 0
+#define MAGIC_NUMBER 0XBADCAFFE
+
+typedef struct node node_t;
 
 struct node
 {
     void *data;
-    bst_iter_t parent;
-    bst_iter_t right;
-    bst_iter_t left;
+    node_t *parent;
+	node_t *right;
+    node_t *left;
 };
 
 struct bst
 {
-    bst_iter_t root;
-    compare_t compare_func;
+    node_t *root;
+    compare_t compare;
 };
 
-static int BSTIsLeaf(bst_iter_t iter);
-static void BSTRemoveLeaf(bst_iter_t iter);
-static int BSTIsIterWithOneChild(bst_iter_t iter);
-static void BSTRemoveIterWithOnlyChild(bst_iter_t iter);
-static bst_iter_t BSTReturnTheOnlyChild(bst_iter_t iter);
-static void BSTCreateLeaf(bst_iter_t iter, bst_iter_t parent, void *data);
+static bst_iter_t BSTGetIter(node_t *node);	
+static node_t *BSTGetNode(bst_iter_t iter);
+static node_t *BSTCreateNode(bst_t *bst, node_t *parent, void *data);
+static void BSTInitNode(node_t *new_node, node_t *parent, void *data);
+static void BSTInitParentNode(bst_t *bst, node_t *new_node, \
+							  node_t *parent, void *data);				  
+static int BSTIsOneChildOrNone(node_t *node);
+static void BSTRemoveNode(node_t *node);
+static node_t *BSTReturnTheChild(node_t *node);
 static int BSTCountSize(void *data, void *params);
-static bst_iter_t BSTChooseSide(bst_t *bst, bst_iter_t iter, void *data);
+static node_t *BSTChooseSide(bst_t *bst, node_t *node, void *data);
 
-bst_t *BSTCreate(compare_t compare_func)
+bst_t *BSTCreate(compare_t compare)
 {
 	bst_t *bst = NULL;
 	
-	assert (NULL != compare_func);
+	assert (NULL != compare);
 	
 	bst = (bst_t *)malloc(sizeof(bst_t));
 	if (NULL == bst)
@@ -49,7 +57,7 @@ bst_t *BSTCreate(compare_t compare_func)
 		return (NULL);
 	}
 	
-	bst->root = (bst_iter_t)malloc(sizeof(struct node));
+	bst->root = BSTCreateNode(bst, NULL, (void *)0XBADCAFFE);
 	if (NULL == bst->root)
 	{
 		free (bst);
@@ -57,46 +65,42 @@ bst_t *BSTCreate(compare_t compare_func)
 		return (NULL);
 	}
 	
-	bst->compare_func = compare_func;
-	BSTCreateLeaf(bst->root, NULL, NULL);
+	bst->compare = compare;
 	
 	return (bst);
 }
 
 void BSTDestroy(bst_t *bst)
 {
-	bst_iter_t runner = BSTBegin(bst);
+	bst_iter_t iter = BSTBegin(bst);
 	
-	while (FALSE == BSTIsEqual(runner, BSTEnd(bst)))
+	while (FALSE == BSTIsEqual(iter, BSTEnd(bst)))
 	{
-		runner = BSTRemove(runner);
+		iter = BSTRemove(iter);
 	}
 	
-	free (runner);
+	free (iter);
 	
 	free (bst);
 }
 
 bst_iter_t BSTInsert(bst_t *bst, const void *data)
 {
-	bst_iter_t parent = bst->root;
-	bst_iter_t runner = bst->root->left;
-	bst_iter_t iter = NULL;
+	node_t *parent = bst->root;
+	node_t *runner = bst->root->left;
+	node_t *new_node = NULL;
 
 	assert (NULL != bst);
 	
-	iter = (bst_iter_t)malloc(sizeof(struct node));
-	if (NULL == iter)
-	{
-		return (NULL);
-	}
-	
 	if (NULL == bst->root->left)
 	{
-		bst->root->left = iter;
-		BSTCreateLeaf(iter, parent, (void *)data);
+		new_node = BSTCreateNode(bst, parent, (void *)data);
+		if (NULL == new_node)
+		{
+			return (NULL);
+		}
 		
-		return (iter);
+		return (BSTGetIter(new_node));
 	}
 		
 	while (NULL != runner)
@@ -106,79 +110,73 @@ bst_iter_t BSTInsert(bst_t *bst, const void *data)
 		parent = runner;
 		runner = BSTChooseSide(bst, runner, (void *)data);	
 	}
- 
- 	if ((0 < bst->compare_func((void *)data, BSTGetData(parent))))
- 	{
- 		parent->right = iter;
- 	}
- 	else
- 	{
- 		parent->left = iter;
- 	}
  	
- 	BSTCreateLeaf(iter, parent, (void *)data);
+ 	new_node = BSTCreateNode(bst, parent, (void *)data);
+	if (NULL == new_node)
+	{
+		return (NULL);
+	}
 
-	return (iter);
+	return (BSTGetIter(new_node));
 }
 
 bst_iter_t BSTRemove(bst_iter_t iter)
 {
-	bst_iter_t successor = NULL;
+	node_t *successor = BSTGetNode(iter);
 	
 	assert (NULL != iter);
 	
-	if (TRUE == BSTIsLeaf(iter))
+	if (TRUE == BSTIsOneChildOrNone(BSTGetNode(iter)))
 	{
-		successor = BSTNext(iter);
+		successor = BSTGetNode(BSTNext(iter));
 		
-		BSTRemoveLeaf(iter);
-	}
-	else if (TRUE == BSTIsIterWithOneChild(iter))
-	{
-		successor = BSTNext(iter);
-		
-		BSTRemoveIterWithOnlyChild(iter);
+		BSTRemoveNode(BSTGetNode(iter));
 	}
 	else
 	{
-		successor = iter;
+		successor = BSTGetNode(iter);
 		iter = BSTNext(iter);
 		
-		successor->data = iter->data;
-		
-		if (TRUE == BSTIsLeaf(iter))
-		{
-			BSTRemoveLeaf(iter);
-		}
-		else if (TRUE == BSTIsIterWithOneChild(iter))
-		{		
-			BSTRemoveIterWithOnlyChild(iter);
-		}
+		successor->data = BSTGetData(iter);
+			
+		BSTRemoveNode(BSTGetNode(iter));
 	}
 	
-	return (successor);
+	return (BSTGetIter(successor));
 }
 
+/*Find and insert need to use a shared function to find the node*/
 bst_iter_t BSTFind(const bst_t *bst, const void *to_find)
 {
-	bst_iter_t runner = bst->root->left;
+	node_t *node = NULL;
 	
 	assert (NULL != bst);
 	
-	while (NULL != runner && \
-		   IS_EQUAL != bst->compare_func(BSTGetData(runner), (void *)to_find))
+	node = bst->root->left;
+	
+	while (NULL != node)
 	{
-		runner = BSTChooseSide((bst_t *)bst, runner, (void *)to_find);	
+		if (SAME == bst->compare((void *)to_find, BSTGetData(BSTGetIter(node))))
+		{
+			return (BSTGetIter(node));
+		}
+		node = BSTChooseSide((bst_t *)bst, node, (void *)to_find);	
 	}
 
-	return (runner);
+	return (BSTEnd(bst));
 }
 
 void *BSTGetData(const bst_iter_t iter)
 {
+	node_t *node = NULL;
+	void *data = NULL;
+	
 	assert (NULL != iter);
 	
-	return ((bst_iter_t)iter->data);
+	node = BSTGetNode(iter);
+	data = node->data;
+	
+	return (data);
 }
 
 int BSTIsEmpty(const bst_t *bst)
@@ -207,7 +205,7 @@ int BSTIsEqual(const bst_iter_t iter1, bst_iter_t iter2)
 
 bst_iter_t BSTBegin(const bst_t *bst)
 {
-	bst_iter_t runner = BSTEnd(bst);
+	node_t *runner = BSTEnd(bst);
 
 	assert (NULL != bst);
 		
@@ -216,20 +214,20 @@ bst_iter_t BSTBegin(const bst_t *bst)
 		runner = runner->left;
 	}
 	
-	return (runner);
+	return (BSTGetIter(runner));
 }
 
 bst_iter_t BSTEnd(const bst_t *bst)
 {
 	assert (NULL != bst);
 	
-	return (bst->root);
+	return (BSTGetIter(bst->root));
 }
 
 bst_iter_t BSTNext(const bst_iter_t iter)
 {
-	bst_iter_t runner = (bst_iter_t)iter;
-	bst_iter_t successor = NULL;
+	node_t *runner = BSTGetNode((bst_iter_t)iter);
+	node_t *successor = NULL;
 	
 	assert (NULL != iter);
 	
@@ -256,15 +254,17 @@ bst_iter_t BSTNext(const bst_iter_t iter)
 		successor = runner->parent;	
 	}
 		
-	return (successor);
+	return (BSTGetIter(successor)); 
 }
 
 bst_iter_t BSTPrev(const bst_iter_t iter)
 {
-	bst_iter_t predecessor = NULL;
-	bst_iter_t runner = (bst_iter_t)iter;
+	node_t *predecessor = NULL;
+	node_t *runner = NULL;
 	
 	assert (NULL != iter);
+	
+	runner = BSTGetNode((bst_iter_t)iter);
 	
 	if (NULL != runner->left)
 	{
@@ -287,8 +287,8 @@ bst_iter_t BSTPrev(const bst_iter_t iter)
 		}
 		predecessor = runner->parent;	
 	}
-		
-	return (predecessor);
+
+	return (BSTGetIter(predecessor)); 	
 }
 
 int BSTForEach(bst_iter_t from, bst_iter_t to, 
@@ -310,40 +310,75 @@ int BSTForEach(bst_iter_t from, bst_iter_t to,
 	return (state);
 }
 
-static int BSTIsLeaf(bst_iter_t iter)
+static node_t *BSTGetNode(bst_iter_t iter)
+{
+	return (iter);
+}
+
+static bst_iter_t BSTGetIter(node_t *node)
+{
+	return (node);
+}
+
+static node_t *BSTCreateNode(bst_t *bst, node_t *parent, void *data)
+{
+	node_t *new_node = NULL;
+	
+	new_node = (node_t *)malloc(sizeof(node_t));
+	if (NULL == new_node)
+	{
+		return (NULL);
+	}
+	
+	BSTInitNode(new_node, parent, data);
+	BSTInitParentNode(bst, new_node, parent, data);
+	
+	return (new_node);
+}
+
+static void BSTInitNode(node_t *new_node, node_t *parent, void *data)
+{
+	new_node->data = data;
+	new_node->parent = parent;
+	new_node->right = NULL;
+	new_node->left = NULL; 
+}
+
+static void BSTInitParentNode(bst_t *bst, node_t *new_node, \
+							  node_t *parent, void *data)
+{
+ 	if (NULL == parent)
+ 	{
+ 		return;
+ 	}
+ 	else if (bst->root == parent)
+ 	{
+ 		parent->left = new_node;
+ 	}
+ 	
+ 	else if ((0 < bst->compare(BSTGetData(BSTGetIter(parent)), (void *)data)))
+ 	{
+ 		parent->left = new_node;
+ 	}
+ 	else
+ 	{
+ 		parent->right = new_node;
+ 	}
+}
+
+static int BSTIsOneChildOrNone(node_t *node)
 {
 	int state = FALSE;
 	
-	if (NULL == iter->right && NULL == iter->left)
-	{
-		state = TRUE;
-	}
-	
-	 return (state);
-}
-
-static void BSTRemoveLeaf(bst_iter_t iter)
-{
-	bst_iter_t parent = iter->parent;
-	
-	if (iter == parent->right)
-	{
-		parent->right = NULL;
-	}
-	else if (iter == parent->left)
-	{
-		parent->left = NULL;
-	}
-			
-	free (iter);
-}
-
-static int BSTIsIterWithOneChild(bst_iter_t iter)
-{
-	int state = FALSE;
-	
-	 if ((NULL == iter->right && NULL != iter->left) || \
-	 	 (NULL != iter->right && NULL == iter->left))
+	 if (NULL == node->right && NULL != node->left)
+	 {
+	 	state = TRUE;
+	 }
+	 else if (NULL != node->right && NULL == node->left)
+	 {
+	 	state = TRUE;
+	 }
+	 else if (NULL == node->right && NULL == node->left)
 	 {
 	 	state = TRUE;
 	 }
@@ -351,45 +386,40 @@ static int BSTIsIterWithOneChild(bst_iter_t iter)
 	 return (state);
 }
 
-static void BSTRemoveIterWithOnlyChild(bst_iter_t iter)
+static void BSTRemoveNode(node_t *node)
 {
-	bst_iter_t parent = iter->parent;
-	bst_iter_t only_child = BSTReturnTheOnlyChild(iter);
+	node_t *parent = node->parent;
+	node_t *only_child = BSTReturnTheChild(node);
 	
-	only_child->parent = parent;
+	if (NULL != only_child)
+	{
+		only_child->parent = parent;
+	}
 	
-	if (iter == parent->right)
+	if (node == parent->right)
 	{
 		parent->right = only_child;
 	}
-	else if (iter == parent->left)
+	else if (node == parent->left)
 	{
 		parent->left = only_child;
 	}
 					
-	free (iter);
+	free (node);
 }
 
-static bst_iter_t BSTReturnTheOnlyChild(bst_iter_t iter)
+static node_t *BSTReturnTheChild(node_t *node)
 {
-	 if (NULL != iter->left)
+	 if (NULL != node->left)
 	 {
-	 	return (iter->left);
+	 	return (node->left);
 	 }
-	 else if (NULL != iter->right)
+	 else if (NULL != node->right)
 	 {
-	 	return (iter->right);
+	 	return (node->right);
 	 }
 	 
 	 return (NULL);
-}
-
-static void BSTCreateLeaf(bst_iter_t iter, bst_iter_t parent, void *data)
-{
-	iter->data = data;
-	iter->parent = parent;
-	iter->right = NULL;
-	iter->left = NULL; 
 }
 
 static int BSTCountSize(void *data, void *params)
@@ -400,16 +430,16 @@ static int BSTCountSize(void *data, void *params)
 	return (SUCCESS);
 }
 
-static bst_iter_t BSTChooseSide(bst_t *bst, bst_iter_t iter, void *data)
+static node_t *BSTChooseSide(bst_t *bst, node_t *node, void *data)
 {
-	if ((0 < bst->compare_func(data, BSTGetData(iter))))
+	if ((0 < bst->compare(BSTGetData(BSTGetIter(node)), data)))
 	{
-		iter = iter->right;
+		node = node->left;
 	}
 	else
 	{
-		iter = iter->left;
+		node = node->right;
 	}
 	
-	return (iter);
+	return (node);
 }
