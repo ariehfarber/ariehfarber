@@ -14,7 +14,7 @@
 #define FALSE    0
 #define ERROR   -1
 #define SUCCESS  0
-#define SAME 0
+#define EQUAL 0
 #define MAGIC_NUMBER 0XBADCAFFE
 
 typedef struct node node_t;
@@ -43,7 +43,9 @@ static int BSTIsOneChildOrNone(node_t *node);
 static void BSTRemoveNode(node_t *node);
 static node_t *BSTReturnTheChild(node_t *node);
 static int BSTCountSize(void *data, void *params);
-static node_t *BSTChooseSide(bst_t *bst, node_t *node, void *data);
+static node_t *BSTDeepDiveLocateParentNode(bst_t *bst, void *data);
+static node_t *BSTDeepDiveRight(node_t *node);
+static node_t *BSTDeepDiveLeft(node_t *node);
 
 bst_t *BSTCreate(compare_t compare)
 {
@@ -86,31 +88,22 @@ void BSTDestroy(bst_t *bst)
 
 bst_iter_t BSTInsert(bst_t *bst, const void *data)
 {
-	node_t *parent = bst->root;
-	node_t *runner = bst->root->left;
+	node_t *parent = NULL;
 	node_t *new_node = NULL;
 
 	assert (NULL != bst);
+		
+	parent = BSTDeepDiveLocateParentNode(bst, (void *)data);
 	
-	if (NULL == bst->root->left)
+	#ifndef NDEBUG
+	if (bst->root != parent)
 	{
-		new_node = BSTCreateNode(bst, parent, (void *)data);
-		if (NULL == new_node)
-		{
-			return (NULL);
-		}
-		
-		return (BSTGetIter(new_node));
+		assert(EQUAL != bst->compare(BSTGetData(BSTGetIter(parent)), \
+									(void *)data));
 	}
+	#endif
+
 		
-	while (NULL != runner)
-	{
-		assert (runner->data != data);
-		
-		parent = runner;
-		runner = BSTChooseSide(bst, runner, (void *)data);	
-	}
- 	
  	new_node = BSTCreateNode(bst, parent, (void *)data);
 	if (NULL == new_node)
 	{
@@ -145,22 +138,17 @@ bst_iter_t BSTRemove(bst_iter_t iter)
 	return (BSTGetIter(successor));
 }
 
-/*Find and insert need to use a shared function to find the node*/
 bst_iter_t BSTFind(const bst_t *bst, const void *to_find)
 {
-	node_t *node = NULL;
+	node_t *parent = NULL;
 	
 	assert (NULL != bst);
 	
-	node = bst->root->left;
+	parent = BSTDeepDiveLocateParentNode((bst_t *)bst, (void *)to_find);
 	
-	while (NULL != node)
+	if (EQUAL == bst->compare((void *)to_find, BSTGetData(BSTGetIter(parent))))
 	{
-		if (SAME == bst->compare((void *)to_find, BSTGetData(BSTGetIter(node))))
-		{
-			return (BSTGetIter(node));
-		}
-		node = BSTChooseSide((bst_t *)bst, node, (void *)to_find);	
+		return (BSTGetIter(parent));
 	}
 
 	return (BSTEnd(bst));
@@ -226,10 +214,12 @@ bst_iter_t BSTEnd(const bst_t *bst)
 
 bst_iter_t BSTNext(const bst_iter_t iter)
 {
-	node_t *runner = BSTGetNode((bst_iter_t)iter);
+	node_t *runner = NULL;
 	node_t *successor = NULL;
 	
 	assert (NULL != iter);
+	
+	runner = BSTGetNode((bst_iter_t)iter);
 	
 	if (NULL == runner->parent)
 	{
@@ -239,10 +229,9 @@ bst_iter_t BSTNext(const bst_iter_t iter)
 	if (NULL != runner->right)
 	{
 		runner = runner->right;
-		while (NULL != runner->left)
-		{
-			runner = runner->left;
-		}
+		
+		runner = BSTDeepDiveLeft(runner);
+		
 		successor = runner;
 	}
 	else if (NULL == runner->right)
@@ -269,10 +258,9 @@ bst_iter_t BSTPrev(const bst_iter_t iter)
 	if (NULL != runner->left)
 	{
 		runner = runner->left;
-		while (NULL != runner->right)
-		{
-			runner = runner->right;
-		}
+
+		runner = BSTDeepDiveRight(runner);
+
 		predecessor = runner;
 	}
 	else
@@ -430,16 +418,50 @@ static int BSTCountSize(void *data, void *params)
 	return (SUCCESS);
 }
 
-static node_t *BSTChooseSide(bst_t *bst, node_t *node, void *data)
+static node_t *BSTDeepDiveLocateParentNode(bst_t *bst, void *data)
 {
-	if ((0 < bst->compare(BSTGetData(BSTGetIter(node)), data)))
+	node_t *node = bst->root->left;
+	node_t *parent = bst->root;
+	
+	while (NULL != node) 
 	{
-		node = node->left;
+		if ((0 < bst->compare(BSTGetData(BSTGetIter(node)), data)))
+		{
+			parent = node;
+			node = node->left;
+		}
+		else
+		{
+			parent = node;
+			node = node->right;
+		}
+		if (EQUAL == bst->compare(BSTGetData(BSTGetIter(parent)), data))
+		{
+			break;
+		}
 	}
-	else
+
+	return (parent);
+}
+
+static node_t *BSTDeepDiveRight(node_t *node)
+{
+	while (NULL != node->right)
 	{
 		node = node->right;
 	}
 	
 	return (node);
 }
+
+static node_t *BSTDeepDiveLeft(node_t *node)
+{
+	while (NULL != node->left)
+	{
+		node = node->left;
+	}
+	
+	return (node);
+}
+
+
