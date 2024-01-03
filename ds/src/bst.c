@@ -74,14 +74,14 @@ bst_t *BSTCreate(compare_t compare)
 
 void BSTDestroy(bst_t *bst)
 {
-	bst_iter_t iter = BSTBegin(bst);
+	node_t *runner = BSTGetNode(BSTBegin(bst));
 	
-	while (FALSE == BSTIsEqual(iter, BSTEnd(bst)))
+	while (FALSE == BSTIsEqual(BSTGetIter(runner), BSTEnd(bst)))
 	{
-		iter = BSTRemove(iter);
+		runner = BSTRemove(BSTGetIter(runner));
 	}
 	
-	free (iter);
+	free (runner);
 	
 	free (bst);
 }
