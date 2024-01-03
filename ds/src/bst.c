@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer: 
-*Date: 
+*Reviewer: Elinor Fuchs
+*Date: 03/01/2024
 *******************************************************************************/
 #include <stdlib.h> /*malloc, free*/
 #include <assert.h> /*assert	  */
@@ -12,9 +12,8 @@
 
 #define TRUE     1 
 #define FALSE    0
-#define ERROR   -1
 #define SUCCESS  0
-#define EQUAL 0
+#define EQUAL 	 0
 #define MAGIC_NUMBER 0XBADCAFFE
 
 typedef struct node node_t;
@@ -33,17 +32,16 @@ struct bst
     compare_t compare;
 };
 
-static bst_iter_t BSTGetIter(node_t *node);	
-static node_t *BSTGetNode(bst_iter_t iter);
+static bst_iter_t BSTFetchIter(node_t *node);	
+static node_t *BSTFetchNode(bst_iter_t iter);
 static node_t *BSTCreateNode(bst_t *bst, node_t *parent, void *data);
-static void BSTInitNode(node_t *new_node, node_t *parent, void *data);
-static void BSTInitParentNode(bst_t *bst, node_t *new_node, \
+static void BSTInitLeaf(node_t *new_node, node_t *parent, void *data);
+static void BSTConnectParent(bst_t *bst, node_t *new_node, \
 							  node_t *parent, void *data);				  
-static int BSTIsOneChildOrNone(node_t *node);
+static int BSTIsTwoChildren(node_t *node);
 static void BSTRemoveNode(node_t *node);
-static node_t *BSTReturnTheChild(node_t *node);
 static int BSTCountSize(void *data, void *params);
-static node_t *BSTDeepDiveLocateParentNode(bst_t *bst, void *data);
+static node_t *BSTDeepDiveLocate(bst_t *bst, void *data);
 static node_t *BSTDeepDiveRight(node_t *node);
 static node_t *BSTDeepDiveLeft(node_t *node);
 
@@ -74,11 +72,11 @@ bst_t *BSTCreate(compare_t compare)
 
 void BSTDestroy(bst_t *bst)
 {
-	node_t *runner = BSTGetNode(BSTBegin(bst));
+	node_t *runner = BSTFetchNode(BSTBegin(bst));
 	
-	while (FALSE == BSTIsEqual(BSTGetIter(runner), BSTEnd(bst)))
+	while (FALSE == BSTIsEqual(BSTFetchIter(runner), BSTEnd(bst)))
 	{
-		runner = BSTRemove(BSTGetIter(runner));
+		runner = BSTRemove(BSTFetchIter(runner));
 	}
 	
 	free (runner);
@@ -93,12 +91,13 @@ bst_iter_t BSTInsert(bst_t *bst, const void *data)
 
 	assert (NULL != bst);
 		
-	parent = BSTDeepDiveLocateParentNode(bst, (void *)data);
+	parent = BSTDeepDiveLocate(bst, (void *)data);
 	
+	/*assert that the same data was not inserted twice*/
 	#ifndef NDEBUG
 	if (bst->root != parent)
 	{
-		assert(EQUAL != bst->compare(BSTGetData(BSTGetIter(parent)), \
+		assert(EQUAL != bst->compare(BSTGetData(BSTFetchIter(parent)), \
 									(void *)data));
 	}
 	#endif
@@ -110,45 +109,46 @@ bst_iter_t BSTInsert(bst_t *bst, const void *data)
 		return (NULL);
 	}
 
-	return (BSTGetIter(new_node));
+	return (BSTFetchIter(new_node));
 }
 
 bst_iter_t BSTRemove(bst_iter_t iter)
 {
-	node_t *successor = BSTGetNode(iter);
+	node_t *successor = BSTFetchNode(iter);
 	
 	assert (NULL != iter);
 	
-	if (TRUE == BSTIsOneChildOrNone(BSTGetNode(iter)))
+	if (TRUE == BSTIsTwoChildren(BSTFetchNode(iter)))
 	{
-		successor = BSTGetNode(BSTNext(iter));
-		
-		BSTRemoveNode(BSTGetNode(iter));
-	}
-	else
-	{
-		successor = BSTGetNode(iter);
+		successor = BSTFetchNode(iter);
 		iter = BSTNext(iter);
 		
 		successor->data = BSTGetData(iter);
 			
-		BSTRemoveNode(BSTGetNode(iter));
+		BSTRemoveNode(BSTFetchNode(iter));		
+	}
+	else
+	{
+		successor = BSTFetchNode(BSTNext(iter));
+		
+		BSTRemoveNode(BSTFetchNode(iter));
 	}
 	
-	return (BSTGetIter(successor));
+	return (BSTFetchIter(successor));
 }
 
 bst_iter_t BSTFind(const bst_t *bst, const void *to_find)
 {
-	node_t *parent = NULL;
+	node_t *find_node = NULL;
 	
 	assert (NULL != bst);
 	
-	parent = BSTDeepDiveLocateParentNode((bst_t *)bst, (void *)to_find);
+	find_node = BSTDeepDiveLocate((bst_t *)bst, (void *)to_find);
 	
-	if (EQUAL == bst->compare((void *)to_find, BSTGetData(BSTGetIter(parent))))
+	if (EQUAL == bst->compare((void *)to_find, \
+		BSTGetData(BSTFetchIter(find_node))))
 	{
-		return (BSTGetIter(parent));
+		return (BSTFetchIter(find_node));
 	}
 
 	return (BSTEnd(bst));
@@ -156,13 +156,11 @@ bst_iter_t BSTFind(const bst_t *bst, const void *to_find)
 
 void *BSTGetData(const bst_iter_t iter)
 {
-	node_t *node = NULL;
 	void *data = NULL;
 	
 	assert (NULL != iter);
-	
-	node = BSTGetNode(iter);
-	data = node->data;
+
+	data = (BSTFetchNode(iter))->data;
 	
 	return (data);
 }
@@ -188,7 +186,7 @@ int BSTIsEqual(const bst_iter_t iter1, bst_iter_t iter2)
 	assert (NULL != iter1);
 	assert (NULL != iter2);
 	
-	return (iter1 == iter2);
+	return (BSTFetchNode(iter1) == BSTFetchNode(iter2));
 }
 
 bst_iter_t BSTBegin(const bst_t *bst)
@@ -197,29 +195,25 @@ bst_iter_t BSTBegin(const bst_t *bst)
 
 	assert (NULL != bst);
 		
-	while (NULL != runner->left)
-	{
-		runner = runner->left;
-	}
+	runner = BSTDeepDiveLeft(runner);
 	
-	return (BSTGetIter(runner));
+	return (BSTFetchIter(runner));
 }
 
 bst_iter_t BSTEnd(const bst_t *bst)
 {
 	assert (NULL != bst);
 	
-	return (BSTGetIter(bst->root));
+	return (BSTFetchIter(bst->root));
 }
 
 bst_iter_t BSTNext(const bst_iter_t iter)
 {
 	node_t *runner = NULL;
-	node_t *successor = NULL;
 	
 	assert (NULL != iter);
 	
-	runner = BSTGetNode((bst_iter_t)iter);
+	runner = BSTFetchNode((bst_iter_t)iter);
 	
 	if (NULL == runner->parent)
 	{
@@ -231,52 +225,43 @@ bst_iter_t BSTNext(const bst_iter_t iter)
 		runner = runner->right;
 		
 		runner = BSTDeepDiveLeft(runner);
-		
-		successor = runner;
 	}
-	else if (NULL == runner->right)
+	else 
 	{
 		while (runner != runner->parent->left)
 		{
 			runner = runner->parent;
 		}
-		successor = runner->parent;	
+		runner = runner->parent;	
 	}
 		
-	return (BSTGetIter(successor)); 
+	return (BSTFetchIter(runner)); 
 }
 
 bst_iter_t BSTPrev(const bst_iter_t iter)
 {
-	node_t *predecessor = NULL;
 	node_t *runner = NULL;
 	
 	assert (NULL != iter);
 	
-	runner = BSTGetNode((bst_iter_t)iter);
+	runner = BSTFetchNode((bst_iter_t)iter);
 	
 	if (NULL != runner->left)
 	{
 		runner = runner->left;
 
 		runner = BSTDeepDiveRight(runner);
-
-		predecessor = runner;
 	}
 	else
 	{
-		while (runner != runner->parent->right)
+		while (NULL != runner->parent && runner != runner->parent->right)
 		{
-			if (NULL == runner->parent)
-			{
-				return (NULL);
-			}
 			runner = runner->parent;
 		}
-		predecessor = runner->parent;	
+		runner = runner->parent;	
 	}
 
-	return (BSTGetIter(predecessor)); 	
+	return (BSTFetchIter(runner)); 	
 }
 
 int BSTForEach(bst_iter_t from, bst_iter_t to, 
@@ -288,7 +273,7 @@ int BSTForEach(bst_iter_t from, bst_iter_t to,
 	assert (NULL != to);
 	assert (NULL != action_func);
 	
-	while (FALSE == BSTIsEqual(from, to) && ERROR != state)
+	while (FALSE == BSTIsEqual(from, to) && SUCCESS == state)
 	{
 		state = action_func(BSTGetData(from), params);
 
@@ -298,14 +283,14 @@ int BSTForEach(bst_iter_t from, bst_iter_t to,
 	return (state);
 }
 
-static node_t *BSTGetNode(bst_iter_t iter)
+static node_t *BSTFetchNode(bst_iter_t iter)
 {
-	return (iter);
+	return ((node_t *)iter);
 }
 
-static bst_iter_t BSTGetIter(node_t *node)
+static bst_iter_t BSTFetchIter(node_t *node)
 {
-	return (node);
+	return ((bst_iter_t)node);
 }
 
 static node_t *BSTCreateNode(bst_t *bst, node_t *parent, void *data)
@@ -318,13 +303,13 @@ static node_t *BSTCreateNode(bst_t *bst, node_t *parent, void *data)
 		return (NULL);
 	}
 	
-	BSTInitNode(new_node, parent, data);
-	BSTInitParentNode(bst, new_node, parent, data);
+	BSTInitLeaf(new_node, parent, data);
+	BSTConnectParent(bst, new_node, parent, data);
 	
 	return (new_node);
 }
 
-static void BSTInitNode(node_t *new_node, node_t *parent, void *data)
+static void BSTInitLeaf(node_t *new_node, node_t *parent, void *data)
 {
 	new_node->data = data;
 	new_node->parent = parent;
@@ -332,7 +317,7 @@ static void BSTInitNode(node_t *new_node, node_t *parent, void *data)
 	new_node->left = NULL; 
 }
 
-static void BSTInitParentNode(bst_t *bst, node_t *new_node, \
+static void BSTConnectParent(bst_t *bst, node_t *new_node, \
 							  node_t *parent, void *data)
 {
  	if (NULL == parent)
@@ -342,9 +327,8 @@ static void BSTInitParentNode(bst_t *bst, node_t *new_node, \
  	else if (bst->root == parent)
  	{
  		parent->left = new_node;
- 	}
- 	
- 	else if ((0 < bst->compare(BSTGetData(BSTGetIter(parent)), (void *)data)))
+ 	}	
+ 	else if ((0 < bst->compare(BSTGetData(BSTFetchIter(parent)), (void *)data)))
  	{
  		parent->left = new_node;
  	}
@@ -354,30 +338,15 @@ static void BSTInitParentNode(bst_t *bst, node_t *new_node, \
  	}
 }
 
-static int BSTIsOneChildOrNone(node_t *node)
+static int BSTIsTwoChildren(node_t *node)
 {
-	int state = FALSE;
-	
-	 if (NULL == node->right && NULL != node->left)
-	 {
-	 	state = TRUE;
-	 }
-	 else if (NULL != node->right && NULL == node->left)
-	 {
-	 	state = TRUE;
-	 }
-	 else if (NULL == node->right && NULL == node->left)
-	 {
-	 	state = TRUE;
-	 }
-	 
-	 return (state);
+	return (NULL != node->right && NULL != node->left);
 }
 
 static void BSTRemoveNode(node_t *node)
 {
 	node_t *parent = node->parent;
-	node_t *only_child = BSTReturnTheChild(node);
+	node_t *only_child = (node_t *)((size_t)node->right ^ (size_t)node->left);
 	
 	if (NULL != only_child)
 	{
@@ -396,20 +365,6 @@ static void BSTRemoveNode(node_t *node)
 	free (node);
 }
 
-static node_t *BSTReturnTheChild(node_t *node)
-{
-	 if (NULL != node->left)
-	 {
-	 	return (node->left);
-	 }
-	 else if (NULL != node->right)
-	 {
-	 	return (node->right);
-	 }
-	 
-	 return (NULL);
-}
-
 static int BSTCountSize(void *data, void *params)
 {
 	++*(size_t *)params;
@@ -418,14 +373,14 @@ static int BSTCountSize(void *data, void *params)
 	return (SUCCESS);
 }
 
-static node_t *BSTDeepDiveLocateParentNode(bst_t *bst, void *data)
+static node_t *BSTDeepDiveLocate(bst_t *bst, void *data)
 {
 	node_t *node = bst->root->left;
 	node_t *parent = bst->root;
 	
 	while (NULL != node) 
 	{
-		if ((0 < bst->compare(BSTGetData(BSTGetIter(node)), data)))
+		if ((0 < bst->compare(BSTGetData(BSTFetchIter(node)), data)))
 		{
 			parent = node;
 			node = node->left;
@@ -435,7 +390,7 @@ static node_t *BSTDeepDiveLocateParentNode(bst_t *bst, void *data)
 			parent = node;
 			node = node->right;
 		}
-		if (EQUAL == bst->compare(BSTGetData(BSTGetIter(parent)), data))
+		if (EQUAL == bst->compare(BSTGetData(BSTFetchIter(parent)), data))
 		{
 			break;
 		}

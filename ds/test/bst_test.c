@@ -1,212 +1,365 @@
 /*******************************************************************************
-*Author: 
+*Author: Omer Broker
 *******************************************************************************/
-#include <assert.h> /*assert*/
-#include <stdio.h> /*printf*/
+#include <stdio.h>
 
 #include "bst.h"
 
-#define FASLE (0)
-#define TRUE (1)
-#define SUCCESS (0)
-#define FAILURE (-1)
+void Test(int check);
+void TestBSTInsert();
+void TestBSTFind();
+void TestBSTRemove();
+void TestBSTGetData();
+void TestBSTIsEmpty();
+void TestBSTSize();
+void TestBSTIsEqual();
+void TestBSTBegin();
+void TestBSTEnd();
+void TestBSTNext();
+void TestBSTPrev();
+void TestBSTForEach();
 
-static void TestBSTCreate(void);
-static void TestBSTInsert(void);
-static void TestBSTFind(void);
-static void TestBSTIsEmptyAndSize(void);
-static void TestBSTNextAndPrev(void);
-static void TestBSTForEach(void);
-
-static int Compare(void *data1, void *data2);
-static int Mult2(void *data1, void *data2);
-
-int main(void)
+int main()
 {
-	TestBSTCreate();
-	TestBSTInsert();
-	TestBSTFind();
-	TestBSTIsEmptyAndSize();
-	TestBSTNextAndPrev();
-	TestBSTForEach();
+    TestBSTInsert();
+    TestBSTFind();
+    TestBSTRemove();
+    TestBSTGetData();
+    TestBSTIsEmpty();
+    TestBSTSize();
+    TestBSTIsEqual();
+    TestBSTBegin();
+    TestBSTEnd();
+    TestBSTNext();
+    TestBSTPrev();
+    TestBSTForEach();
 
-	return(1);
+    return (0);
 }
 
-static void TestBSTCreate(void)
+void Test(int check)
 {
-	bst_t *bst =BSTCreate(Compare);
-
-	assert(NULL != bst);
-
-	printf("BSTCreate: success\n");
-	BSTDestroy(bst);
-	printf("BSTDestory: success\n");
-}
-
-static void TestBSTInsert(void)
-{
-	bst_t *bst =BSTCreate(Compare);
-	bst_iter_t iter = NULL;
-	int arr[] = {5, 2, 8, 6, 3, 1, 10};
-	int arr_expected[] = {1, 2, 3, 5, 6, 8, 10};
-	size_t i = 0;
-
-	for(i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
+	if (0 == check)
 	{
-		assert(NULL != BSTInsert(bst, &arr[i]));
-	}
-
-	iter = BSTBegin(bst);
-	for(i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
-	{
-		assert(arr_expected[i] == *(int*)BSTGetData(iter));
-		iter = BSTNext(iter);
-	}
-
-	BSTDestroy(bst);
-
-	printf("BSTInsert: success\n");
-	printf("BSTGetData: success\n");
-	printf("BSTIsEqual: success\n");
-}
-static void TestBSTFind(void)
-{
-	bst_t *bst =BSTCreate(Compare);
-	int arr[] = {5, 2, 8, 6, 3, 1, 10};
-	int num_not_fount = 11;
-	size_t i = 0;
-
-	for(i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
-	{
-		assert(NULL != BSTInsert(bst, &arr[i]));
-	}
-
-	for(i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
-	{
-		assert(arr[i] == *(int*)BSTGetData(BSTFind(bst,&arr[i])));
-	}
-
-	assert(BSTEnd(bst) == BSTFind(bst,&num_not_fount));
-
-	BSTDestroy(bst);
-	printf("BSTFind: success\n");
-}
-static void TestBSTIsEmptyAndSize(void)
-{
-	bst_t *bst =BSTCreate(Compare);
-	bst_iter_t iter = NULL;
-	int arr[] = {5, 2, 8, 6, 3, 1, 10};
-	size_t i = 0;
-
-	assert(TRUE == BSTIsEmpty(bst));
-	for(i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
-	{
-		assert(i == BSTSize(bst));
-		assert(NULL != BSTInsert(bst, &arr[i]));
-	}
-
-	assert(FASLE == BSTIsEmpty(bst));
-	iter = BSTBegin(bst);
-	for(i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
-	{
-		assert(sizeof(arr) / sizeof(arr[0]) - i == BSTSize(bst));
-		iter = BSTRemove(iter);
+		printf("--------failure\n");
 	}
 	
-	assert(TRUE == BSTIsEmpty(bst));
-	BSTDestroy(bst);
-	printf("BSTRemove: success\n");
-	printf("BSTSize: success\n");
-	printf("BSTIsEmpty: success\n");
+	else
+	{
+		printf("success\n");
+	}
 }
 
-static void TestBSTNextAndPrev(void)
+int IntCmp(void * num1, void *num2)
 {
-	bst_t *bst =BSTCreate(Compare);
-	bst_iter_t iter = NULL;
-	int arr[] = {5, 2, 8, 6, 3, 1, 10};
-	int arr_expected_forward[] = {1, 2, 3, 5, 6, 8, 10};
-	int arr_expected_backward[] = {10, 8, 6, 5, 3, 2, 1};
-	size_t i = 0;
-
-	for(i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
-	{
-		assert(NULL != BSTInsert(bst, &arr[i]));
-	}
-
-	iter = BSTBegin(bst);
-	for(i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
-	{
-		assert(arr_expected_forward[i] == *(int*)BSTGetData(iter));
-		iter = BSTNext(iter);
-	}
-
-	iter = BSTEnd(bst);
-	for(i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
-	{
-		iter = BSTPrev(iter);
-		assert(arr_expected_backward[i] == *(int*)BSTGetData(iter));
-	}
-
-	BSTDestroy(bst);
-	printf("BSTNext: success\n");
-	printf("BSTPrev: success\n");
-	printf("BSTBegin: success\n");
-	printf("BSTEnd: success\n");
-}
-static void TestBSTForEach(void)
-{
-	bst_t *bst =BSTCreate(Compare);
-	bst_iter_t from = NULL, to = NULL;
-	int arr[] = {5, 2, 8, 6, 3, 1, 10};
-	int arr_expected[] = {1, 2, 3, 5, 6, 8, 10};
-	int param = 2;
-	size_t i = 0;
-
-	for(i = 0; i < sizeof(arr) / sizeof(arr[0]); ++i)
-	{
-		assert(NULL != BSTInsert(bst, &arr[i]));
-	}
-
-	from = BSTBegin(bst); /*1*/
-	from = BSTNext(from); /*2*/
-	from = BSTNext(from); /*3*/
-	to = BSTEnd(bst); /*dummy*/
-	to = BSTPrev(to); /*10*/
-	to = BSTPrev(to); /*8*/
-
-	assert(SUCCESS == BSTForEach(from, to, Mult2, &param));
-	from = BSTBegin(bst);
-	for(i = 0; i < 2; ++i)
-	{
-		assert(arr_expected[i] == *(int*)BSTGetData(from));
-		from = BSTNext(from);
-	}
-
-	for(i = 2; i < 5; ++i)
-	{
-		assert(arr_expected[i] * param == *(int*)BSTGetData(from));
-		from = BSTNext(from);
-	}
-
-	for(i = 5; i < sizeof(arr) / sizeof(arr[0]); ++i)
-	{
-		assert(arr_expected[i] == *(int*)BSTGetData(from));
-		from = BSTNext(from);
-	}
-
-	BSTDestroy(bst);
-	printf("BSTForEach: success\n");
+    return (*(int *)num1 - *(int *)num2);
 }
 
-static int Mult2(void *data1, void *data2)
+void TestBSTInsert()
 {
-	*(int*)data1 *= *(int*)data2;
-	return(SUCCESS);
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[10] = {7, 6, 8, 3, 1, 9, 2, 0, 4, 5};
+    int i = 0;
+    bst_iter_t runner = NULL;
+
+    printf("\ntesting BSTInsert\n");
+
+    for (i = 0; i < 10; ++i)
+    {
+        BSTInsert(bst, &arr[i]);
+    }
+
+    runner = BSTBegin(bst);
+
+    Test(0 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(1 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(2 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(3 == *(int *)BSTGetData(runner));
+    Test(10 == BSTSize(bst));
+
+    BSTDestroy(bst);
 }
 
-static int Compare(void *data1, void *data2)
+void TestBSTFind()
 {
-	return(*(int*)data1 - *(int*)data2);
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[9] = {41, 35, 6878, 23, 31, 12, 67, 11, -3};
+    int check1 = -3;
+    int check2 = 6878;
+    int check3 = 42;
+    int i = 0;
+
+    printf("\ntesting BSTFind\n");
+
+    for (i = 0; i < 9; ++i)
+    {
+        BSTInsert(bst, &arr[i]);
+    }
+
+    Test(-3 == *(int *)BSTGetData(BSTFind(bst, &check1)));
+    Test(6878 == *(int *)BSTGetData(BSTFind(bst, &check2)));
+    Test(BSTEnd(bst) == BSTFind(bst, &check3));
+
+    BSTDestroy(bst);
+}
+
+void TestBSTRemove()
+{
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[7] = {10, 23, 34, 32, 9, 8, 5};
+    int i = 0;
+    bst_iter_t runner = NULL;
+
+    printf("\ntesting BSTRemove\n");
+
+    for (i = 0; i < 7; ++i)
+    {
+        BSTInsert(bst, &arr[i]);
+    }
+
+    runner = BSTPrev(BSTPrev(BSTEnd(bst)));
+    BSTRemove(runner);
+    BSTRemove(BSTBegin(bst));
+    BSTRemove(BSTBegin(bst));
+    runner = BSTBegin(bst);
+
+    Test(9 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(10 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(23 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(34 == *(int *)BSTGetData(runner));
+    
+    BSTDestroy(bst);
+}
+
+void TestBSTGetData()
+{
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[7] = {1, 18, 17, 32, 50, 3, 4};
+    int i = 0;
+    bst_iter_t runner = NULL;
+
+    printf("\ntesting BSTGetData\n");
+
+    for (i = 0; i < 7; ++i)
+    {
+        BSTInsert(bst, &arr[i]);
+    }
+
+    runner = BSTBegin(bst);
+
+    Test(1 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(3 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(4 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(17 == *(int *)BSTGetData(runner));
+    
+    BSTDestroy(bst);
+}
+
+void TestBSTIsEmpty()
+{
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[2] = {11, 18};
+
+    printf("\ntesting BSTIsEmpty\n");
+
+    Test(1 == BSTIsEmpty(bst));
+    BSTInsert(bst, &arr[0]);
+    Test(0 == BSTIsEmpty(bst));
+    BSTInsert(bst, &arr[1]);
+    BSTRemove(BSTBegin(bst));
+    Test(0 == BSTIsEmpty(bst));
+    BSTRemove(BSTBegin(bst));
+    Test(1 == BSTIsEmpty(bst));
+
+     BSTDestroy(bst);
+}
+
+void TestBSTSize()
+{
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[2] = {11, 18};
+
+    printf("\ntesting BSTSize\n");
+
+    Test(0 == BSTSize(bst));
+    BSTInsert(bst, &arr[0]);
+    Test(1 == BSTSize(bst));
+    BSTInsert(bst, &arr[1]);
+    BSTRemove(BSTBegin(bst));
+    Test(1 == BSTSize(bst));
+    BSTRemove(BSTBegin(bst));
+    Test(0 == BSTSize(bst));
+
+    BSTDestroy(bst);
+}
+
+void TestBSTIsEqual()
+{
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[2] = {11, 18};
+
+    printf("\ntesting BSTIsEqual\n");
+    
+    Test(1 == BSTIsEqual(BSTBegin(bst), BSTEnd(bst)));
+    BSTInsert(bst, &arr[0]);
+    Test(0 == BSTIsEqual(BSTBegin(bst), BSTEnd(bst)));
+    Test(1 == BSTIsEqual(BSTBegin(bst), BSTPrev(BSTEnd(bst))));
+
+    BSTDestroy(bst);
+}
+
+void TestBSTBegin()
+{
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[9] = {41, 35, -5, 23, 31, 12, 67, 11, -3};
+    int i = 0;
+
+    printf("\ntesting BSTBegin\n");
+
+    for (i = 0; i < 9; ++i)
+    {
+        BSTInsert(bst, &arr[i]);
+    }
+
+    Test(-5 == *(int *)BSTGetData(BSTBegin(bst)));
+    BSTRemove(BSTBegin(bst));
+    Test(-3 == *(int *)BSTGetData(BSTBegin(bst)));
+    BSTRemove(BSTBegin(bst));
+    Test(11 == *(int *)BSTGetData(BSTBegin(bst)));
+    BSTRemove(BSTBegin(bst));
+    Test(12 == *(int *)BSTGetData(BSTBegin(bst)));
+
+    BSTDestroy(bst);
+}
+
+void TestBSTEnd()
+{
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[9] = {41, 35, -5, 23, 31, 12, 67, 11, -3};
+    int i = 0;
+
+    printf("\ntesting BSTEnd\n");
+
+    for (i = 0; i < 9; ++i)
+    {
+        BSTInsert(bst, &arr[i]);
+    }
+
+    Test(67 == *(int *)BSTGetData(BSTPrev(BSTEnd(bst))));
+    BSTRemove(BSTPrev(BSTEnd(bst)));
+    Test(41 == *(int *)BSTGetData(BSTPrev(BSTEnd(bst))));
+    BSTRemove(BSTPrev(BSTEnd(bst)));
+    Test(35 == *(int *)BSTGetData(BSTPrev(BSTEnd(bst))));
+    BSTRemove(BSTPrev(BSTEnd(bst)));
+    Test(31 == *(int *)BSTGetData(BSTPrev(BSTEnd(bst))));
+
+    BSTDestroy(bst);
+}
+
+void TestBSTNext()
+{
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[9] = {50, 25, 75, 20, 28, 70, 78, 66, 10};
+    int i = 0;
+    bst_iter_t runner = NULL;
+
+    printf("\ntesting BSTNext\n");
+
+    for (i = 0; i < 9; ++i)
+    {
+        BSTInsert(bst, &arr[i]);
+    }
+
+    runner = BSTBegin(bst);
+
+    runner = BSTNext(runner);
+    Test(20 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(25 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(28 == *(int *)BSTGetData(runner));
+    runner = BSTNext(runner);
+    Test(50 == *(int *)BSTGetData(runner));
+    Test(NULL == BSTNext(BSTEnd(bst)));
+
+    BSTDestroy(bst);
+}
+
+void TestBSTPrev()
+{
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[9] = {50, 25, 75, 20, 28, 70, 78, 66, 10};
+    int i = 0;
+    bst_iter_t runner = NULL;
+
+    printf("\ntesting BSTPrev\n");
+
+    for (i = 0; i < 9; ++i)
+    {
+        BSTInsert(bst, &arr[i]);
+    }
+
+    runner = BSTEnd(bst);
+
+    runner = BSTPrev(runner);
+    Test(78 == *(int *)BSTGetData(runner));
+    runner = BSTPrev(runner);
+    Test(75 == *(int *)BSTGetData(runner));
+    runner = BSTPrev(runner);
+    Test(70 == *(int *)BSTGetData(runner));
+    runner = BSTPrev(runner);
+    Test(66 == *(int *)BSTGetData(runner));
+    Test(NULL == BSTPrev(BSTBegin(bst)));
+
+    BSTDestroy(bst);
+}
+
+int action_func(void *a, void *b)
+{
+    *(int *)a += *(int *)b;
+    return (0);
+}
+
+void TestBSTForEach()
+{
+    bst_t *bst = BSTCreate(IntCmp);
+    int arr[9] = {50, 25, 75, 20, 28, 73, 78, 66, 10};
+    int i = 0;
+    int inc_by = 6;
+    bst_iter_t from = NULL;
+    bst_iter_t to = NULL;
+
+    printf("\ntesting BSTForEach\n");
+
+    for (i = 0; i < 9; ++i)
+    {
+        BSTInsert(bst, &arr[i]);
+    }
+
+    from = BSTNext(BSTBegin(bst));
+    to = BSTPrev(BSTPrev(BSTPrev(BSTEnd(bst))));
+
+    Test(0 == BSTForEach(from, to, action_func, &inc_by));
+    Test(26 == *(int *)BSTGetData(from));
+    from = BSTNext(from);
+    Test(31 == *(int *)BSTGetData(from));
+    from = BSTNext(from);
+    Test(34 == *(int *)BSTGetData(from));
+    from = BSTNext(from);
+    Test(56 == *(int *)BSTGetData(from));
+    from = BSTNext(from);
+    Test(72 == *(int *)BSTGetData(from));
+    from = BSTNext(from);
+    Test(73 == *(int *)BSTGetData(from));
+
+    BSTDestroy(bst);
 }
