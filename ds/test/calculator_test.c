@@ -9,16 +9,30 @@ int main()
 {
 	status_t my_status = SUCCESS;
 	double res = 0;
+	char *want_array[] = {"7+8", "8+83-2/5", "(3-2)*5+5-4+4+4"};
+	size_t want_array_size = sizeof(want_array) / sizeof(want_array[0]);
+	size_t i = 0;
 	
-	my_status = Calculate("7+8", &res);
-	
-	if (SUCCESS == my_status)
+	for (i = 0; i < want_array_size; ++i)
 	{
-		printf("Result = %f status = %d\n", res, my_status);
-	}
-	else
-	{
-		printf("status = %d\n", my_status);
+		my_status = Calculate(want_array[i], &res);
+
+		if (SUCCESS == my_status)
+		{
+			printf("Result = %f status = %d\n", res, my_status);
+		}
+		else if(MATH_ERROR == my_status)
+		{
+			printf("Result = %.0f status = MATH_ERROR\n", res);
+		}
+		else if(SYNTAX_ERROR == my_status)
+		{
+			printf("Result = %.0f status = SYNTAX_ERROR\n", res);
+		}
+		else if(ALLOCATION_ERROR == my_status)
+		{
+			printf("Result = %.0f status = ALLOCATION_ERROR\n", res);
+		}	
 	}
 	
 	return (0);
