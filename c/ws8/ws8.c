@@ -22,7 +22,6 @@ static void CleanInt(size_t *target);
 static void CleanFloat(size_t *target);
 static void CleanString(size_t *target);
 
-
 void SetInt(element_t *target, int int_number) 
 {
 	target->data = *(size_t *)&int_number; 

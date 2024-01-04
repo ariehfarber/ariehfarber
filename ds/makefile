@@ -51,6 +51,7 @@ debug: $(DEBUG_OBJS) $(DEBUG_LIBS)
 # Build object files
 $(DEBUG_DIR)/%.o: $(SRC_DIR)/%.c 
 	@ $(CC) $(CFLAGS) -g -fPIC $(DEPENDENCIES_FLAGS) -c $< -o $@
+	@ touch $(HDR_DIR)/$*.h
 
 # Build dynamic libraries
 $(DEBUG_DIR)/lib_%.so: $(DEBUG_DIR)/%.o 

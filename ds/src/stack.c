@@ -9,6 +9,9 @@
 
 #include "stack.h"
 
+#define TRUE 1
+#define EMPTY 0
+
 struct stack 
 {
 	char *buffer;
@@ -19,8 +22,8 @@ struct stack
 
 stack_t *StackCreate(size_t capacity, size_t element_size)
 {
-	stack_t *my_stack = (stack_t *)malloc(sizeof(stack_t));
-    if (NULL == my_stack) 
+	stack_t *stack = (stack_t *)malloc(sizeof(stack_t));
+    if (NULL == stack) 
     {
         return (NULL);
     }
@@ -28,85 +31,81 @@ stack_t *StackCreate(size_t capacity, size_t element_size)
 	assert(0 != capacity);
 	assert(0 != element_size);
 
-	my_stack->buffer = malloc(capacity * element_size * sizeof(char));
-	if (NULL == my_stack->buffer)
+	stack->buffer = malloc(capacity * element_size * sizeof(char));
+	if (NULL == stack->buffer)
 	{
+		free (stack);
+		
 		return (NULL);
 	}
 	
-	my_stack->element_size = element_size;
-	my_stack->current_size = 0;
-	my_stack->capacity = capacity;
+	stack->element_size = element_size;
+	stack->current_size = 0;
+	stack->capacity = capacity;
 	
-	return (my_stack);
+	return (stack);
 }
 
-void StackDestroy(stack_t *my_stack)
+void StackDestroy(stack_t *stack)
 {
-	while (1 < my_stack->current_size)
+	while (TRUE != StackIsEmpty(stack))
 	{
-		my_stack->buffer -= my_stack->element_size;
-		my_stack->current_size--;
+		StackPop(stack);
 	}
 	
-	free(my_stack->buffer);
-	my_stack->buffer = NULL;
+	free(stack->buffer);
 	
-	free(my_stack);
-	my_stack = NULL;
+	free(stack);
 }
 
-void StackPush(stack_t *my_stack, const void *data)
+void StackPush(stack_t *stack, const void *data)
 {
-	assert(NULL != my_stack);
+	assert(NULL != stack);
 	assert(NULL != data);
-	assert((my_stack->capacity) > (my_stack->current_size));
-	
-	if (0 != my_stack->current_size)
-	{
-		my_stack->buffer += my_stack->element_size;
-	}
-	
-	memcpy(my_stack->buffer, data, my_stack->element_size);
-	
-	my_stack->current_size++;
-}
-
-void StackPop(stack_t *my_stack)
-{
-	assert(NULL != my_stack);
-	assert(0 != my_stack->current_size);		
-	
-	my_stack->buffer -= my_stack->element_size;
-
-	my_stack->current_size--;
-}
-
-void *StackPeek(const stack_t *my_stack)
-{
-	assert(NULL != my_stack);
-	assert(0 != my_stack->current_size);
+	assert((stack->capacity) > (stack->current_size));
 		
-	return ((void *)my_stack->buffer);
+	memcpy(stack->buffer, data, stack->element_size);
+	
+	stack->buffer += stack->element_size;
+	
+	++stack->current_size;
 }
 
-int StackIsEmpty(const stack_t *my_stack)
+void StackPop(stack_t *stack)
 {
-	assert(NULL != my_stack);
+	assert(NULL != stack);
+	assert(EMPTY != stack->current_size);		
 	
-	return (my_stack->current_size == 0);
+	stack->buffer -= stack->element_size;
+
+	--stack->current_size;
 }
 
-size_t StackSize(const stack_t *my_stack)
+void *StackPeek(const stack_t *stack)
 {
-	assert(NULL != my_stack);
-	
-	return (my_stack->current_size);
+	assert(NULL != stack);
+	assert(EMPTY != stack->current_size);
+		
+	return ((void *)(stack->buffer - stack->element_size));
 }
 
-size_t StackCapacity(const stack_t *my_stack)
+int StackIsEmpty(const stack_t *stack)
 {
-	assert(NULL != my_stack);
+	assert(NULL != stack);
 	
-	return (my_stack->capacity);
+	return (EMPTY == StackSize(stack));
+}
+
+size_t StackSize(const stack_t *stack)
+{
+	assert(NULL != stack);
+	
+	return (stack->current_size);
+}
+
+size_t StackCapacity(const stack_t *stack)
+{
+	assert(NULL != stack);
+	
+	return (stack->capacity);
 }

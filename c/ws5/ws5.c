@@ -69,7 +69,6 @@ int FileEditor(const char *title)
 	int size = COMMANDS_NUM;
 	size_t n = 0;
 	output_t state = SUCCESS;
-
 	special_input_t cmnd_array[COMMANDS_NUM] = 
 	{
 		{"-remove\n", strncmp, RemoveCommand},

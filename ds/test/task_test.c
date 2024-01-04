@@ -7,7 +7,7 @@
 
 int main()
 {
-	printf("task\n");
+	printf("task_test is dummy\n");
 	
 	return (0);
 }
