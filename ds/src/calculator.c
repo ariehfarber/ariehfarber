@@ -25,57 +25,41 @@ typedef enum
 {
     OTHER = 0,
     NUM,
+    OPEN_ROUND_BRACKET,
+    CLOSE_ROUND_BRACKET,
     PLUS,
     MINUS,
     MULTIPLY,
     DIVIDE,
-    OPEN_ROUND_BRACKET,
-    CLOSE_ROUND_BRACKET,
     SPACE,
     TAB,
     END,
     NUM_OF_EVENTS
 }events_t;
 
-typedef enum 
-{
-    ADDITION_OPERATOR = PLUS,
-    SUBTRACTION_OPERATOR = MINUS,
-    MULTIPLY_OPERATOR = MULTIPLY,
-    DIVIDE_OPERATOR = DIVIDE,
-    NUM_OF_OPERATORS
-}operator_t;
+static int status = SUCCESS;
+static int e_state = WAITING_FOR_OPERAND;
 
 typedef double operator_handler_t(double, double);
-typedef char *expression_handler_t(const char *, int *, stack_t *, stack_t *);
+typedef char *expression_handler_t(char *, stack_t *, stack_t *);
 
 static int event_lut[ASCII_SIZE] = {OTHER};
-static operator_handler_t *operator_lut[NUM_OF_OPERATORS] = {0};
+static operator_handler_t *operator_lut[NUM_OF_EVENTS] = {0};
 static expression_handler_t *function_matrix[NUM_OF_STATES][NUM_OF_EVENTS];
 
-static char *SyntaxError(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack);						 
-static char *PushOperand(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack); 	 
-static char *PushOpenBracket(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack);
-static char *PushArithmeticOperator(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack);
-static char *PushFactorizationOperator(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack);
-static char *CloseBrackets(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack); 
-static char *SkipSpaces(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack);
-static char *CalculateFinalResult(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack);
+static char *SyntaxError(char *str, stack_t *num_stack, stack_t *oper_stack);						 
+static char *PushOperand(char *str, stack_t *num_stack, stack_t *oper_stack);	 
+static char *OpenBracket(char *str, stack_t *num_stack, stack_t *oper_stack);
+static char *PushOperator(char *str, stack_t *num_stack, stack_t *oper_stack);
+static char *CloseBrackets(char *str, stack_t *num_stack, stack_t *oper_stack);
+static char *SkipSpaces(char *str, stack_t *num_stack, stack_t *oper_stack);
+static char *FinalCalculate(char *str, stack_t *num_stack, stack_t *oper_stack);
 						 
 static void InitlizeEventLUT();
 static void InitlizeOperatorLUT();
 static void InitlizeMatrixOfFunctions();
 
-static void ApplyTopOperation(int *status, stack_t *operand_stack, \
-							  stack_t *operator_stack);
+static void ApplyOperation(stack_t *num_stack, stack_t *oper_stack);
 
 static double Addition(double value1, double value2);
 static double Subtraction(double value1, double value2);
@@ -84,26 +68,24 @@ static double Multiply(double value1, double value2);
 
 status_t Calculate(const char *expression, double *res)
 {
-	static int status = SUCCESS;
-	int current_state = WAITING_FOR_OPERAND;
 	int event = 0;
 	char *runner = NULL;
-	stack_t *operand_stack = NULL;
-	stack_t *operator_stack = NULL;
+	stack_t *num_stack = NULL;
+	stack_t *oper_stack = NULL;
 	
     assert(NULL != expression);
     
     runner = (char *)expression;
      
-    operand_stack = StackCreate(strlen(expression), sizeof(double));
-    if (NULL == operand_stack)
+    num_stack = StackCreate(strlen(expression), sizeof(double));
+    if (NULL == num_stack)
     {
 		return (ALLOCATION_ERROR);
     }
-    operator_stack = StackCreate(strlen(expression), sizeof(char));
-    if (NULL == operand_stack)
+    oper_stack = StackCreate(strlen(expression), sizeof(char));
+    if (NULL == num_stack)
     {
-		StackDestroy(operand_stack);
+		StackDestroy(num_stack);
 		
 		return (ALLOCATION_ERROR);
     }
@@ -114,128 +96,108 @@ status_t Calculate(const char *expression, double *res)
 
 	while (END != event && SUCCESS == status)
 	{
-		event = event_lut[(int)*runner];
+		event = event_lut[(size_t)(*runner)];
 				 
-		runner = function_matrix[current_state][event](runner, &status, \
-										   operand_stack, operator_stack); 
-		
-		current_state ^= WAITING_FOR_OPERAND ^ WAITING_FOR_OPERATOR;
+		runner = function_matrix[e_state][event](runner, num_stack, oper_stack); 
 	}
 	    
-   	*res = *(double *)StackPeek(operand_stack);
+   	*res = *(double *)StackPeek(num_stack);
 	
-	StackDestroy(operand_stack);
-	StackDestroy(operator_stack);
+	StackDestroy(num_stack);
+	StackDestroy(oper_stack);
 	
 	return (status);
 }
 
-static char *SyntaxError(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack)
+static char *SyntaxError(char *str, stack_t *num_stack, stack_t *oper_stack)
 {
 	double error_result = 0;
-	(void)operator_stack;
+	(void)oper_stack;
 	
-	*status = SYNTAX_ERROR;
+	status = SYNTAX_ERROR;
 	
-	StackPush(operand_stack, &error_result);
+	StackPush(num_stack, &error_result);
 	
 	return ((char *)str);
 }
 
-static char *PushOperand(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack)
+static char *PushOperand(char *str, stack_t *num_stack, stack_t *oper_stack)
 {
 	double data = 0;
 	char *endptr = NULL;
-	(void)status;
-	(void)operator_stack;
+	(void)oper_stack;
 	
 	data = strtod(str ,&endptr);
 	
-	StackPush(operand_stack, &data);
+	StackPush(num_stack, &data);
+			
+	e_state = WAITING_FOR_OPERATOR;
 	
 	return (endptr);
 }
 
-static char *PushOpenBracket(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack)
+static char *OpenBracket(char *str, stack_t *num_stack, stack_t *oper_stack)
 {
 	char *runner = (char *)str ;
-	(void)status;
-	(void)operator_stack;
+	(void)num_stack;
 	
-	StackPush(operand_stack, (void *)str);
+	StackPush(oper_stack, (void *)str);
 	
 	++runner;
+	
+	e_state = WAITING_FOR_OPERAND;
 	
 	return (runner);
 }
 
-static char *PushArithmeticOperator(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack)
+static char *PushOperator(char *str, stack_t *num_stack, stack_t *oper_stack)
 {
 	char top_operator = 0;
 	char *runner = (char *)str;
-	(void)status;
-	
-	if (TRUE != StackIsEmpty(operator_stack))
+
+	if (TRUE != StackIsEmpty(oper_stack))
 	{
-		top_operator = *(char *)StackPeek(operator_stack);
-		if (event_lut[(size_t)top_operator] >= MULTIPLY_OPERATOR && \
+		top_operator = *(char *)StackPeek(oper_stack);
+		if (event_lut[(size_t)top_operator] >= event_lut[(size_t)*str] && \
 			SUCCESS == status)
 		{
-			ApplyTopOperation(status, operand_stack, operator_stack);	
+			ApplyOperation(num_stack, oper_stack);	
 		}
 	}
 	
-	StackPush(operator_stack, (void *)str);
+	StackPush(oper_stack, (void *)str);
 	
 	++runner;
+	
+	e_state = WAITING_FOR_OPERAND;
 	
 	return (runner);
 }
 
-static char *PushFactorizationOperator(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack)
+static char *CloseBrackets(char *str, stack_t *num_stack, stack_t *oper_stack)
 {
 	char *runner = (char *)str;
-	(void)status;
-	(void)operand_stack;
+	(void)num_stack;
+	(void)oper_stack;
 	
-	StackPush(operator_stack, (void *)str);
-	
-	++runner;
-	
-	return (runner);
-}
-
-static char *CloseBrackets(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack)
-{
-	char *runner = (char *)str;
-	(void)status;
-	(void)operand_stack;
-	(void)operator_stack;
-	
-	while ('(' != *(char *)StackPeek(operand_stack) && SUCCESS == status)
+	while ('(' != *(char *)StackPeek(oper_stack) && SUCCESS == status)
 	{
-		ApplyTopOperation(status, operand_stack, operator_stack);
+		ApplyOperation(num_stack, oper_stack);
 	}
-	StackPop(operand_stack);
+	StackPop(oper_stack);
 	
 	++runner;
+	
+	e_state = WAITING_FOR_OPERATOR;
 	
 	return (runner);
 }
 
-static char *SkipSpaces(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack)
+static char *SkipSpaces(char *str, stack_t *num_stack, stack_t *oper_stack)
 {
 	char *runner = (char *)str;
-	(void)status;
-	(void)operand_stack;
-	(void)operator_stack;
+	(void)num_stack;
+	(void)oper_stack;
 	
 	while (' ' == *runner && '\t' == *runner)
 	{
@@ -245,45 +207,41 @@ static char *SkipSpaces(const char *str, int *status, \
 	return (runner);
 }
 
-static char *CalculateFinalResult(const char *str, int *status, \
-						 stack_t *operand_stack, stack_t *operator_stack)
+static char *FinalCalculate(char *str, stack_t *num_stack, stack_t *oper_stack)
 {
-	(void)status;
-
-	while (FINAL_RESULT != StackSize(operand_stack) && SUCCESS == status)
+	while (FINAL_RESULT != StackSize(num_stack) && SUCCESS == status)
 	{
-		ApplyTopOperation(status, operand_stack, operator_stack);	
+		ApplyOperation(num_stack, oper_stack);	
 	}
 	
 	return ((char *)str);
 }
 
-static void ApplyTopOperation(int *status, stack_t *operand_stack, \
-							  stack_t *operator_stack)
+static void ApplyOperation(stack_t *num_stack, stack_t *oper_stack)
 {
 	double value1 = 0;
 	double value2 = 0;
 	double current_result = 0;
 	char current_operator = '\0';
 
-	value1 = *(double *)StackPeek(operand_stack);
-	StackPop(operand_stack);
+	value1 = *(double *)StackPeek(num_stack);
+	StackPop(num_stack);
 
-	value2 = *(double *)StackPeek(operand_stack);
-	StackPop(operand_stack);
+	value2 = *(double *)StackPeek(num_stack);
+	StackPop(num_stack);
 
-	current_operator = *(char *)StackPeek(operator_stack);
-	StackPop(operator_stack);
+	current_operator = *(char *)StackPeek(oper_stack);
+	StackPop(oper_stack);
 	
 	if (0 == value1 && '/' == current_operator)
 	{
-		*status = MATH_ERROR;
+		status = MATH_ERROR;
 		return;
 	}
 
 	current_result = operator_lut[event_lut[(size_t)current_operator]](value1, value2);
 
-	StackPush(operand_stack, &current_result);
+	StackPush(num_stack, &current_result);
 }	
 
 static double Addition(double value1, double value2)
@@ -331,10 +289,10 @@ static void InitlizeEventLUT()
 
 static void InitlizeOperatorLUT()
 {
-	operator_lut[ADDITION_OPERATOR] = Addition;
-	operator_lut[SUBTRACTION_OPERATOR] = Subtraction;
-	operator_lut[MULTIPLY_OPERATOR] = Multiply;
-	operator_lut[DIVIDE_OPERATOR] = Divide;
+	operator_lut[PLUS] = Addition;
+	operator_lut[MINUS] = Subtraction;
+	operator_lut[MULTIPLY] = Multiply;
+	operator_lut[DIVIDE] = Divide;
 }
 
 static void InitlizeMatrixOfFunctions()
@@ -345,7 +303,7 @@ static void InitlizeMatrixOfFunctions()
     function_matrix[WAITING_FOR_OPERAND][MINUS] = SyntaxError;
     function_matrix[WAITING_FOR_OPERAND][MULTIPLY] = SyntaxError;
     function_matrix[WAITING_FOR_OPERAND][DIVIDE] = SyntaxError;
-    function_matrix[WAITING_FOR_OPERAND][OPEN_ROUND_BRACKET] = PushOpenBracket;
+    function_matrix[WAITING_FOR_OPERAND][OPEN_ROUND_BRACKET] = OpenBracket;
     function_matrix[WAITING_FOR_OPERAND][CLOSE_ROUND_BRACKET] = SyntaxError;
     function_matrix[WAITING_FOR_OPERAND][SPACE] = SkipSpaces;
     function_matrix[WAITING_FOR_OPERAND][TAB] = SkipSpaces;
@@ -353,13 +311,13 @@ static void InitlizeMatrixOfFunctions()
     
     function_matrix[WAITING_FOR_OPERATOR][OTHER] = SyntaxError;
     function_matrix[WAITING_FOR_OPERATOR][NUM] = SyntaxError;
-    function_matrix[WAITING_FOR_OPERATOR][PLUS] = PushArithmeticOperator;
-    function_matrix[WAITING_FOR_OPERATOR][MINUS] = PushArithmeticOperator;
-    function_matrix[WAITING_FOR_OPERATOR][MULTIPLY] = PushFactorizationOperator;
-    function_matrix[WAITING_FOR_OPERATOR][DIVIDE] = PushFactorizationOperator;
+    function_matrix[WAITING_FOR_OPERATOR][PLUS] = PushOperator;
+    function_matrix[WAITING_FOR_OPERATOR][MINUS] = PushOperator;
+    function_matrix[WAITING_FOR_OPERATOR][MULTIPLY] = PushOperator;
+    function_matrix[WAITING_FOR_OPERATOR][DIVIDE] = PushOperator;
     function_matrix[WAITING_FOR_OPERATOR][OPEN_ROUND_BRACKET] = SyntaxError;
     function_matrix[WAITING_FOR_OPERATOR][CLOSE_ROUND_BRACKET] = CloseBrackets;
     function_matrix[WAITING_FOR_OPERATOR][SPACE] = SkipSpaces;
     function_matrix[WAITING_FOR_OPERATOR][TAB] = SkipSpaces;
-    function_matrix[WAITING_FOR_OPERATOR][END] = CalculateFinalResult;
+    function_matrix[WAITING_FOR_OPERATOR][END] = FinalCalculate;
 }

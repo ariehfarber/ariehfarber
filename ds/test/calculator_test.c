@@ -9,7 +9,7 @@ int main()
 {
 	status_t my_status = SUCCESS;
 	double res = 0;
-	char *want_array[] = {"7+8", "8+83-2/5", "(3-2)*5+5-4+4+4"};
+	char *want_array[] = {"8+83-2/(5*2)"};
 	size_t want_array_size = sizeof(want_array) / sizeof(want_array[0]);
 	size_t i = 0;
 	
