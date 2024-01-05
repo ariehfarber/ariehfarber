@@ -74,7 +74,7 @@ test: $(DEBUG_EXECUTABLES)
 # Build the executables
 $(DIR)/%.out: $(TEST_DIR)/%_test.c $(DEBUG_DIR)/lib_%.so
 	@ $(CC) $(CFLAGS) -g -o $@ $< -Wl,-rpath,$(DEBUG_DIR) \
-	-L$(DEBUG_DIR) -l_$(notdir $(basename $@))
+	-L$(DEBUG_DIR) -l_$(notdir $(basename $@)) -lm
 
 # CLEAN #
 clean:
