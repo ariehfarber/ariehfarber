@@ -41,7 +41,7 @@ void TestUnsignedInt(unsigned int want, unsigned int got, int line)
 
 void TestDouble(double want, double got, int line)
 {
-	if (want < got)
+	if (want - got < 0.001)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);
