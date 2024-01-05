@@ -60,6 +60,7 @@ static char *FinalOperation(char *str, stack_t *num_stack, stack_t *oper_stack);
 
 static void ApplyOperation(stack_t *num_stack, stack_t *oper_stack);
 static status_t CheckMathErrors(char operator, double value1, double value2);
+static int CheckBracketMltiplication(char *str, stack_t *oper_stack);
 
 static status_t InitStacksAndLUT(size_t stack_size, stack_t **num_stack, \
 							  stack_t **oper_stack);					 
@@ -73,6 +74,8 @@ static double Divide(double value1, double value2);
 static double Multiply(double value1, double value2);
 static double Pow(double value1, double value2);
 
+static void DestroyTheStacks(stack_t **num_stack, stack_t **oper_stack);
+
 status_t Calculate(const char *expression, double *res)
 {
 	int event = 0;
@@ -81,8 +84,9 @@ status_t Calculate(const char *expression, double *res)
 	stack_t *oper_stack = NULL;
 	
     assert(NULL != expression);
-   
+
 	runner = (char *)expression;
+
 	status = InitStacksAndLUT(strlen(expression), &num_stack, &oper_stack);
 
 	while (END != event && SUCCESS == status)
@@ -93,8 +97,7 @@ status_t Calculate(const char *expression, double *res)
 	    
    	*res = *(double *)StackPeek(num_stack);
 	
-	StackDestroy(num_stack);
-	StackDestroy(oper_stack);
+	DestroyTheStacks(&num_stack, &oper_stack);
 	
 	return (status);
 }
@@ -132,6 +135,8 @@ static char *OpenBracket(char *str, stack_t *num_stack, stack_t *oper_stack)
 {
 	char *runner = (char *)str ;
 	(void)num_stack;
+
+	CheckBracketMltiplication(runner, oper_stack);
 	
 	StackPush(oper_stack, (void *)str);
 	
@@ -185,8 +190,7 @@ static char *CloseBrackets(char *str, stack_t *num_stack, stack_t *oper_stack)
     StackPop(oper_stack);
  
 	++runner;
-
-    state = WAITING_FOR_OPERATOR;
+	state = CheckBracketMltiplication(runner, oper_stack);
     
     return (runner);
 }
@@ -197,7 +201,7 @@ static char *SkipSpaces(char *str, stack_t *num_stack, stack_t *oper_stack)
 	(void)num_stack;
 	(void)oper_stack;
 	
-	while (' ' == *runner && '\t' == *runner)
+	while (' ' == *runner || '\t' == *runner)
 	{
 		++runner;
 	}
@@ -209,6 +213,10 @@ static char *FinalOperation(char *str, stack_t *num_stack, stack_t *oper_stack)
 {
 	while (FINAL_RESULT != StackSize(num_stack) && SUCCESS == status)
 	{
+		if ('(' == *(char *)StackPeek(oper_stack))
+		{
+			return (ErrorInSyntax(str, num_stack, oper_stack));
+		}
 		ApplyOperation(num_stack, oper_stack);	
 	}
 	
@@ -264,6 +272,25 @@ static status_t CheckMathErrors(char operator, double value1, double value2)
 	return (SUCCESS);
 }
 
+static int CheckBracketMltiplication(char *str, stack_t *oper_stack)
+{
+	static char multiplication_sign = '*';
+
+	if (state == WAITING_FOR_OPERATOR && '(' == *str)
+	{
+		StackPush(oper_stack, &multiplication_sign);
+	}
+
+	if ('0' <= *str && '9' >= *str)
+	{
+		StackPush(oper_stack, &multiplication_sign);
+
+		return (WAITING_FOR_OPERAND);
+	}
+
+    return (WAITING_FOR_OPERATOR);
+}
+
 static double Addition(double value1, double value2)
 {
 	return (value1 + value2);
@@ -287,6 +314,12 @@ static double Multiply(double value1, double value2)
 double Pow(double value1, double value2)
 {
     return (pow(value1, value2));
+}
+
+static void DestroyTheStacks(stack_t **num_stack, stack_t **oper_stack)
+{
+	StackDestroy(*num_stack);
+	StackDestroy(*oper_stack);
 }
 
 static status_t InitStacksAndLUT(size_t size, stack_t **num_stack, \
@@ -359,7 +392,7 @@ static void InitlizeMatrixOfFunctions()
     function_matrix[WAITING_FOR_OPERAND][OTHER] = ErrorInSyntax;
     function_matrix[WAITING_FOR_OPERAND][NUM] = PushOperand;
 	function_matrix[WAITING_FOR_OPERAND][OPEN_ROUND_BRACKET] = OpenBracket;
-    function_matrix[WAITING_FOR_OPERAND][CLOSE_ROUND_BRACKET] = ErrorInSyntax;
+    function_matrix[WAITING_FOR_OPERAND][CLOSE_ROUND_BRACKET] = CloseBrackets;
     function_matrix[WAITING_FOR_OPERAND][PLUS] = PushOperand;
     function_matrix[WAITING_FOR_OPERAND][MINUS] = PushOperand;
     function_matrix[WAITING_FOR_OPERAND][MULTIPLY] = ErrorInSyntax;
