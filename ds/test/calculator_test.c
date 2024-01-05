@@ -23,7 +23,7 @@ static void TestCalculate()
 	status_t want_status[] = {SUCCESS, SUCCESS, SYNTAX_ERROR, MATH_ERROR, \
 						 	  SUCCESS, SYNTAX_ERROR, SYNTAX_ERROR};
 	char *expressions[] = {"7+8", "8+83+-2^5", "8+83-2^", "2/0", \
-						   "8++8((3-2)5)", "3-2)5", "(3-2)5+ 5(4+4+4"};
+						   "8++8*((3-2)*5)", "3-2)5", "(3-2)5+ 5(4+4+4"};
 	double res = 0;
 	double want_res[] = {15, 49, 0, 0, 48, 0, 0};
 
