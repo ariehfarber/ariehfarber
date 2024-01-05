@@ -80,13 +80,14 @@ $(DIR)/%.out: $(TEST_DIR)/%_test.c $(DEBUG_DIR)/lib_%.so
 clean:
 	@ rm -f $(DEBUG_DIR)/* $(REL_DIR)/* $(DIR)/*.out 
 
-# Open a Spacific project #
+# Open a Specific Project
 open:
 	@ $(eval PROJECT := $(filter-out $@,$(MAKECMDGOALS)))
 	@ if echo "$(PROJECTS)" | grep -wq "$(PROJECT)"; then \
-		 gedit $(TEST_DIR)/$(PROJECT)_t*.c $(SRC_DIR)/$(PROJECT).c \
+		 code $(TEST_DIR)/$(PROJECT)_t*.c $(SRC_DIR)/$(PROJECT).c \
 		 $(HDR_DIR)/$(PROJECT).h & \
     fi
+
 # Disable Implicit Rule Search
 %:
 	@:

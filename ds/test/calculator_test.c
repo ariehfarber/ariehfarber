@@ -1,5 +1,5 @@
 /*******************************************************************************
-*Author: 
+*Author: Arieh Farber
 *******************************************************************************/
 #include <stdio.h> /*printf*/
 
@@ -7,29 +7,34 @@
 
 int main()
 {
-	status_t my_status = SUCCESS;
 	double res = 0;
-	char *want_array[] = {"8+83-2/(5*2)"};
-	size_t want_array_size = sizeof(want_array) / sizeof(want_array[0]);
+	status_t got_status = 0;
+	char *expressions[] = {"7+8", "8+83+-2^5", "8+83-2^", "2/0", \
+						   "8++8((3-2)5)", "3-2)5", "(3-2)5+ 5(4+4+4"};
+	double want_res[] =   {15, 49, 0, 0, \
+						   48, 0, 0};
+	int want_status[] =	  {SUCCESS, SUCCESS, SYNTAX_ERROR, MATH_ERROR, \
+						   SUCCESS, SYNTAX_ERROR, SYNTAX_ERROR};
+	size_t expressions_array_size = sizeof(expressions_array) / sizeof(expressions_array[0]);
 	size_t i = 0;
 	
-	for (i = 0; i < want_array_size; ++i)
+	for (i = 0; i < expressions_array_size; ++i)
 	{
-		my_status = Calculate(want_array[i], &res);
+		got_status = Calculate(want_array[i], &res);
 
-		if (SUCCESS == my_status)
+		if (SUCCESS == got_status)
 		{
-			printf("Result = %f status = %d\n", res, my_status);
+			printf("Result = %f status = %d\n", res, got_status);
 		}
-		else if(MATH_ERROR == my_status)
+		else if(MATH_ERROR == got_status)
 		{
 			printf("Result = %.0f status = MATH_ERROR\n", res);
 		}
-		else if(SYNTAX_ERROR == my_status)
+		else if(SYNTAX_ERROR == got_status)
 		{
 			printf("Result = %.0f status = SYNTAX_ERROR\n", res);
 		}
-		else if(ALLOCATION_ERROR == my_status)
+		else if(ALLOCATION_ERROR == got_status)
 		{
 			printf("Result = %.0f status = ALLOCATION_ERROR\n", res);
 		}	
