@@ -3,16 +3,18 @@
 *Reviewer:   
 *Date: 
 *******************************************************************************/
-#include <stdlib.h> /*strtod*/
-#include <string.h> /*strlen*/
-#include <assert.h> /*assert*/
-#include <math.h>   /*pow   */
+#include <stdlib.h> /*strtod */
+#include <string.h> /*strlen */
+#include <assert.h> /*assert */
+#include <math.h>   /*pow    */
+#include <ctype.h>  /*isspace*/
 
 #include "calculator.h"
 #include "stack.h"
 #include "ds_utils.h" /*TRUE, SUCCESS*/
 
-#define FINAL_RESULT 1
+#define FINAL_RESULT_SIZE 1
+#define ERROR_RESULT 	  0
 
 typedef enum 
 {
@@ -34,6 +36,7 @@ typedef enum
 	EXPONENT,
     SPACE,
     TAB,
+	ENTER,
     END,
     NUM_OF_EVENTS
 }events_t;
@@ -92,9 +95,16 @@ status_t Calculate(const char *expression, double *res)
 		event = event_lut[(size_t)(*runner)];
 		runner = function_matrix[state][event](runner, num_stack, oper_stack); 
 	}
-	    
-   	*res = *(double *)StackPeek(num_stack);
 	
+	if (SUCCESS == status)
+	{
+		*res = *(double *)StackPeek(num_stack);
+	}
+	else
+	{
+		*res = ERROR_RESULT;
+	}
+   	
 	DestroyTheStacks(&num_stack, &oper_stack);
 	
 	return (status);
@@ -199,7 +209,7 @@ static char *SkipSpaces(char *str, stack_t *num_stack, stack_t *oper_stack)
 	(void)num_stack;
 	(void)oper_stack;
 	
-	while (' ' == *runner || '\t' == *runner)
+	while (FALSE != isspace((int)*runner))
 	{
 		++runner;
 	}
@@ -209,7 +219,7 @@ static char *SkipSpaces(char *str, stack_t *num_stack, stack_t *oper_stack)
 
 static char *FinalOperation(char *str, stack_t *num_stack, stack_t *oper_stack)
 {
-	while (FINAL_RESULT != StackSize(num_stack) && SUCCESS == status)
+	while (FINAL_RESULT_SIZE != StackSize(num_stack) && SUCCESS == status)
 	{
 		if ('(' == *(char *)StackPeek(oper_stack))
 		{
@@ -373,6 +383,7 @@ static void InitlizeEventLUT()
 	event_lut['^'] = EXPONENT;
 	event_lut[' '] = SPACE;
 	event_lut['\t'] = TAB;
+	event_lut['\n'] = ENTER;
 	event_lut['\0'] = END;
 }
 
@@ -398,6 +409,7 @@ static void InitlizeMatrixOfFunctions()
 	function_matrix[WAITING_FOR_OPERAND][EXPONENT] = ErrorInSyntax;
     function_matrix[WAITING_FOR_OPERAND][SPACE] = SkipSpaces;
     function_matrix[WAITING_FOR_OPERAND][TAB] = SkipSpaces;
+	function_matrix[WAITING_FOR_OPERAND][ENTER] = SkipSpaces;
     function_matrix[WAITING_FOR_OPERAND][END] = ErrorInSyntax;
     
     function_matrix[WAITING_FOR_OPERATOR][OTHER] = ErrorInSyntax;
@@ -411,5 +423,6 @@ static void InitlizeMatrixOfFunctions()
 	function_matrix[WAITING_FOR_OPERATOR][EXPONENT] = PushOperator;
     function_matrix[WAITING_FOR_OPERATOR][SPACE] = SkipSpaces;
     function_matrix[WAITING_FOR_OPERATOR][TAB] = SkipSpaces;
+	function_matrix[WAITING_FOR_OPERATOR][ENTER] = SkipSpaces;
     function_matrix[WAITING_FOR_OPERATOR][END] = FinalOperation;
 }

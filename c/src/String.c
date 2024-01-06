@@ -46,7 +46,7 @@ int StrNCmp(const char *str1, const char *str2, size_t n)
 	
 	if (n == 0) 
 	{
-        	return (0); 	
+        return (0); 	
 	}
 
 	while ('\0' != *str1 && '\0' != *str2 && 0 < n)
@@ -60,14 +60,12 @@ int StrNCmp(const char *str1, const char *str2, size_t n)
 		--n;
 	}
 	
-    if (0 == n)
-    {
-        return 0;
-    }
-    else
+    if (0 < n)
     {
         return (*str1 - *str2);
     }
+
+	return (0);
 }
 
 int StrCaseCmp(const char *str1, const char *str2)
@@ -80,7 +78,7 @@ int StrCaseCmp(const char *str1, const char *str2)
 	{
 		if (tolower(*str1) != tolower(*str2))
 		{
-			break;
+			return (tolower(*str1) - tolower(*str2));
 		}
 		++str1;
 		++str2;

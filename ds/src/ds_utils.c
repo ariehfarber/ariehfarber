@@ -3,6 +3,7 @@
 *******************************************************************************/
 #include <stdio.h>  /*printf*/
 #include <string.h> /*strcmp*/
+#include <math.h>   /*fabs  */
 
 #include "ds_utils.h" /*EPSILON*/
 
@@ -40,7 +41,7 @@ void TestUnsignedInt(unsigned int want, unsigned int got, int line)
 
 void TestDouble(double want, double got, int line)
 {
-	if (want - got > EPSILON)
+	if (fabs(want - got) > EPSILON)
 	{
 		printf("\033[0;31m");
 		printf("Error. failed at line %d\n", line);

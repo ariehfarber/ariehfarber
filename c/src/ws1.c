@@ -5,6 +5,7 @@
 *******************************************************************************/
 #include <stdio.h>  /*printf*/
 #include <assert.h> /*assert*/
+#include <stdlib.h> /*abs	*/
 
 #include "ws1.h"
 
@@ -46,7 +47,7 @@ int FlipDigits(signed int number)
 	
 	if (0 > number) 
 	{
-		number = -number;
+		number = abs(number);
 		sign = -1;
 	}
 
