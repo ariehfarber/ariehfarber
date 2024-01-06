@@ -58,7 +58,7 @@ void ThreeBitsOn(unsigned int *arr, unsigned int size)
 	unsigned int mask = 1;
 	
 	printf("\nThreeBitsOn:\n");
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; ++i)
 	{
 		num = arr[i];
 		
@@ -83,7 +83,7 @@ unsigned char ByteMirrorWithLoop(unsigned char n)
 	int number_of_bits = sizeof(unsigned char) * 8;
 	int i = 0;
 	
-	for (i = 0; i < number_of_bits; i++)
+	for (i = 0; i < number_of_bits; ++i)
 	{
 		mirror_n |= (((n >> i) & 1) << (number_of_bits - 1 - i));
 	}

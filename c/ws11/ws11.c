@@ -37,13 +37,13 @@ int AtoiAnyBase(const char *str, int base)
 	
 	while (' ' == *str || '\t' == *str)
 	{
-		str++;
+		++str;
 	}
 	
 	if ('-' == *str)
 	{
 		sign = NEGATIVE;
-		str++;
+		++str;
 	}
 	
 	while ('\0' != *str) 
@@ -60,7 +60,7 @@ int AtoiAnyBase(const char *str, int base)
 
 		digit *= base;
 		digit += CharToInt(*str);
-		str++;
+		++str;
 	}
 	
 	return (digit * sign);
@@ -84,7 +84,7 @@ char* ItoaAnyBase(int num, char* buffer, int base)
 	if (0 == num)
 	{
 		*buffer = '0';
-		buffer++;
+		++buffer;
 		*buffer = '\0';
 		return (buffer_start);
 	}
@@ -100,13 +100,13 @@ char* ItoaAnyBase(int num, char* buffer, int base)
 		digit = num % base;
 		*buffer = IntToChar(digit);
 		num /= base;
-		buffer++;
+		++buffer;
 	}
 	
 	if (TRUE == is_negative)
 	{
 		*buffer = '-';
-		buffer++;
+		++buffer;
 	}
 	
 	*buffer = '\0';
@@ -122,12 +122,12 @@ void PrintArrayOfChars(char *str1, char *str2 ,char *str3, size_t size1,
 	size_t i = 0;
 	char character_table[ASCII_SIZE] = {0};
 	
-    for (i = 0; i < size1; i++) 
+    for (i = 0; i < size1; ++i) 
     {
         character_table[(int)str1[i]] = TRUE;
     }
 
-    for (i = 0; i < size2; i++) 
+    for (i = 0; i < size2; ++i) 
     {
         if (character_table[(int)str2[i]] == TRUE) 
         {
@@ -135,12 +135,12 @@ void PrintArrayOfChars(char *str1, char *str2 ,char *str3, size_t size1,
         }
     }
 
-    for (i = 0; i < size3; i++) 
+    for (i = 0; i < size3; ++i) 
     {
         character_table[(int)str3[i]] = FALSE;
     }
 
-    for (i = 0; i < ASCII_SIZE; i++) 
+    for (i = 0; i < ASCII_SIZE; ++i) 
     {
         if (character_table[i] == TRUE_TRUE) 
         {
@@ -192,7 +192,7 @@ static char *StrRev(char *str)
 
 	assert(NULL != str);
 		
-	for (p1 = str, p2 = str + strlen(str) - 1; p2 > p1; p1++, p2--)
+	for (p1 = str, p2 = str + strlen(str) - 1; p2 > p1; ++p1, --p2)
 	{
 		*p1 ^= *p2;
 		*p2 ^= *p1;

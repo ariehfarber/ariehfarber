@@ -62,7 +62,7 @@ static void TestStrCmp()
 	int i = 0;
 	int size = 3;
 	
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; ++i)
 	{
 		TestInt(strcmp(s1[i], s2[i]), StrCmp(s1[i], s2[i]), __LINE__);
 	}
@@ -76,7 +76,7 @@ static void TestStrNCmp()
 	int size = 3;
 	size_t n = 4; 
 
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; ++i)
 	{
 		TestInt(strncmp(s1[i], s2[i], n), StrNCmp(s1[i], s2[i], n), __LINE__);
 	}
@@ -89,7 +89,7 @@ static void TestStrCaseCmp()
 	int i = 0;
 	int size = 3;
 
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; ++i)
 	{
 		TestInt(strcasecmp(s1[i], s2[i]), StrCaseCmp(s1[i], s2[i]), __LINE__);
 	}

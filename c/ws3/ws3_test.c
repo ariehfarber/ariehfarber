@@ -41,7 +41,7 @@ static void TestMatrixRowSums()
 		printf("Memory allocation failed\n");
 	}
 	
-	for (i = 0; i < ROWS; i++) 
+	for (i = 0; i < ROWS; ++i) 
 	{
 		array[i] = (int *)malloc(COLS * sizeof(int));
 		if (NULL == array[i])
@@ -58,14 +58,14 @@ static void TestMatrixRowSums()
 		printf("Memory allocation failed\n");
 	}
 	
-	for (i = 0; i < ROWS; i++)
+	for (i = 0; i < ROWS; ++i)
 	{
 		sum_of_rows[i] = 0;
 	}
 		
-	for (i = 0; i < ROWS; i++)
+	for (i = 0; i < ROWS; ++i)
 	{
-		for (j = 0; j < COLS; j++)
+		for (j = 0; j < COLS; ++j)
 		{
 			array[i][j] = i * COLS + j;
 		}
@@ -73,12 +73,12 @@ static void TestMatrixRowSums()
 			
 	MatrixRowSums(array, sum_of_rows);
 	
-	for (i = 0; i < COLS; i++)
+	for (i = 0; i < COLS; ++i)
 	{
 			TestInt(want[i], sum_of_rows[i], __LINE__);
 	}
 	
-	for (i = 0; i < ROWS; i++) 
+	for (i = 0; i < ROWS; ++i) 
 	{
     		free(array[i]);
 	}
@@ -96,7 +96,7 @@ static void TestJosephusProblem()
 	
 	size_of_array = sizeof(array) / sizeof(array[0]); 
 	
-	for (i = 0; i < size_of_array; i++) 
+	for (i = 0; i < size_of_array; ++i) 
 	{
 	    array[i] = 1;
 	}
@@ -121,7 +121,7 @@ static void TestPrintDataSize()
 	num_of_types = sizeof(data_size) / sizeof(data_size[0]);
 	
 	printf("\n");
-	for (i = 0; i < num_of_types; i++)
+	for (i = 0; i < num_of_types; ++i)
 	{
 		PrintDataSize(types[i], data_size[i]);
 	}
@@ -136,7 +136,7 @@ static void TestPrintEnvVariablesLowCase()
 	
 	while (NULL != environ[environ_size])
 	{
-		environ_size++;
+		++environ_size;
 	}
 	
 	buffer = (char **)malloc(environ_size * sizeof(char *));
@@ -146,14 +146,14 @@ static void TestPrintEnvVariablesLowCase()
 		return;
 	}
 	
-	for (i = 0; i < environ_size; i++)
+	for (i = 0; i < environ_size; ++i)
 	{
 		buffer[i] = strdup(environ[i]);
 	}
 	
 	PrintEnvVariablesLowCase(buffer, environ_size);
 	
-	for (i = 0; i < environ_size; i++)
+	for (i = 0; i < environ_size; ++i)
 	{
 		free(buffer[i]);
 	}

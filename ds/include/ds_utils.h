@@ -11,6 +11,7 @@
 #define SUCCESS    0
 #define ASCII_SIZE 256
 #define EPSILON    0.0001
+#define WORD_SIZE  sizeof(size_t)
 
 /******************************************************************************
 *Description: Compares 2 int variables

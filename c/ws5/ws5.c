@@ -55,7 +55,7 @@ void PrintInt()
 	int size = 10;
 	print_me_t array[10];
 
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; ++i)
 	{
 		array[i].number = i * 5;
 		array[i].StrPrint = Print;
@@ -92,7 +92,7 @@ int FileEditor(const char *title)
 			n = 1;
 		}
 		
-		for (i = 0; i < size; i++)
+		for (i = 0; i < size; ++i)
 		{
 			if (!cmnd_array[i].Comparison(cmnd_array[i].str, string, n))
 			{
@@ -162,7 +162,7 @@ static output_t CountCommand(const char *title)
 	{
 		if (c == '\n')
 		{
-			count++;
+			++count;
 		}
 	}
 	

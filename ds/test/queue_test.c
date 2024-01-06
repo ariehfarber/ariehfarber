@@ -55,14 +55,14 @@ static void TestQueueEnqueueAndDequeue(queue_t *queue, int data[], int size)
 	int i = 0;
 	void *value = NULL;
 	
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; ++i)
 	{
 		status = QueueEnqueue(queue, &data[i]);
 		value = QueuePeek(queue);
 		TestInt(SUCCESS, status, __LINE__);
 	}
 	
-	for (i = 0; i < (size / 2); i++)
+	for (i = 0; i < (size / 2); ++i)
 	{
 		QueueDequeue(queue);
 		value = QueuePeek(queue);

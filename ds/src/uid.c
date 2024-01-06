@@ -26,7 +26,7 @@ ilrd_uid_t UIDCreate(void)
 	int state = SUCCESS;
 
 	my_ilrd_uid.counter = counter;
-	counter++;
+	++counter;
 	
 	my_ilrd_uid.pid = getpid();
 	

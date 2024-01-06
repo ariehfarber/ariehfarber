@@ -129,7 +129,7 @@ void TestNChar(char *want, char *got, size_t n, int line)
 			printf("\033[0m"); 
 			break;
 		}
-		n--;	
+		--n;	
 	}
 	if (0 == n)
 	{

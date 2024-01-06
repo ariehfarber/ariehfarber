@@ -20,7 +20,7 @@ void *MemSet(void *str, int c, size_t n)
     
     runner = (char *)str;
 
-    for (i = 0; i < word_size; i++) 
+    for (i = 0; i < word_size; ++i) 
     {
         word_chunk <<= 8;
         word_chunk |= c_character;
@@ -29,8 +29,8 @@ void *MemSet(void *str, int c, size_t n)
 	while (0 != ((size_t)runner & (word_size - 1)) && 0 != n)
 	{
 		*runner = c_character;
-		runner++;
-		n--;
+		++runner;
+		--n;
 	}
   
 	while (n > word_size)
@@ -43,8 +43,8 @@ void *MemSet(void *str, int c, size_t n)
     while (0 != n)
 	{
 		*runner = c_character;
-		runner++;
-		n--;
+		++runner;
+		--n;
 	}
 
     return (str);
@@ -70,7 +70,7 @@ void *MemCpy(void *dest, const void *src, size_t n)
 		*dest_runner = *src_runner;
 		src_runner += ptr_step;
 		dest_runner += ptr_step;
-		n--;
+		--n;
 	}
 
     aligned_src_runner = (size_t *)src_runner;
@@ -90,7 +90,7 @@ void *MemCpy(void *dest, const void *src, size_t n)
 		*dest_runner = *src_runner;
 		src_runner += ptr_step;
 		dest_runner += ptr_step;
-		n--;
+		--n;
 	}
 
     return (dest); 
@@ -123,7 +123,7 @@ void *MemMove(void *dest, const void *src, size_t n)
 		*dest_runner = *src_runner;
 		dest_runner += ptr_step;
 		src_runner += ptr_step;
-		n--;
+		--n;
 	}
 
 	aligned_dest_runner = (size_t *)dest_runner;
@@ -143,7 +143,7 @@ void *MemMove(void *dest, const void *src, size_t n)
 		*dest_runner = *src_runner;
 		dest_runner += ptr_step;
 		src_runner += ptr_step;
-		n--;
+		--n;
 	}
 
     return (dest); 

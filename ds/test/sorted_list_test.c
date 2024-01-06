@@ -62,7 +62,7 @@ static size_t TestInsert(sorted_list_t *sorted_list)
 
 	array_size = sizeof(data_array_1) / sizeof(data_array_1[0]);
 	
-	for (i = 0; i < array_size; i++)
+	for (i = 0; i < array_size; ++i)
 	{
 		SortedListInsert(sorted_list, &data_array_1[i]);	
 	}
@@ -81,7 +81,7 @@ static void TestMerge(sorted_list_t *sorted_list)
 
 	array_size = sizeof(data_array_2) / sizeof(data_array_2[0]);
 	
-	for (i = 0; i < array_size; i++)
+	for (i = 0; i < array_size; ++i)
 	{
 		SortedListInsert(merge_list, &data_array_2[i]);	
 	}

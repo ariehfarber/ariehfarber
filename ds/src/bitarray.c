@@ -104,7 +104,7 @@ size_t BitArrayCountOn(bitarray_t b_arr)
 	while (0 != b_arr)
 	{
 		b_arr &= (b_arr - 1);
-		set_bit_counter++;
+		++set_bit_counter;
 	}
 	
 	return (set_bit_counter);
@@ -131,8 +131,8 @@ char *BitArrayToString(bitarray_t b_arr, char *buffer)
     {
         digit = (b_arr >> (bit_counter - 1)) & MASK_ONE;
         *buffer = (char)digit + '0';
-        bit_counter--;
-        buffer++;
+        --bit_counter;
+        ++buffer;
     }
 
     *buffer = '\0';
@@ -152,7 +152,7 @@ bitarray_t BitArrayRotateLeft(bitarray_t b_arr, size_t offset)
 		hold_value = (b_arr & (mask << (SIZE_T_BITS - 1))) >> (SIZE_T_BITS - 1);
 		b_arr <<= 1;
 		b_arr |= hold_value;
-		offset--;
+		--offset;
 	}
 
 	return (b_arr);	
@@ -170,7 +170,7 @@ bitarray_t BitArrayRotateRight(bitarray_t b_arr, size_t offset)
 		hold_value = (b_arr & mask) << (SIZE_T_BITS - 1);
 		b_arr >>= 1;
 		b_arr |= hold_value;
-		offset--;
+		--offset;
 	}
 
 	return (b_arr);	
@@ -181,7 +181,7 @@ bitarray_t BitArrayMirror(bitarray_t b_arr)
 	bitarray_t mirror_b_arr = 0;
 	bitarray_t i = 0;
 	
-	for (i = 0; i < SIZE_T_BITS; i++)
+	for (i = 0; i < SIZE_T_BITS; ++i)
 	{
 		mirror_b_arr |= (((b_arr >> i) & 1) << (SIZE_T_BITS - 1 - i));
 	}
@@ -211,7 +211,7 @@ bitarray_t BitArrayMirrorLUT(bitarray_t b_arr)
 	
 	BitArrayInitializeMirrorLUT();
 	
-	for (i = 0; i < (BYTE_SIZE - 1); i++)
+	for (i = 0; i < (BYTE_SIZE - 1); ++i)
 	{
 		mirror_b_arr |= mirror_look_up_table[b_arr & (OCTET_VALUES - 1)];
 		mirror_b_arr <<= BYTE_SIZE;
@@ -225,7 +225,7 @@ static void BitArrayInitializeCountLUT()
 {
 	int i = 0;
 	
-	for (i = 0; i < OCTET_VALUES; i++)
+	for (i = 0; i < OCTET_VALUES; ++i)
 	{
 		bit_look_up_table[i] = (i & MASK_ONE) + bit_look_up_table[i / 2];
 	} 
@@ -237,10 +237,10 @@ static void BitArrayInitializeMirrorLUT()
 	int i = 0;
 	int mirror_num = 0;
 
-	for (number = 0; number < OCTET_VALUES; number++)
+	for (number = 0; number < OCTET_VALUES; ++number)
 	{
 		mirror_num = 0;
-		for (i = 0; i < BYTE_SIZE; i++)
+		for (i = 0; i < BYTE_SIZE; ++i)
 		{
 			mirror_num |= (((number >> i) & MASK_ONE) << (BYTE_SIZE - 1 - i));
 		}

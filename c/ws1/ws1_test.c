@@ -49,7 +49,7 @@ static void TestPowerBaseTen()
 	
 	size = sizeof(got_cases) / sizeof(got_cases[0]);
 	
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; ++i)
 	{
 		got_val = want[i] - PowerBaseTen(got_cases[i]);
 		
@@ -66,7 +66,7 @@ static void TestFlipDigits()
 	
 	size = sizeof(got_cases) / sizeof(got_cases[0]);
 	
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; ++i)
 	{
 		TestInt(want[i], FlipDigits(got_cases[i]), __LINE__);
 	}

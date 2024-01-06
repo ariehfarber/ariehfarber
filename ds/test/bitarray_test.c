@@ -221,7 +221,7 @@ static void PrintInBinary64Bits(bitarray_t number)
 	size = sizeof(size_t) * CHAR_BIT - 1;
 	
 	printf("want ");
-	for (i = size; i >= 0; i--) 
+	for (i = size; i >= 0; --i) 
 	{
 		binaryDigit = (number >> i) & 1;
 		printf("%d", binaryDigit);

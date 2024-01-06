@@ -50,7 +50,7 @@ void PrintElements(element_t *my_elements)
 {	
 	int i = 0;
 				
-	for (i = 0; i < ELEMENT_NUM; i++)
+	for (i = 0; i < ELEMENT_NUM; ++i)
 	{
 		my_elements[i].PrintValue(my_elements[i].data);
 	}
@@ -61,7 +61,7 @@ void AddElements(element_t *my_elements, int int_num)
 {	
 	int i = 0;
 				
-	for (i = 0; i < ELEMENT_NUM; i++)
+	for (i = 0; i < ELEMENT_NUM; ++i)
 	{
 		my_elements[i].AddNumber(&my_elements[i].data, int_num);
 	}
@@ -71,7 +71,7 @@ void CleanElements(element_t *my_elements)
 {	
 	int i = 0;
 				
-	for (i = 0; i < ELEMENT_NUM; i++)
+	for (i = 0; i < ELEMENT_NUM; ++i)
 	{
 		my_elements[i].CleanValue(&my_elements[i].data);
 	}

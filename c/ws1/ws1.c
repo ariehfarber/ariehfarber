@@ -24,13 +24,13 @@ double PowerBaseTen(signed int exponent)
 	
 	if (0 > exponent)
 	{
-		for (i = 0; i < -exponent; i++)
+		for (i = 0; i < -exponent; ++i)
 		{
 			sum /= base;	
 		}	
 	}
 
-	for (i = 0; i < exponent; i++)
+	for (i = 0; i < exponent; ++i)
 	{
 		sum *= base;
 	}

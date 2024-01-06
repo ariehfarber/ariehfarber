@@ -29,7 +29,7 @@ void CopyArray(int *arry, int *arry_copy, int arry_size)
 {
 	int i;
 
-	for (i = 0; i < arry_size; i++)
+	for (i = 0; i < arry_size; ++i)
 	{
 		arry_copy[i] = arry[i];
 	}

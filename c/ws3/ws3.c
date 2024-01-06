@@ -23,13 +23,13 @@ int *MatrixRowSums(int **matrix, int *row_sums)
 	assert(matrix);
 	assert(row_sums);
 	
-	for (i = 0; i < ROWS; i++)
+	for (i = 0; i < ROWS; ++i)
 	{
-		for (j = 0; j < COLS; j++)
+		for (j = 0; j < COLS; ++j)
 		{
 			*row_sums += matrix[i][j];
 		}
-		row_sums++;
+		++row_sums;
 	}
 	
 	return (row_sums); 
@@ -63,7 +63,7 @@ size_t JosephusProblem(size_t *array, size_t array_size)
 		}
 	}
 	
-    for (i = 0; i < array_size; i++) 
+    for (i = 0; i < array_size; ++i) 
     {
     	if (1 == array[i]) 
     	{
@@ -86,7 +86,7 @@ void PrintEnvVariablesLowCase(char **buffer, size_t environ_size)
 	assert(buffer);
 		
 	printf("Environment variables\n");
-	for (i = 0; i < environ_size; i++)
+	for (i = 0; i < environ_size; ++i)
 	{
 		printf("%s\n", ToLowerString(buffer[i]));
 	}
@@ -107,7 +107,7 @@ static char *ToLowerString(char *str)
 		{
 			*str = tolower(*str);
 		}
-	str++;
+	++str;
 	}
 	
 	return (start);

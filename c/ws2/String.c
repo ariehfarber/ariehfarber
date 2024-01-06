@@ -18,8 +18,8 @@ size_t StrLen(const char *str)
 	
 	while ('\0' != *str)
 	{
-		count++;
-		str++;
+		++count;
+		++str;
 	}
 	
 	return (count);
@@ -32,8 +32,8 @@ int StrCmp(const char *str1, const char *str2)
 	
 	while (*str1 == *str2 && '\0' != *str1)
 	{
-		str1++;
-		str2++;	
+		++str1;
+		++str2;	
 	}
 			
 	return (*str1 - *str2);
@@ -55,9 +55,9 @@ int StrNCmp(const char *str1, const char *str2, size_t n)
         {
             return (*str1 - *str2);
         }
-		str1++;
-		str2++;	
-		n--;
+		++str1;
+		++str2;	
+		--n;
 	}
 	
     if (0 == n)
@@ -82,8 +82,8 @@ int StrCaseCmp(const char *str1, const char *str2)
 		{
 			break;
 		}
-		str1++;
-		str2++;
+		++str1;
+		++str2;
 	}
 	
 	return (tolower(*str1) - tolower(*str2));
@@ -101,8 +101,8 @@ char *StrCpy(char *dest, const char *src)
 	while ('\0' != *src)
 	{
 		*dest = *src;
-		src++;
-		dest++;
+		++src;
+		++dest;
 	}
 	
 	*dest = '\0';
@@ -122,16 +122,16 @@ char *StrNCpy(char *dest, const char *src, size_t n)
 	while ('\0' != *src && n > 0)
 	{
 		*dest = *src;
-		src++;
-		dest++;
-		n--;
+		++src;
+		++dest;
+		--n;
 	}
 
 	while (0 < n)
 	{
 		*dest = '\0';	
-		dest++;
-		n--;
+		++dest;
+		--n;
 	}
 	
 	return (start);
@@ -143,7 +143,7 @@ char *StrChr(const char *str, int c)
 	
 	while ('\0' != *str && *str != c)
 	{
-		str++;
+		++str;
 	}
 	
 	if (*str == c)
@@ -200,9 +200,9 @@ char *StrNCat(char *dest, const char *src, size_t n)
 	{
 		*dest = *src;
 		
-		dest++;
-		src++;
-		n--;
+		++dest;
+		++src;
+		--n;
 	}
 	*dest = '\0';
 	
@@ -224,7 +224,7 @@ char *StrStr(const char *haystack, const char *needle)
 		{
 			return ((char *)haystack);
 		}
-		haystack++;		 
+		++haystack;		 
 	}
 	
 	return (NULL);		
@@ -240,8 +240,8 @@ size_t StrSpn(const char *str, const char *accept)
 	
 	while ('\0' != *str && NULL != StrChr(accept, *str))
 	{
-			str++;
-			count++;	
+			++str;
+			++count;	
 	}
 	
 	return (count);

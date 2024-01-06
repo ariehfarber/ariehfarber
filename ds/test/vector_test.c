@@ -33,7 +33,7 @@ static void TestVector()
 	test_vector = VectorCreate(element_size, initial_capacity);
 	assert(NULL != test_vector);
 	
-	for (i = 0; i < initial_capacity * 2; i++) 
+	for (i = 0; i < initial_capacity * 2; ++i) 
 	{
 		value = 101 + i;
 		status = VectorPushBack(test_vector, &value);
@@ -41,7 +41,7 @@ static void TestVector()
 		PrintPointer(test_vector, i);
 	}
 	
-	for (i = 0; i < initial_capacity; i++) 
+	for (i = 0; i < initial_capacity; ++i) 
 	{
 		value = 1 + i;
 		status = VectorPopBack(test_vector);

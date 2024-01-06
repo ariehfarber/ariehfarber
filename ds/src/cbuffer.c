@@ -59,9 +59,9 @@ size_t BufferRead(void *dest, buffer_t *buffer, size_t n)
 	while (0 != n)
 	{
 		*dest_ptr = buffer->array[buffer->read + OFFSET];
-		dest_ptr++;
+		++dest_ptr;
 		buffer->read = (buffer->read + OFFSET) % (buffer->capacity + OFFSET);
-		n--;		
+		--n;		
 	}
 		
 	return (read_elements);
@@ -82,9 +82,9 @@ size_t BufferWrite(const void *src, buffer_t *buffer, size_t n)
 	while (0 != n)
 	{
 		buffer->array[buffer->write + OFFSET] = *src_ptr;
-		src_ptr++;
+		++src_ptr;
 		buffer->write = (buffer->write + 1) % (buffer->capacity + OFFSET);
-		n--;	
+		--n;	
 	}
 		
 	return (write_elements);

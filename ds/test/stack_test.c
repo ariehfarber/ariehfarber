@@ -60,7 +60,7 @@ static void TestStack()
 	printf("Capacity of stack: %lu\n\n", capacity_of_stack);
 	
 	printf("Pushing the stack - \n");
-	for (i = 0; i < capacity; i++)
+	for (i = 0; i < capacity; ++i)
 	{
 		StackPush(got_stack, &values[i]);
 		peek = StackPeek(got_stack);

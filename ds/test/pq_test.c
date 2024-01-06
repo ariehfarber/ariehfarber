@@ -69,7 +69,7 @@ static size_t TestEnqueue(pq_t *pq)
 
 	array_size = sizeof(data_array) / sizeof(data_array[0]);
 	
-	for (i = 0; i < array_size; i++)
+	for (i = 0; i < array_size; ++i)
 	{
 		state = PQEnqueue(pq, &data_array[i]);
 		TestInt(SUCCESS, state, __LINE__);	

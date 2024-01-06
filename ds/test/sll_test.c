@@ -72,27 +72,27 @@ static void TestInsertAndRemove(list_t *got_list_1, int node_val_1[])
 	int size = 10;
 	void *get_data = NULL;
 	
-    for (i = 0; i < size; i++)
+    for (i = 0; i < size; ++i)
     {
         node_array[i] = SLLInsert(got_list_1, SLLEnd(got_list_1), &node_val_1[i]);
     }
 
 	get_data = SLLGetData(SLLBegin(got_list_1));
 	TestInt(0, *(int *)get_data, __LINE__);
-    for (i = 0; i < size - 1; i++)
+    for (i = 0; i < size - 1; ++i)
     {
         get_data = SLLGetData(node_array[i]);
         TestInt(i, *(int *)get_data, __LINE__);
     }
     
-    for (i = 0; i < remove_size; i++)
+    for (i = 0; i < remove_size; ++i)
     {
         node_array[i] = SLLRemove(SLLBegin(got_list_1));
     }
     
 	get_data = SLLGetData(SLLBegin(got_list_1));
 	TestInt(remove_size, *(int *)get_data, __LINE__);
-    for (i = remove_size + 1; i < size; i++)
+    for (i = remove_size + 1; i < size; ++i)
     {
         get_data = SLLGetData(node_array[i]);
         TestInt(i, *(int *)get_data, __LINE__);
@@ -129,7 +129,7 @@ static void TestFind(list_t *got_list_1)
 	got_iterator = SLLFind(got_from, got_to, IsMatchInt, &got_params);
 	
 	got_want = SLLBegin(got_list_1);
-    for (i = 0; i < got_params - 5; i++)
+    for (i = 0; i < got_params - 5; ++i)
     {
     	got_want = SLLNext(got_want); 
     }

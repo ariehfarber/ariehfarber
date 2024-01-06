@@ -95,13 +95,13 @@ node_t FindIntersection(node_t head_1, node_t head_2)
     while (NULL != runner_1)
     {
     	runner_1 = runner_1->next;
-    	counter_1++;
+    	++counter_1;
     }
     
     while (NULL != runner_2)
     {
     	runner_2 = runner_2->next;
-    	counter_2++;
+    	++counter_2;
     }
     
     runner_1 = head_1;
@@ -113,7 +113,7 @@ node_t FindIntersection(node_t head_1, node_t head_2)
     	while (0 != diff)
     	{
     		runner_2 = runner_2->next;
-    		diff--;
+    		--diff;
     	}
     }
     else
@@ -121,7 +121,7 @@ node_t FindIntersection(node_t head_1, node_t head_2)
     	while (0 != diff)
     	{
     		runner_1 = runner_1->next;
-    		diff--;
+    		--diff;
     	}
     }
     

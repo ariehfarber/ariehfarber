@@ -60,7 +60,7 @@ static void TestCopyArray()
 	
 	CopyArray(original_array, new_array, size);
 	
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; ++i)
 	{
 		TestInt(new_array[i], original_array[i], __LINE__);
 	}

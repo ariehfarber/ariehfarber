@@ -70,7 +70,7 @@ static void TestMax2()
 	int array_res[ARRAY_NUM] = {0, 0, 0};
 	int array_want[ARRAY_NUM] = {89, 58, -6};
 	
-	for (i = 0; i < ARRAY_NUM; i++)
+	for (i = 0; i < ARRAY_NUM; ++i)
 	{
 		array_res[i] = MAX2(array_a[i], array_b[i]);
 		TestInt(array_want[i], array_res[i], __LINE__);	
@@ -86,7 +86,7 @@ static void TestMax3()
 	int array_res[ARRAY_NUM] = {0, 0, 0};
 	int array_want[ARRAY_NUM] = {365, 58, 3};
 	
-	for (i = 0; i < ARRAY_NUM; i++)
+	for (i = 0; i < ARRAY_NUM; ++i)
 	{
 		array_res[i] = MAX3(array_a[i], array_b[i], array_c[i]);
 		TestInt(array_want[i], array_res[i], __LINE__);	

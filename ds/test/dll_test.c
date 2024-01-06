@@ -62,7 +62,7 @@ static void TestDLLInsert(dll_t *dll)
 	
 	insert_node = DLLEnd(dll);
 	
-	for (i = 0; i < str_size; i++)
+	for (i = 0; i < str_size; ++i)
 	{
 		insert_node = DLLInsert(dll, insert_node, &data[i]);
 		insert_node = DLLNext(insert_node);
@@ -139,7 +139,7 @@ static void TestDLLSplice(dll_t *dll)
 	dll_splice = DLLCreate();
 	size = strlen(data);
 	insert_node = DLLEnd(dll_splice);
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; ++i)
 	{
 		insert_node = DLLInsert(dll_splice, insert_node, &data[i]);
 		insert_node = DLLNext(insert_node);

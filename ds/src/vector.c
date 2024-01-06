@@ -79,7 +79,7 @@ int VectorPushBack(vector_t *vector, const void *data)
 
 	memcpy(VECTOR_POINTER(current_size), data, element_size);
 	
-	vector->current_size++;
+	++vector->current_size;
 			
 	if (vector->current_size == vector->capacity)
 	{
@@ -93,7 +93,7 @@ int VectorPopBack(vector_t *vector)
 {
 	assert(NULL != vector);
 	
-	vector->current_size--;
+	--vector->current_size;
 	
 	if (vector->current_size < (vector->capacity / GROWTH_FACTOR))
 	{
