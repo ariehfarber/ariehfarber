@@ -24,7 +24,7 @@ static void CleanString(size_t *target);
 
 void SetInt(element_t *target, int int_number) 
 {
-	target->data = *(size_t *)&int_number; 
+	memcpy(&target->data, &int_number, sizeof(int_number));
 	target->PrintValue = PrintInt;
 	target->AddNumber = AddInt;
 	target->CleanValue = CleanInt;
@@ -32,7 +32,7 @@ void SetInt(element_t *target, int int_number)
 
 void SetFloat(element_t *target, float float_number) 
 {
-	target->data = *(size_t *)&float_number;
+	memcpy(&target->data, &float_number, sizeof(float_number));
 	target->PrintValue = PrintFloat;
 	target->AddNumber = AddFloat;
 	target->CleanValue = CleanFloat;
@@ -79,12 +79,20 @@ void CleanElements(element_t *my_elements)
 
 static void PrintInt(size_t value)
 {
-	printf("%d, ", *(int *)&value);	
+	int value_int = 0;
+
+	memcpy(&value_int, &value, sizeof(int));
+	
+	printf("%d, ", value_int);	
 }
 
 static void PrintFloat(size_t value)
 {
-	printf("%.6f, ", *(float *)&value);	
+	float value_float = 0;
+
+	memcpy(&value_float, &value, sizeof(float));
+
+	printf("%.6f, ", value_float);	
 }
 
 static void PrintString(size_t value)
@@ -95,19 +103,23 @@ static void PrintString(size_t value)
 static void AddInt(size_t *target, int int_value)
 {
 	int temp_int = 0;
-	
-	temp_int = *(int *)target;
+
+	memcpy(&temp_int, target, sizeof(int));
+
 	temp_int += int_value;
-	*target = *(size_t *)&temp_int;	
+
+	memcpy(target, &temp_int, sizeof(int));
 }
 
 static void AddFloat(size_t *target, int float_value)
 {
 	float temp_float = 0;
-	
-	temp_float = *(float *)target;
-	temp_float += (float)float_value;
-	*target = *(size_t *)&temp_float;	
+
+	memcpy(&temp_float, target, sizeof(float));
+
+	temp_float += float_value;
+
+	memcpy(target, &temp_float, sizeof(float));	
 }
 
 static void AddString(size_t *target, int value)
