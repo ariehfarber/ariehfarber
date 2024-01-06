@@ -8,8 +8,8 @@
 #include <math.h>   /*pow		  */
 
 #include "sort.h"
+#include "ds_utils.h" /*SUCCESS*/
 
-#define SUCCESS 0
 #define ERROR -1
 
 static int CountingSortForRadix(int *arr, size_t arr_size, int exp);

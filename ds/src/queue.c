@@ -8,8 +8,8 @@
 
 #include "queue.h"
 #include "sll.h"
+#include "ds_utils.h" 
 
-#define SUCCESS 0
 #define ERROR -1
 
 struct queue

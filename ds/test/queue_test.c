@@ -7,10 +7,7 @@
 
 #include "sll.h"
 #include "queue.h"
-
-#define SUCCESS 0
-#define TRUE 1
-#define FALSE 0
+#include "ds_utils.h" /*TRUE, FALSE, SUCCESS, TestInt, TestSizeT*/
 
 static void TestQueue();
 
@@ -24,8 +21,6 @@ int main()
 static void TestQueueEnqueueAndDequeue(queue_t *queue, int data[], int size);
 static void TestQueueSize(queue_t *queue, int want_size);
 static void TestQueueStatus(queue_t *queue, int want);
-static void TestInt(int want, int got, int line);
-void TestSizeT(size_t want, size_t got, int line);
 
 static void TestQueue()
 {
@@ -83,36 +78,4 @@ static void TestQueueSize(queue_t *queue, int want_size)
 static void TestQueueStatus(queue_t *queue, int want)
 {
 	TestInt(want, QueueIsEmpty(queue), __LINE__);
-}
-
-static void TestInt(int want, int got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-void TestSizeT(size_t want, size_t got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
 }

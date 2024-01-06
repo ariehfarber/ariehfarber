@@ -11,7 +11,7 @@ TEST_DIR =  $(DIR)/test
 
 # Compiler flags
 CC = gcc
-CFLAGS = -ansi -pedantic-errors -Wall -Wextra -I$(HDR_DIR) -I$(HDR_DIR) 
+CFLAGS = -ansi -pedantic-errors -Wall -Wextra -I$(HDR_DIR)
 REL_FLAGS = -DNDEBUG -O3
 DEPENDENCIES_FLAGS = -MMD -MP
 
@@ -74,7 +74,7 @@ test: $(DEBUG_EXECUTABLES)
 # Build the executables
 $(DIR)/%.out: $(TEST_DIR)/%_test.c $(DEBUG_DIR)/lib_%.so
 	@ $(CC) $(CFLAGS) -g -o $@ $< -Wl,-rpath,$(DEBUG_DIR) \
-	-L$(DEBUG_DIR) -l_$(notdir $(basename $@)) -lm 
+	-L$(DEBUG_DIR) -l_$(notdir $(basename $@)) -lm
 
 # CLEAN #
 clean:

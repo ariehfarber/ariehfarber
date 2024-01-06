@@ -8,11 +8,11 @@
 #include <assert.h> /*assert*/
 
 #include "vector.h"
+#include "ds_utils.h" /*SUCCESS*/
 
 #define BYTE_SIZE(i) (i * vector->element_size * sizeof(char))
 #define GROWTH_FACTOR 2
 #define ERROR -1
-#define SUCCESS 0
 #define VECTOR_POINTER(a) (char *)(vector->array) + BYTE_SIZE(a)
 
 struct vector

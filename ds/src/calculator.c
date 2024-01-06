@@ -10,11 +10,9 @@
 
 #include "calculator.h"
 #include "stack.h"
+#include "ds_utils.h" /*TRUE, SUCCESS*/
 
-#define ASCII_SIZE   256
 #define FINAL_RESULT 1
-#define TRUE 		 1
-#define FALSE 		 0
 
 typedef enum 
 {
@@ -60,7 +58,7 @@ static char *FinalOperation(char *str, stack_t *num_stack, stack_t *oper_stack);
 
 static void ApplyOperation(stack_t *num_stack, stack_t *oper_stack);
 static status_t CheckMathErrors(char operator, double value1, double value2);
-static int CheckBracketMltiplication(char *str, stack_t *oper_stack);
+static int CheckBracketMultiplication(char *str, stack_t *oper_stack);
 
 static status_t InitStacksAndLUT(size_t stack_size, stack_t **num_stack, \
 							  stack_t **oper_stack);					 
@@ -136,7 +134,7 @@ static char *OpenBracket(char *str, stack_t *num_stack, stack_t *oper_stack)
 	char *runner = (char *)str ;
 	(void)num_stack;
 
-	CheckBracketMltiplication(runner, oper_stack);
+	CheckBracketMultiplication(runner, oper_stack);
 	
 	StackPush(oper_stack, (void *)str);
 	
@@ -190,7 +188,7 @@ static char *CloseBrackets(char *str, stack_t *num_stack, stack_t *oper_stack)
     StackPop(oper_stack);
  
 	++runner;
-	state = CheckBracketMltiplication(runner, oper_stack);
+	state = CheckBracketMultiplication(runner, oper_stack);
     
     return (runner);
 }
@@ -272,7 +270,7 @@ static status_t CheckMathErrors(char operator, double value1, double value2)
 	return (SUCCESS);
 }
 
-static int CheckBracketMltiplication(char *str, stack_t *oper_stack)
+static int CheckBracketMultiplication(char *str, stack_t *oper_stack)
 {
 	static char multiplication_sign = '*';
 

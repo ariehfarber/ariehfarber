@@ -8,8 +8,8 @@
 #include <assert.h> /*assert*/
 
 #include "stack.h"
+#include "ds_utils.h" /*TRUE*/
 
-#define TRUE 1
 #define EMPTY 0
 
 struct stack 

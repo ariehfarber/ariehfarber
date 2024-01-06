@@ -8,6 +8,7 @@
 #include <assert.h> /*assert  */
 
 #include "bitarray.h"
+#include "ds_utils.h" 
 
 #define BYTE_SIZE CHAR_BIT
 #define SIZE_T_BITS (sizeof(bitarray_t) * BYTE_SIZE)

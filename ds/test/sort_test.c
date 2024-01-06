@@ -8,11 +8,9 @@
 #include <time.h>   /*time,, clock, clock_t, CLOCKS_PER_SEC*/
 
 #include "sort.h"
+#include "ds_utils.h" /*TRUE, FALSE, SUCCESS, TestInt*/
 
-#define TRUE  1
-#define FALSE 0
 #define ERROR -1
-#define SUCCESS 0
 
 static void TestSort();
 
@@ -33,7 +31,6 @@ static int *RandomArrayGenerator(void);
 static int *RandomArrayGenerator7Digits(void);
 int CompareFunctionInt(const void *a, const void *b);
 int IsArraySorted(int arr[], int size);
-void TestInt(int want, int got, int line);
 
 static void TestSort()
 {

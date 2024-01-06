@@ -7,11 +7,9 @@
 
 #include "sorted_list.h"
 #include "dll.h"
+#include "ds_utils.h" /*TRUE, FALSE, SUCCESS, TestInt*/
 
-#define TRUE 1
-#define FALSE 0
 #define ERROR -1
-#define SUCCESS 0
 
 static void TestSortedList();
 
@@ -20,42 +18,6 @@ int main()
 	TestSortedList();
 
 	return (0);
-}
-
-/*static void PrintSortedList(sorted_list_t *sorted_list)*/
-/*{*/
-/*	sorted_iter_t runner;*/
-/*	size_t size = 0;*/
-/*	size_t i = 0;*/
-/*	void *data = NULL;*/
-/*	*/
-/*	size = SortedListSize(sorted_list);*/
-/*	*/
-/*	runner = SortedListBegin(sorted_list);*/
-/*		*/
-/*	for (i = 0; i < size; i++)*/
-/*	{		*/
-/*		data = SortedListGetData(runner);*/
-/*		printf("%d\n", *(int *)data);*/
-/*		runner = SortedListNext(runner);*/
-/*	}*/
-/*	printf("\n");*/
-/*}*/
-
-static void TestInt(int control, int test, int line)
-{
-	if (control != test)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
 }
 
 static int CompFuncInt(void *node_data, void *parametr)

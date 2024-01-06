@@ -11,12 +11,9 @@
 #include <string.h>    /*memcmp, memcpy			*/
 
 #include "uid.h"
+#include "ds_utils.h" /*TRUE, FALSE, SUCCESS, EPSILON*/
 
-#define TRUE 1
-#define FALSE 0
-#define SUCCESS 0
 #define ERROR -1
-#define EPSILON 0.0005
 
 const ilrd_uid_t bad_uid = {0};
 

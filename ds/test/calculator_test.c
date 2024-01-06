@@ -4,6 +4,7 @@
 #include <stdio.h> /*printf*/
 
 #include "calculator.h"
+#include "ds_utils.h" /*TestInt, TestDouble*/
 
 static void TestCalculate();
 
@@ -13,9 +14,6 @@ int main()
 	
 	return (0);
 }
-
-void TestInt(int want, int got, int line);
-void TestDouble(double want, double got, int line);
 
 static void TestCalculate()
 {
@@ -40,36 +38,5 @@ static void TestCalculate()
 	}
 }
 
-void TestInt(int want, int got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-void TestDouble(double want, double got, int line)
-{
-	if (want - got > 0.001)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
 
 

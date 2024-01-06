@@ -7,11 +7,9 @@
 #include <string.h> /*strlen*/
 
 #include "dll.h"
+#include "ds_utils.h" /*TRUE, FALSE, SUCCESS, TestInt*/
 
 #define ERROR -1
-#define SUCCESS 0
-#define TRUE 1
-#define FALSE 0
 
 static void TestDLL();
 
@@ -30,7 +28,6 @@ static void TestDLLSplice(dll_t *dll);
 static void TestState(dll_t *dll, size_t want_size, int want_state);
 static int ActFuncChar(void *node_data, void *parametrs);
 static int IsMatchChar(void *node_data, void *parametrs);
-static void TestInt(int want, int got, int line);
 
 static void TestDLL()
 {
@@ -183,20 +180,4 @@ static int IsMatchChar(void *node_data, void *parametrs)
 	}
 	
 	return (FALSE);
-}
-
-static void TestInt(int want, int got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
 }

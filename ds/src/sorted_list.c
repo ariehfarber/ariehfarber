@@ -7,12 +7,10 @@
 #include <assert.h> /*assert	  */
 
 #include "sorted_list.h"
+#include "ds_utils.h" /*TRUE, FALSE, SUCCESS*/
 
-#define SUCCESS 0
 #define FAIL 1
 #define ERROR -1
-#define TRUE 1
-#define FALSE 0
 
 struct sorted_list
 {

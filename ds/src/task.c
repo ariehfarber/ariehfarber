@@ -8,8 +8,7 @@
 #include <time.h>   /*time_t				*/
 
 #include "task.h"
-
-#define TRUE 1
+#include "ds_utils.h" /*TRUE*/
 
 struct task
 {

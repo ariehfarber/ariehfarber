@@ -6,9 +6,7 @@
 #include <stdio.h> /*printf*/
 
 #include "uid.h"
-
-#define TRUE 1
-#define FALSE 0
+#include "ds_utils.h" /*TRUE, FALSE, TestInt*/
 
 static void TestUID();
 
@@ -18,8 +16,6 @@ int main()
 
 	return (0);
 }
-
-static void TestInt(int want, int got, int line);
 
 static void TestUID()
 {	
@@ -41,20 +37,4 @@ static void TestUID()
 	TestInt(FALSE, state, __LINE__);
 	state = UIDIsEqual(got_uid_1, got_uid_2);
 	TestInt(FALSE, state, __LINE__);
-}
-
-static void TestInt(int want, int got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
 }

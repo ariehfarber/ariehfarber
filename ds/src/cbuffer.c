@@ -8,11 +8,11 @@
 #include <assert.h> /*assert 	  */ 	
 
 #include "cbuffer.h"
+#include "ds_utils.h" /*TRUE*/
 
 #define MIN(a, b) (((a) > (b)) ? (b) : (a))
 
 #define OFFSET 1
-#define TRUE 1
 
 struct buffer
 {

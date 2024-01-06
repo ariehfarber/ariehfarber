@@ -8,9 +8,7 @@
 #include <stddef.h> /*size_t  	  */
 
 #include "cbuffer.h"
-
-#define TRUE 1
-#define FALSE 0
+#include "ds_utils.h" /*TRUE, FALSE, TestInt, TestSizeT*/
 
 static void TestBuffer();
 
@@ -24,8 +22,6 @@ int main()
 static void TestBufferWrite(buffer_t *buffer, size_t n);
 static void TestBufferRead(void *dest, buffer_t *buffer, size_t n);
 static void TestBufferStatus(buffer_t *buffer, size_t capacity);
-static void TestInt(int want, int got, int line);
-static void TestSizeT(size_t want, size_t got, int line);
 
 static void TestBuffer()
 {
@@ -89,38 +85,6 @@ static void TestBufferStatus(buffer_t *buffer, size_t capacity)
 	free_space = BufferFreeSpace(buffer);
 	
 	TestSizeT(size, (capacity - free_space), __LINE__);
-}
-
-void TestInt(int want, int got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-void TestSizeT(size_t want, size_t got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
 }
 
 

@@ -11,9 +11,8 @@
 #include "scheduler.h"
 #include "pq.h"
 #include "sorted_list.h"
+#include "ds_utils.h" /*TRUE, FALSE*/
 
-#define TRUE 1
-#define FALSE 0
 #define ONE_SECOND 1
 #define EQUAL 0
 #define TASK_1_IS_BEFORE -1

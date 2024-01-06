@@ -9,10 +9,8 @@
 #include <stdio.h> 
 
 #include "bst.h"
+#include "ds_utils.h" /*TRUE, FALSE, SUCCESS*/
 
-#define TRUE     1 
-#define FALSE    0
-#define SUCCESS  0
 #define EQUAL 	 0
 #define MAGIC_NUMBER 0XBADCAFFE
 

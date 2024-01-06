@@ -6,9 +6,7 @@
 #include <assert.h> /*assert*/
 
 #include "sll_ext.h"
-
-#define TRUE 1
-#define FALSE 0
+#include "ds_utils.h" /*TRUE, FALSE*/
 
 static void TestFlip();
 static void TestHasLoop();

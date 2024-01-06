@@ -6,8 +6,6 @@
 #include <stdlib.h> /*system*/
 #include <assert.h> /*assert*/
 
-
-
 #include "scheduler.h"
 
 void TestCreateAndDestroy();

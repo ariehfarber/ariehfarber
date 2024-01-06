@@ -7,11 +7,9 @@
 #include <assert.h> /*assert*/
 
 #include "sll.h"
+#include "ds_utils.h" /*TRUE, FALSE, SUCCESS, TestInt, TestSizeT*/
 
 #define ERROR -1
-#define SUCCESS 0
-#define TRUE 1
-#define FALSE 0
 
 static void TestSLL();
 
@@ -30,8 +28,6 @@ static void TestForEach(list_t *got_list_1);
 static int IsMatchInt(void *want, void *got);
 static int ActFuncInt(void *node_data, void *parametrs);
 static void TestIsEmpty(int want, int got);
-static void TestInt(int want, int got, int line);
-static void TestSizeT(size_t want, size_t got, int line);
 
 static void TestSLL()
 {
@@ -202,38 +198,6 @@ static void TestIsEmpty(int want, int got)
 	{
 		printf("\033[1;32m");
 		printf("SLL is empty\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestInt(int want, int got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestSizeT(size_t want, size_t got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
 		printf("\033[0m"); 
 	}
 }

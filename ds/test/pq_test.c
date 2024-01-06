@@ -6,10 +6,8 @@
 #include <stdio.h> /*printf*/
 
 #include "pq.h"
+#include "ds_utils.h" /*TRUE, FALSE, SUCCESS, TestInt*/
 
-#define TRUE 1
-#define FALSE 0
-#define SUCCESS 0
 #define ERROR -1
 
 static void TestPQ();
@@ -27,7 +25,6 @@ static size_t TestEnqueue(pq_t *pq);
 static size_t TestDequeue(pq_t *pq);
 static void TestErase(pq_t* pq);
 static int IsMatchInt(void *node_data, void *parametrs);
-static void TestInt(int want, int got, int line);
 static void TestData(void *want, void *got, int line);
 
 static void TestPQ()
@@ -113,22 +110,6 @@ static int IsMatchInt(void *node_data, void *parametrs)
 	}
 	
 	return (FALSE);
-}
-
-static void TestInt(int want, int got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
 }
 
 static void TestData(void *want, void *got, int line)

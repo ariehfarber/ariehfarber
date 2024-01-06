@@ -8,10 +8,8 @@
 
 #include "pq.h"
 #include "sorted_list.h"
+#include "ds_utils.h" /*TRUE, FALSE, SUCCESS*/
 
-#define TRUE 1
-#define FALSE 0
-#define SUCCESS 0
 #define ERROR -1
 
 struct pq

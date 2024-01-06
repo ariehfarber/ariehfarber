@@ -10,6 +10,7 @@
 #include <limits.h> /*CHAR_BIT*/
 
 #include "bitarray.h"
+#include "ds_utils.h" /*TestInt, TestSizeT*/
 
 static void TestBitArrayGetVal();
 static void TestBitArraySetBit();
@@ -43,9 +44,6 @@ int main()
 	
 	return (0);
 }
-
-static void TestInt(int want, int got, int line);
-static void TestSizeT(size_t want, size_t got, int line);
 static void TestBitArray(bitarray_t want, bitarray_t got, int line);
 static void PrintInBinary64Bits(bitarray_t number);
 
@@ -196,38 +194,6 @@ static void TestBitArrayMirrorLUT()
 	got_bit_array = BitArrayMirrorLUT(got_bit_array);
 
 	TestBitArray(want_bit_array, got_bit_array, __LINE__);
-}
-
-static void TestInt(int want, int got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
-}
-
-static void TestSizeT(size_t want, size_t got, int line)
-{
-	if (want != got)
-	{
-		printf("\033[0;31m");
-		printf("Error. failed at line %d\n", line);
-		printf("\033[0m"); 
-	}
-	else
-	{
-		printf("\033[1;32m");
-		printf("Success!\n");
-		printf("\033[0m"); 
-	}
 }
 
 static void TestBitArray(bitarray_t want, bitarray_t got, int line)

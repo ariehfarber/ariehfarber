@@ -7,10 +7,9 @@
 #include <stdlib.h> /*malloc, free*/
 
 #include "sll.h"
+#include "ds_utils.h" /*TRUE, SUCCESS*/
 
 #define ERROR -1
-#define SUCCESS 0
-#define TRUE 1
 
 struct node
 {
