@@ -68,7 +68,7 @@ $(REL_DIR)/%.o: $(SRC_DIR)/%.c
 $(REL_DIR)/lib_%.so: $(REL_DIR)/%.o
 	 @ $(CC) -shared -o $@ $(call ReleaseGenerateLibraryObjects,$*) 
 	
-# TEST DEBUG#
+#DEBUG EXECUTABLES#
 test: $(DEBUG_EXECUTABLES)
 
 # Build the executables
