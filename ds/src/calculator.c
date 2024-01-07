@@ -27,8 +27,8 @@ typedef enum
 {
     OTHER = 0,
     NUM,
-    OPEN_ROUND_BRACKET,
-    CLOSE_ROUND_BRACKET,
+    OPEN_BRACKET,
+    CLOSE_BRACKET,
     PLUS,
     MINUS,
     MULTIPLY,
@@ -46,25 +46,26 @@ typedef struct manager
 	events_t event;
 	stack_t *operand_stack;
 	stack_t *operator_stack;
+	char *expression;
 }manager_t;
 
 typedef status_t operator_handler_t(double *, double, double);
-typedef status_t transition_handler_t(char **, manager_t *);
+typedef status_t transition_handler_t(manager_t *, double *);
 
 static events_t event_lut[ASCII_SIZE] = {OTHER};
 static operator_handler_t *operator_lut[NUM_OF_EVENTS] = {OTHER};
 static transition_handler_t *transition_matrix[NUM_OF_STATES][NUM_OF_EVENTS];
 
-static status_t ErrorInSyntax(char **expression, manager_t *manager);						 
-static status_t PushOperand(char **expression, manager_t *manager);		 
-static status_t PushBracket(char **expression, manager_t *manager);	
-static status_t PushOperator(char **expression, manager_t *manager);	
-static status_t CloseBrackets(char **expression, manager_t *manager);	
-static status_t SkipSpaces(char **expression, manager_t *manager);	
-static status_t FinalOperation(char **expression, manager_t *manager);	
-static void SetManager(char **expression, manager_t *manager, state_t state);
+static status_t ErrorInSyntax(manager_t *manager, double *result);						 
+static status_t PushOperand(manager_t *manager, double *result);		 
+static status_t PushBracket(manager_t *manager, double *result);	
+static status_t PushOperator(manager_t *manager, double *result);	
+static status_t CloseBrackets(manager_t *manager, double *result);	
+static status_t SkipSpaces(manager_t *manager, double *result);	
+static status_t FinalOperation(manager_t *manager, double *result);	
+static void SetManager(manager_t *manager, state_t state);
 
-static status_t InitALL(const char **expression, manager_t **manager);					 
+static status_t InitAll(const char **str, manager_t **manager, double **result);					 
 static void InitlizeEventLUT();
 static void InitlizeOperatorLUT();
 static void InitlizeMatrixOfFunctions();
@@ -84,89 +85,87 @@ status_t Calculate(const char *expression, double *res)
     
 	assert(NULL != expression);
 
-	status = InitALL(&expression, &manager);
+	status = InitAll(&expression, &manager, &res);
 
 	while (ACCEPTED != manager->event && SUCCESS == status)
 	{
 		status = transition_matrix[manager->state][manager->event]\
-		((char **)&expression, manager); 
+		(manager, res); 
 	}
 
-	/*allocation error? res needs to be 0*/
-	*res = *(double *)StackPeek(manager->operand_stack);
 	DestroyAll(manager);
 	
 	return (status);
 }
 
-static status_t ErrorInSyntax(char **expression, manager_t *manager)
+static status_t ErrorInSyntax(manager_t *manager, double *result)
 {
-	double error_res = ERROR_RESULT;
-	(void)expression;
-
-	StackPush(manager->operand_stack, &error_res);
+	*result = ERROR_RESULT;
+	(void)manager;
 	
 	return (SYNTAX_ERROR);
 }
 
-static status_t PushOperand(char **expression, manager_t *manager)
+static status_t PushOperand(manager_t *manager, double *result)
 {
 	double data = 0;
 	char *endptr = NULL;
 	
-	data = strtod(*expression ,&endptr);
-	if (*expression == endptr)
+	data = strtod(manager->expression ,&endptr);
+	if (manager->expression == endptr)
 	{
-		return (ErrorInSyntax(expression, manager));
+		return (ErrorInSyntax(manager, result));
 	}
 
-	*expression = endptr;
-	SetManager(expression, manager, WAITING_FOR_OPERATOR);	
+	manager->expression = endptr;
+	SetManager(manager, WAITING_FOR_OPERATOR);	
 	StackPush(manager->operand_stack, &data);	
 
 	return (SUCCESS);
 }
 
-static status_t PushBracket(char **expression, manager_t *manager)
+static status_t PushBracket(manager_t *manager, double *result)
 {
 	char multiplication = '*';
+	(void)result;
 
 	if (manager->state == WAITING_FOR_OPERATOR)
 	{
 		StackPush(manager->operator_stack, &multiplication);
 	}
 	
-	StackPush(manager->operator_stack, (void *)*expression);
+	StackPush(manager->operator_stack, (void *)manager->expression);
 	
-	++*expression;
+	++manager->expression;
 	
-	SetManager(expression, manager, WAITING_FOR_OPERAND);	
+	SetManager(manager, WAITING_FOR_OPERAND);	
 	
 	return (SUCCESS);
 }
 
-static status_t PushOperator(char **expression, manager_t *manager)
+static status_t PushOperator(manager_t *manager, double *result)
 {
 	status_t status = SUCCESS;
+	(void)result;
 	
 	while (FALSE == StackIsEmpty(manager->operator_stack) && \
 	SUCCESS == status &&  \
 	event_lut[(events_t)*(char *)StackPeek(manager->operator_stack)] >= \
-	event_lut[(size_t)**expression])
+	event_lut[(size_t)*manager->expression])
 	{
 		status = ApplyOperation(manager);	
 	}
 
-	StackPush(manager->operator_stack, (void *)*expression);
+	StackPush(manager->operator_stack, (void *)manager->expression);
 	
-	++*expression;
+	++manager->expression;
 	
-	SetManager(expression, manager, WAITING_FOR_OPERAND);	
+	SetManager(manager, WAITING_FOR_OPERAND);	
 	
 	return (status);
 }
 
-static status_t CloseBrackets(char **expression, manager_t *manager)
+static status_t CloseBrackets(manager_t *manager, double *result)
 {
 	char multiplication = '*';
 	status_t status = SUCCESS;
@@ -180,38 +179,40 @@ static status_t CloseBrackets(char **expression, manager_t *manager)
 
 	if (TRUE == StackIsEmpty(manager->operator_stack))
 	{
-        return (ErrorInSyntax(expression, manager));
+        return (ErrorInSyntax(manager, result));
 	}
     StackPop(manager->operator_stack);
  
-	++*expression;
+	++manager->expression;
 
-	if ('0' <= **expression && '9' >= **expression)
+	if ('0' <= *manager->expression && '9' >= *manager->expression)
 	{
 		StackPush(manager->operator_stack, &multiplication);
-		SetManager(expression, manager, WAITING_FOR_OPERAND);	
+		SetManager(manager, WAITING_FOR_OPERAND);	
 	}
 	else
 	{
-		SetManager(expression, manager, WAITING_FOR_OPERATOR);	
+		SetManager(manager, WAITING_FOR_OPERATOR);	
 	}
 
 	return (status);
 }
 
-static status_t SkipSpaces(char **expression, manager_t *manager)
+static status_t SkipSpaces(manager_t *manager, double *result)
 {
-	while (FALSE != isspace((int)**expression))
+	(void)result;
+	
+	while (FALSE != isspace((int)*manager->expression))
 	{
-		++*expression;
+		++manager->expression;
 	}
 
-	manager->event = event_lut[(size_t)**expression];
+	manager->event = event_lut[(size_t)*manager->expression];
 
 	return (SUCCESS);
 }
 
-static status_t FinalOperation(char **expression, manager_t *manager)
+static status_t FinalOperation(manager_t *manager, double *result)
 {
 	status_t status = SUCCESS;
 	
@@ -220,20 +221,21 @@ static status_t FinalOperation(char **expression, manager_t *manager)
 	{
 		if ('(' == *(char *)StackPeek(manager->operator_stack))
 		{
-			return (ErrorInSyntax(expression, manager));
+			return (ErrorInSyntax(manager, result));
 		}
 		status = ApplyOperation(manager);	
 	}
 
+	*result = *(double *)StackPeek(manager->operand_stack);
 	manager->event = ACCEPTED;
 	
 	return (status);
 }
 
-static void SetManager(char **expression, manager_t *manager, state_t state)
+static void SetManager(manager_t *manager, state_t state)
 {
 	manager->state = state;
-	manager->event = event_lut[(size_t)**expression];
+	manager->event = event_lut[(size_t)*manager->expression];
 }
 
 static status_t ApplyOperation(manager_t *manager)
@@ -317,9 +319,11 @@ static void DestroyAll(manager_t *manager)
 	free(manager);
 }
 
-static status_t InitALL(const char **expression, manager_t **manager)
+static status_t InitAll(const char **str, manager_t **manager, double **result)
 {
-	size_t stack_size = strlen(*expression);
+	size_t stack_size = strlen(*str);
+
+	**result = 0;
 
 	*manager = (manager_t *)malloc(sizeof(manager_t));
     if (NULL == *manager)
@@ -347,7 +351,8 @@ static status_t InitALL(const char **expression, manager_t **manager)
     InitlizeMatrixOfFunctions();
 
     (*manager)->state = WAITING_FOR_OPERAND;
-	(*manager)->event = event_lut[(size_t)**expression];
+	(*manager)->event = event_lut[(size_t)**str];
+	(*manager)->expression = *(char **)str;
 
     return (SUCCESS);
 }
@@ -364,8 +369,8 @@ static void InitlizeEventLUT()
 	event_lut['7'] = NUM;
 	event_lut['8'] = NUM;
 	event_lut['9'] = NUM;
-	event_lut['('] = OPEN_ROUND_BRACKET;
-	event_lut[')'] = CLOSE_ROUND_BRACKET;
+	event_lut['('] = OPEN_BRACKET;
+	event_lut[')'] = CLOSE_BRACKET;
 	event_lut['+'] = PLUS;
 	event_lut['-'] = MINUS;
 	event_lut['*'] = MULTIPLY;
@@ -390,8 +395,8 @@ static void InitlizeMatrixOfFunctions()
 {
     transition_matrix[WAITING_FOR_OPERAND][OTHER] = ErrorInSyntax;
     transition_matrix[WAITING_FOR_OPERAND][NUM] = PushOperand;
-	transition_matrix[WAITING_FOR_OPERAND][OPEN_ROUND_BRACKET] = PushBracket;
-    transition_matrix[WAITING_FOR_OPERAND][CLOSE_ROUND_BRACKET] = CloseBrackets;
+	transition_matrix[WAITING_FOR_OPERAND][OPEN_BRACKET] = PushBracket;
+    transition_matrix[WAITING_FOR_OPERAND][CLOSE_BRACKET] = CloseBrackets;
     transition_matrix[WAITING_FOR_OPERAND][PLUS] = PushOperand;
     transition_matrix[WAITING_FOR_OPERAND][MINUS] = PushOperand;
     transition_matrix[WAITING_FOR_OPERAND][MULTIPLY] = ErrorInSyntax;
@@ -402,8 +407,8 @@ static void InitlizeMatrixOfFunctions()
     
     transition_matrix[WAITING_FOR_OPERATOR][OTHER] = ErrorInSyntax;
     transition_matrix[WAITING_FOR_OPERATOR][NUM] = ErrorInSyntax;
-    transition_matrix[WAITING_FOR_OPERATOR][OPEN_ROUND_BRACKET] = PushBracket;
-    transition_matrix[WAITING_FOR_OPERATOR][CLOSE_ROUND_BRACKET] = CloseBrackets;
+    transition_matrix[WAITING_FOR_OPERATOR][OPEN_BRACKET] = PushBracket;
+    transition_matrix[WAITING_FOR_OPERATOR][CLOSE_BRACKET] = CloseBrackets;
     transition_matrix[WAITING_FOR_OPERATOR][PLUS] = PushOperator;
     transition_matrix[WAITING_FOR_OPERATOR][MINUS] = PushOperator;
     transition_matrix[WAITING_FOR_OPERATOR][MULTIPLY] = PushOperator;
