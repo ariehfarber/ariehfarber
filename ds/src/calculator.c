@@ -297,15 +297,11 @@ static status_t Multiply(double *current_res, double val1, double val2)
 
 static status_t Pow(double *current_res, double val1, double val2)
 {
-	if (val1 < 0 && fmod(val2, 1) != 0)
+	if ((val1 < 0 && 0 != fmod(val2, 1)) || (0 == val1 && 0 >= val2))
 	{
 		return (MATH_ERROR);
 	}
-	if (0 == val1 && 0 >= val2)
-	{
-		return (MATH_ERROR);
-	}
-
+	
 	*current_res = pow(val1, val2);
 	
 	return (SUCCESS);
