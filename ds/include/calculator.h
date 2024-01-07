@@ -1,7 +1,7 @@
 /*******************************************************************************
 *Author: Arieh Farber 
-*Reviewer:   
-*Date: 
+*Reviewer: Yael Argov  
+*Date: 07/01/2024
 *******************************************************************************/
 #ifndef __CALCULATOR_H__
 #define __CALCULATOR_H__
@@ -25,6 +25,7 @@ typedef enum
 *Time Complexity: O(n)
 *Space Complexity: O(n)
 *Notes: Using state machine design patern.
+        If an error is encounterd - res = 0.
 *******************************************************************************/
 status_t Calculate(const char *expression, double *res);
 
