@@ -29,7 +29,6 @@ int main(void)
     return (0);
 }
 
-
 void TestRecursion(void)
 {
     if(FAIL == FibonacciTest())
@@ -115,7 +114,6 @@ void TestRecursion(void)
     printf("\nAll tests are successful!\n\n");
 }
 
-
 int FibonacciTest(void)
 {
     int indexes[] = {1, 9, 10};
@@ -124,7 +122,8 @@ int FibonacciTest(void)
 
     for(i = 0; i < ARR_SIZE(res); ++i)
     {
-        if(res[i] != RecursiveFibonacci(indexes[i]) || res[i] != IterativeFibonacci(indexes[i]))
+        if(res[i] != RecursiveFibonacci(indexes[i]) || res[i] != \
+										IterativeFibonacci(indexes[i]))
         {
             return (FAIL);
         }
@@ -132,7 +131,6 @@ int FibonacciTest(void)
 
     return (SUCCESS);
 }
-
 
 static node_t *NodeCreate(void *data)
 {
@@ -143,7 +141,6 @@ static node_t *NodeCreate(void *data)
 
     return (node);
 }
-
 
 static void NodeDestroy(node_t *head)
 {
@@ -167,7 +164,6 @@ static void PrintList(node_t *head)
     }
     printf("\n\n");
 }
-
 
 int TestFlipList(void)
 {
@@ -205,7 +201,6 @@ int TestFlipList(void)
     return (SUCCESS);
 }
 
-
 int TestSortedStack(void)
 {
     int data[] = {30, -5, 12, 4, 55, -3};
@@ -234,7 +229,6 @@ int TestSortedStack(void)
 
     return (SUCCESS);
 }
-
 
 int TestStrLen(void)
 {
@@ -275,7 +269,6 @@ int TestStrLen(void)
     return (SUCCESS);
 }
 
-
 int TestStrCpy(void)
 {
     char *src = "Lets copy this string";
@@ -298,7 +291,6 @@ int TestStrCpy(void)
 
     return (SUCCESS);
 }
-
 
 int TestStrCat(void)
 {
@@ -326,7 +318,6 @@ int TestStrCat(void)
 
     return(SUCCESS);
 }
-
 
 int TestStrStr(void)
 {

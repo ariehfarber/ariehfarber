@@ -41,7 +41,7 @@ node_t *RecursiveFlipList(node_t *node)
 {
     node_t *head = NULL;
 
-    if (node->next == NULL)
+    if (NULL == node->next)
     {
         return (node);
     }
@@ -78,7 +78,7 @@ size_t RecursiveStrLen(const char *s)
 
 int RecursiveStrcmp(const char *s1, const char *s2)
 {
-    if (*s1 == '\0' && *s2 == '\0')
+    if ('\0'  == *s1 && '\0'  == *s2)
     {
         return (0);
     }
@@ -94,7 +94,7 @@ char *RecursiveStrcpy(char *dest, const char *src)
 {
     *dest = *src;
     
-    if (*src != '\0')
+    if ('\0' != *src)
     {
         RecursiveStrcpy(dest + 1, (char *)src + 1);
     }
@@ -104,7 +104,7 @@ char *RecursiveStrcpy(char *dest, const char *src)
 
 char *RecursiveStrcat(char *dest, const char *src)
 {
-    if (*dest == '\0')
+    if ('\0' == *dest)
     {
         return (RecursiveStrcpy(dest, (char *)src));
     }
@@ -116,12 +116,12 @@ char *RecursiveStrcat(char *dest, const char *src)
 
 char *RecursiveStrstr(const char *haystack, const char *needle)
 {
-    if (strncmp(haystack, needle, strlen(needle)) == 0)
+    if (0 == strncmp(haystack, needle, strlen(needle)))
     {
         return ((char *)haystack);        
     }   
     
-    if (*haystack == '\0' )
+    if ('\0' == *haystack)
     {
         return (NULL);
     }
